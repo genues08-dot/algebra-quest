@@ -46,7 +46,18 @@ test('applyStreak', () => {
   step('2026-12-31', 2, '2026-12-31');
   step('2027-01-01', 3, '2027-01-01');
   step('2027-01-03', 1, '2027-01-03');
-  step('2027-01-02', 1, '2027-01-03');
+});
+
+test('applyStreak: a date before the last study date restarts the streak at 1', () => {
+  // Spec section 7: any date that is not the same day or the next day sets the streak to 1.
+  // This covers a PC clock that was wrong once and then corrected.
+  const save = makeSave(makeUnit());
+  save.streak = 5;
+  save.lastStudyDate = '2030-01-01';
+  game.applyStreak(save, '2026-11-11');
+  assert.deepEqual([save.streak, save.lastStudyDate], [1, '2026-11-11']);
+  game.applyStreak(save, '2026-11-12');
+  assert.deepEqual([save.streak, save.lastStudyDate], [2, '2026-11-12']);
 });
 
 test('refreshStreak', () => {

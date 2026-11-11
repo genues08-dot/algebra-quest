@@ -56,3 +56,27 @@ test('failedHtml', () => {
   assert.match(html, /c &amp; d/);
   for (const action of ['retry', 'home']) assert.match(html, new RegExp('data-action="' + action + '"'));
 });
+
+test('lessonHtml: a locked typed question keeps the answer and drops Check and Hint', () => {
+  const html = views.lessonHtml(typed({ locked: true, answerText: 'x < "5"' }));
+  const box = tag(html, 'data-role="answer"');
+  assert.match(box, /value="x &lt; &quot;5&quot;"/);
+  assert.match(box, /disabled/);
+  assert.doesNotMatch(html, /data-action="(check|hint)"/);
+  assert.match(html, /data-action="quit"/);
+});
+
+test('lessonHtml: an unlocked typed question with text keeps it and stays editable', () => {
+  const box = tag(views.lessonHtml(typed({ answerText: '12' })), 'data-role="answer"');
+  assert.match(box, /value="12"/);
+  assert.doesNotMatch(box, /disabled/);
+});
+
+test('lessonHtml: a locked choice question disables every choice', () => {
+  const html = views.lessonHtml(typed({
+    type: 'choice', selected: 1, locked: true,
+    choices: [{ index: 0, text: 'a' }, { index: 1, text: 'b' }]
+  }));
+  for (const index of [0, 1]) assert.match(tag(html, 'data-index="' + index + '"'), /disabled/);
+  assert.doesNotMatch(html, /data-action="(check|hint)"/);
+});

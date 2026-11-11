@@ -117,19 +117,24 @@ An error names its location, for example `levels[0].lessons[1].questions[3]: ans
 
 ## 6. Answer checking (`checker.js`)
 
-For `input` questions, the checker normalizes the user's text and each accepted answer the same way:
+For `input` questions, the checker reads the user's text and each accepted answer the same way.
+
+First it prepares the text:
 
 1. Trim, then lowercase.
-2. Replace `−` (Unicode minus) with `-`.
-3. Remove all whitespace.
-4. Remove one leading single-letter assignment such as `x=`. So `x = 4`, `x=4`, and `4` all become `4`.
+2. Replace `−` (Unicode minus) with `-`, `<=` with `≤`, and `>=` with `≥`.
+3. Turn a mixed number into a fraction, so `2 1/2` becomes `5/2`.
 
-Then it compares:
+Then it splits the text into parts on commas, semicolons, and the words `or` and `and`. For each part it removes all whitespace, and removes a single-letter assignment on the left (`x=`) or the right (`=x`). So `x = 4`, `x=4`, `4 = x`, and `4` all become `4`. A part that starts with `±` or `+-` becomes two parts, so `±3` is `3` and `-3`. Empty parts are dropped.
 
-- If both sides parse as numbers, they match when they are equal within `1e-9`. Integers, decimals, and simple fractions `a/b` with an optional leading `-` count as numbers. So `0.5` matches `1/2`, and `4.0` matches `4`.
-- Otherwise they match only when the normalized strings are equal.
+Two answers match when they have the same number of parts and every part pairs with a different part of the other answer. Order does not matter. Two parts match like this:
 
-A question with more than one answer, such as x = 3 or x = −3, lists every accepted form in `answers`, for example `["3,-3", "-3,3"]`. The unit file has to spell out each accepted form, because the checker does not reorder answers.
+- If both parse as numbers, they match when they are equal within `1e-9`. Integers, decimals, and simple fractions `a/b` with an optional leading `-` count as numbers. So `0.5` matches `1/2`, and `4.0` matches `4`.
+- Otherwise they match only when the text is equal.
+
+A question with more than one answer, such as x = 3 or x = −3, needs only one key, `"3, -3"`. The student can type `-3, 3`, `x = 3 or x = -3`, or `±3`.
+
+Expressions are compared as text, so `2x+6` does not match `6+2x`. The unit file must list each accepted form of an expression, or the question should be multiple choice. Because numbers match by value, a typed question cannot grade the form of a number, such as "simplify 2/4".
 
 ## 7. Game rules (`game.js`)
 
@@ -234,7 +239,8 @@ The output is `units/<unit-id>.json`, which the user imports with the Import but
 - **Import file that is not valid JSON:** "This file isn't a valid unit or backup." The save is unchanged.
 - **Unit that fails validation:** the app lists the first 5 problems. The save is unchanged.
 - **Save that cannot be read (corrupted JSON):** the app shows an error screen with two options: download the raw data, or start fresh. It never wipes data on its own.
-- **Storage full:** the app shows a message suggesting a backup and removing old units. The previous save stays intact.
+- **Storage full:** the app shows a message suggesting a backup and removing old units. The previous stored save stays intact, and the app keeps running on the progress in memory.
+- **Two windows open:** before every write, the app checks that the stored save is still the one this window last read or wrote. If another window has saved since, this window writes nothing. It loads the newer save and shows "Progress was updated in another window".
 
 ## 12. Testing
 

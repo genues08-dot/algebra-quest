@@ -5,3 +5,22 @@ Offline Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-1
 - Tests: `node --test "tests/*.test.js"`
 - No npm packages, no build step, no ES modules. The app runs from file://.
 - Making a unit from packet photos: follow spec section 10 and write `units/<unit-id>.json`. Then run `node tools/validate-unit.js units/<unit-id>.json` and fix every error before telling the user to import it.
+- The student is in Algebra 2. Their packets set the content and level.
+
+## Choosing typed or multiple choice
+
+Typed (`input`) answers are graded by `js/checker.js`. It compares numbers by value and everything else as exact text, after removing spaces, case, and a leading `x =` or trailing `= x`.
+
+Use a typed question when the answer is:
+
+- **One number:** an integer, decimal, fraction, or mixed number. Write the key once, such as `"5/2"`. `2.5`, `5/2`, and `2 1/2` all match it.
+- **Several numbers,** such as the two solutions of a quadratic. Write the key once as `"3, -3"`. Any order matches, and so do `x = 3 or x = -3`, `3 and -3`, and `±3`.
+- **A simple inequality with one natural form,** such as `"x ≤ 5"`. The student can type `<=` and `>=`.
+
+Use multiple choice when:
+
+- **The form is the point,** such as "simplify" or "write as a decimal". The checker accepts `2/4` for `1/2` and `0.5` for `1/2`, so it cannot grade form.
+- **The answer is an expression that can be written many ways:** factored forms, polynomials, radicals, rational expressions, complex numbers. `2x+6` does not match `6+2x`.
+- **The answer is an ordered pair, an interval, or a graph feature.** These match only as exact text.
+
+If an expression answer must be typed, list every reasonable form in `answers`. Write accepted answers the way a student types them: `^` for exponents, `sqrt(5)` for roots, `i` for the imaginary unit. Show the proper symbols (x², √5) in the prompt, hint, and solution.

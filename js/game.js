@@ -67,15 +67,11 @@
     return Math.round((utcMidnight(to) - utcMidnight(from)) / MS_PER_DAY);
   }
 
-  // Called when a lesson is completed. A date earlier than the last study date changes nothing.
+  // Called when a lesson is completed. Same day: no change. Next day: one more.
+  // Anything else restarts at 1, including a date before the last study date (a corrected PC clock).
   function applyStreak(save, today) {
-    if (save.lastStudyDate === null) {
-      save.streak = 1;
-      save.lastStudyDate = today;
-      return;
-    }
-    var days = dayDiff(save.lastStudyDate, today);
-    if (days <= 0) return;
+    var days = save.lastStudyDate === null ? null : dayDiff(save.lastStudyDate, today);
+    if (days === 0) return;
     save.streak = days === 1 ? save.streak + 1 : 1;
     save.lastStudyDate = today;
   }

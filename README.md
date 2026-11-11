@@ -32,7 +32,8 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 - **Hearts:** each lesson starts with 5. A wrong answer costs 1 and shows you the worked solution. At 0 the lesson ends and you can retry it.
 - **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets.
 - **Review:** every question you miss goes into the Review pile. Answer it right in a Review lesson and it leaves the pile.
-- **Typing answers:** `x = 4`, `x=4`, and `4` all count. Fractions and decimals with the same value both count, so `1/2` and `0.5` match.
+- **Typing answers:** `x = 4`, `x=4`, `4 = x`, and `4` all count. Fractions, decimals, and mixed numbers with the same value all count, so `5/2`, `2.5`, and `2 1/2` match. For two answers, type them in any order, such as `3, -3` or `x = 3 or x = -3`. Type `<=` and `>=` for ≤ and ≥.
+- **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
 
 ## Back up and restore
 

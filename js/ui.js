@@ -2,6 +2,10 @@
 (function (root) {
   'use strict';
   var AQ = root.AQ = root.AQ || {};
+  if (typeof module !== 'undefined' && module.exports) {
+    require('./storage.js');
+    require('./views.js');
+  }
 
   var views = AQ.views;
   var storage = AQ.storage;
@@ -27,6 +31,9 @@
   var rootEl = null;
   var ls = null;
   var fileInput = null;
+  // The stored text this window last read or wrote. A different value in storage means
+  // another window has saved since then.
+  var lastRaw = null;
 
   function today() {
     return game.localDateString(new Date());
@@ -125,9 +132,10 @@
     root.scrollTo(0, 0);
   }
 
+  // With no usable save (the unreadable-save screen was showing), home has nothing to draw.
   function showHome() {
     state.session = null;
-    show('home');
+    show(state.save === null ? 'broken' : 'home');
   }
 
   function showMessage(title, lines) {
@@ -137,10 +145,40 @@
 
   // ----- Saving -----
 
-  // Writes `save` to storage. On success it becomes the current save.
-  // On failure the previous save stays current and a message is shown.
+  // Reads the stored save into the state. Returns false, and shows the unreadable-save screen,
+  // when the stored data cannot be used.
+  function loadFromStorage() {
+    lastRaw = ls.getItem(storage.KEY);
+    var loaded = storage.load(ls);
+    state.session = null;
+    if (!loaded.ok) {
+      state.save = null;
+      state.rawSave = loaded.raw;
+      show('broken');
+      return false;
+    }
+    state.save = loaded.save;
+    state.rawSave = null;
+    game.refreshStreak(state.save, today());
+    return true;
+  }
+
+  // Writes `save` to storage. On success it becomes the current save and this returns true.
+  // If the write fails, a message is shown and the save in memory is left as it was.
+  // If another Algebra Quest window has saved since this window last read or wrote, nothing is
+  // written: this window loads that newer save instead, so neither window wipes the other's progress.
   function commit(save) {
+    if (ls.getItem(storage.KEY) !== lastRaw) {
+      if (loadFromStorage()) {
+        showMessage('Progress was updated in another window', [
+          'This window has loaded the newer progress.',
+          'Close the other Algebra Quest window so the two cannot get out of step again.'
+        ]);
+      }
+      return false;
+    }
     if (storage.persist(ls, save).ok) {
+      lastRaw = ls.getItem(storage.KEY);
       state.save = save;
       return true;
     }
@@ -303,8 +341,10 @@
     },
     'start-fresh': function () {
       if (!root.confirm('Start over with no progress?')) return;
-      state.rawSave = null;
-      if (commit(storage.newSave())) showHome();
+      if (commit(storage.newSave())) {
+        state.rawSave = null;
+        showHome();
+      }
     }
   };
 
@@ -349,14 +389,8 @@
     document.addEventListener('keydown', onKeyDown);
     fileInput.addEventListener('change', onFilePicked);
 
-    var loaded = storage.load(ls);
-    if (!loaded.ok) {
-      state.rawSave = loaded.raw;
-      show('broken');
-      return;
-    }
-    game.refreshStreak(loaded.save, today());
-    if (commit(loaded.save)) showHome();
+    // The save is in memory before the first write, so a failed write still leaves a usable app.
+    if (loadFromStorage() && commit(state.save)) showHome();
   }
 
   var api = { mount: mount, importText: importText };
