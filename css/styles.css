@@ -347,3 +347,40 @@ button:disabled { cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* Graphs */
+.graph { margin: 12px auto; padding: 0; width: 100%; max-width: 360px; }
+.graph svg { display: block; width: 100%; height: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.plot-grid { fill: none; stroke: var(--line); stroke-width: 1; }
+.plot-axis { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.plot-curve { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.plot-mark { stroke: var(--card); stroke-width: 1.5; }
+.plot-mark-zero { fill: var(--accent); }
+.plot-mark-max { fill: var(--correct); }
+.plot-mark-min { fill: var(--wrong); }
+.plot-number { fill: var(--muted); font-size: 11px; font-family: inherit; }
+
+/* Teaching cards */
+.teach { background: var(--card); border-radius: var(--radius); padding: 16px; margin: 12px 0; }
+.teach-count { color: var(--muted); font-size: 14px; }
+.teach-title { font-size: 22px; margin: 4px 0 10px; overflow-wrap: anywhere; }
+.teach-text { margin: 0 0 10px; overflow-wrap: anywhere; }
+.teach-example { background: var(--accent-soft); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; }
+.teach-problem { font-weight: 600; margin: 0 0 6px; overflow-wrap: anywhere; }
+.teach-steps { margin: 0; padding-left: 22px; }
+.teach-steps li { margin: 3px 0; overflow-wrap: anywhere; }
+.teach-actions { display: flex; gap: 10px; margin-top: 14px; }
+.teach-actions .btn { flex: 1; }
+.teach-skip { display: block; margin: 10px auto 0; }
+
+/* Calculator */
+.lesson-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.calc-note { color: var(--muted); font-size: 14px; margin: 0; }
+.calc-panel { flex: 1 1 100%; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+.calc-row { display: flex; gap: 8px; }
+.calc-input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 2px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--text); transition: border-color 0.15s; }
+.calc-input:focus { outline: none; border-color: var(--accent); }
+.calc-error { color: var(--wrong); margin: 8px 0 0; }
+.calc-result { font-size: 20px; font-weight: 600; margin: 8px 0 0; overflow-wrap: anywhere; }
+.calc-line { margin: 4px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+.calc-zoom { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }

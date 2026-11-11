@@ -5,6 +5,9 @@
   var AQ = root.AQ = root.AQ || {};
   if (typeof module !== 'undefined' && module.exports) {
     require('./game.js');
+    require('./mathexpr.js');
+    require('./plot.js');
+    require('./calc.js');
   }
 
   var ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -141,6 +144,106 @@
     '</section>';
   }
 
+  // ----- Graphs, teaching cards, and the calculator -----
+
+  // `graph` is a unit file graph object: { fn, x, y, numbers }. Returns '' when fn does not compile.
+  function graphHtml(graph, label) {
+    var compiled = AQ.mathexpr.compile(graph.fn);
+    if (!compiled.ok) return '';
+    var x = graph.x || [-10, 10];
+    var y = graph.y || [-10, 10];
+    var svg = AQ.plot.svg({
+      evaluate: compiled.evaluate,
+      window: { xMin: x[0], xMax: x[1], yMin: y[0], yMax: y[1] },
+      numbers: graph.numbers !== false,
+      marks: [],
+      label: label
+    });
+    return '<figure class="graph">' + svg + '</figure>';
+  }
+
+  function calculatorHtml(model) {
+    var result = model.result;
+    var graphPart = '';
+    var resultPart = '';
+    if (result && result.kind === 'graph') {
+      var marks = result.zeros.map(function (z) { return { x: z, y: 0, kind: 'zero' }; })
+        .concat(result.turningPoints.map(function (p) { return { x: p.x, y: p.y, kind: p.kind }; }));
+      graphPart = '<figure class="graph">' + AQ.plot.svg({
+        evaluate: result.evaluate,
+        window: result.window,
+        numbers: true,
+        marks: marks,
+        label: 'Graph of y = ' + model.text
+      }) + '</figure>' +
+        '<p class="calc-line">' + escapeHtml(result.zerosLine) + '</p>' +
+        '<p class="calc-line">' + escapeHtml(result.turningLine) + '</p>' +
+        '<div class="calc-zoom">' +
+          '<button type="button" class="btn" data-action="calc-zoom-in">Zoom in</button>' +
+          '<button type="button" class="btn" data-action="calc-zoom-out">Zoom out</button>' +
+          '<button type="button" class="btn" data-action="calc-reset">Reset</button>' +
+        '</div>';
+    } else if (result && result.kind === 'number') {
+      resultPart = '<p class="calc-result">' + escapeHtml(result.display) + '</p>';
+    }
+    return '<section class="calc-panel">' +
+      '<div class="calc-row">' +
+        '<input type="text" class="calc-input" data-role="calc-input" autocomplete="off" spellcheck="false"' +
+          ' aria-label="Calculator input" placeholder="Try 2+3 or x^2-4" value="' + escapeHtml(model.text) + '">' +
+        '<button type="button" class="btn btn-primary" data-action="calc-run">Go</button>' +
+        '<button type="button" class="btn btn-quiet" data-action="calc-close" aria-label="Close calculator">&#10005;</button>' +
+      '</div>' +
+      (model.error ? '<p class="calc-error" role="alert">' + escapeHtml(model.error) + '</p>' : '') +
+      resultPart +
+      graphPart +
+    '</section>';
+  }
+
+  function teachHtml(model) {
+    var last = model.index === model.total - 1;
+    var paragraphs = (model.text || []).map(function (paragraph) {
+      return '<p class="teach-text">' + escapeHtml(paragraph) + '</p>';
+    }).join('');
+    var example = '';
+    if (model.example) {
+      example = '<div class="teach-example">' +
+        '<p class="teach-problem">' + escapeHtml(model.example.problem) + '</p>' +
+        '<ol class="teach-steps">' + model.example.steps.map(function (step) {
+          return '<li>' + escapeHtml(step) + '</li>';
+        }).join('') + '</ol>' +
+      '</div>';
+    }
+    var graph = model.graph ? graphHtml(model.graph, 'Graph for this card') : '';
+    var nextLabel = !last ? 'Next' : (model.fromNotes ? 'Back to question' : 'Start practice');
+    var skipLabel = model.fromNotes ? 'Back to question' : 'Skip to questions';
+    return '<section class="teach">' +
+      '<div class="teach-count">' + (model.index + 1) + ' of ' + model.total + '</div>' +
+      '<h1 class="teach-title">' + escapeHtml(model.title) + '</h1>' +
+      paragraphs + example + graph +
+      '<div class="teach-actions">' +
+        '<button type="button" class="btn" data-action="teach-back"' + (model.index === 0 ? ' disabled' : '') + '>Back</button>' +
+        '<button type="button" class="btn btn-primary" data-action="teach-next">' + nextLabel + '</button>' +
+      '</div>' +
+      '<button type="button" class="btn btn-quiet teach-skip" data-action="teach-skip">' + skipLabel + '</button>' +
+    '</section>';
+  }
+
+  // Notes and Calculator controls. None of it shows once the question is answered.
+  function toolsHtml(model) {
+    if (model.locked) return '';
+    var notes = model.hasNotes ?
+      '<button type="button" class="btn btn-quiet" data-action="notes">Notes</button>' : '';
+    var calc = '';
+    if (model.calculatorAllowed === true) {
+      calc = model.calculatorPanel ? calculatorHtml(model.calculatorPanel) :
+        '<button type="button" class="btn btn-quiet" data-action="calc-open">Calculator</button>';
+    } else if (model.calculatorAllowed === false) {
+      calc = '<p class="calc-note">No calculator for this question.</p>';
+    }
+    if (!notes && !calc) return '';
+    return '<div class="lesson-tools">' + notes + calc + '</div>';
+  }
+
   // ----- Lesson screen -----
 
   function heartsHtml(hearts, maxHearts) {
@@ -187,8 +290,10 @@
         heartsHtml(model.hearts, model.maxHearts) +
       '</div>' +
       '<h1 class="prompt">' + escapeHtml(model.prompt) + '</h1>' +
+      (model.graph ? graphHtml(model.graph, 'Graph for this question') : '') +
       (model.type === 'choice' ? choicesHtml(model) : answerBoxHtml(model)) +
       (model.hintVisible ? '<p class="hint"><strong>Hint:</strong> ' + escapeHtml(model.hint) + '</p>' : '') +
+      toolsHtml(model) +
       buttons +
     '</section>';
   }
@@ -244,6 +349,9 @@
     homeHtml: homeHtml,
     messageHtml: messageHtml,
     lessonHtml: lessonHtml,
+    graphHtml: graphHtml,
+    teachHtml: teachHtml,
+    calculatorHtml: calculatorHtml,
     feedbackHtml: feedbackHtml,
     completeHtml: completeHtml,
     failedHtml: failedHtml
