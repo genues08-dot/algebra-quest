@@ -22,4 +22,28 @@ function makeSave(unit) {
   };
 }
 
-module.exports = { makeUnit, makeSave };
+function makeRichUnit() {
+  const unit = makeUnit();
+  unit.levels[0].lessons[0].teach = [
+    { title: 'Card one', text: ['First paragraph.', 'Second paragraph.'] },
+    {
+      title: 'Card two',
+      text: ['Look at x < 3.'],
+      example: { problem: 'Solve x + 1 = 3', steps: ['Subtract 1.', 'x = 2'] },
+      graph: { fn: 'x^2 - 4', x: [-5, 5], y: [-6, 6], numbers: false }
+    }
+  ];
+  unit.levels[0].lessons[1].questions[0].graph = { fn: 'x^3 - 3x^2 - 3' };
+  unit.levels[1].lessons[0].questions[0].calculator = false;
+  const typed = (id, answer) => ({ id, type: 'input', prompt: 'T ' + id, hint: 'H ' + id, solution: 'S ' + id, answers: [answer] });
+  unit.test = {
+    questions: [
+      { id: 't1', type: 'choice', prompt: 'T t1', hint: 'H t1', solution: 'S t1', choices: ['no', 'yes'], answer: 1, graph: { fn: '2x - 4' } },
+      typed('t2', '2'), typed('t3', '3'), typed('t4', '4'),
+      Object.assign(typed('t5', '5'), { calculator: false })
+    ]
+  };
+  return unit;
+}
+
+module.exports = { makeUnit, makeSave, makeRichUnit };

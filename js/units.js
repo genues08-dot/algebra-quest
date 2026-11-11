@@ -2,9 +2,11 @@
 (function (root) {
   'use strict';
   var AQ = root.AQ = root.AQ || {};
+  if (typeof module !== 'undefined' && module.exports) require('./mathexpr.js');
 
   var MIN_CHOICES = 2;
   var MAX_CHOICES = 6;
+  var MAX_TEACH_CARDS = 5;
 
   function isPlainObject(value) {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -60,6 +62,59 @@
       });
     }
 
+    function checkGraph(graph, path) {
+      if (!isPlainObject(graph)) {
+        errors.push(path + ': must be an object');
+        return;
+      }
+      if (requireText(graph, 'fn', path + '.')) {
+        var compiled = AQ.mathexpr.compile(graph.fn);
+        if (!compiled.ok) errors.push(path + '.fn: ' + compiled.error);
+      }
+      ['x', 'y'].forEach(function (key) {
+        if (graph[key] === undefined) return;
+        var range = graph[key];
+        if (!Array.isArray(range) || range.length !== 2 || !Number.isFinite(range[0]) ||
+            !Number.isFinite(range[1]) || !(range[0] < range[1])) {
+          errors.push(path + '.' + key + ': must be two numbers, smaller first');
+        }
+      });
+      if (graph.numbers !== undefined && typeof graph.numbers !== 'boolean') {
+        errors.push(path + '.numbers: must be true or false');
+      }
+    }
+
+    function checkTeachCard(card, path) {
+      if (!isPlainObject(card)) {
+        errors.push(path + ': must be an object');
+        return;
+      }
+      requireText(card, 'title', path + '.');
+      if (!Array.isArray(card.text) || card.text.length < 1) {
+        errors.push(path + '.text: must have at least 1 paragraph');
+      } else {
+        card.text.forEach(function (paragraph, index) {
+          if (!isText(paragraph)) errors.push(path + '.text[' + index + ']: must be a non-empty string');
+        });
+      }
+      if (card.example !== undefined) {
+        var example = card.example;
+        if (!isPlainObject(example)) {
+          errors.push(path + '.example: must be an object');
+        } else {
+          requireText(example, 'problem', path + '.example.');
+          if (!Array.isArray(example.steps) || example.steps.length < 1) {
+            errors.push(path + '.example.steps: must have at least 1 step');
+          } else {
+            example.steps.forEach(function (step, index) {
+              if (!isText(step)) errors.push(path + '.example.steps[' + index + ']: must be a non-empty string');
+            });
+          }
+        }
+      }
+      if (card.graph !== undefined) checkGraph(card.graph, path + '.graph');
+    }
+
     function checkQuestion(question, path) {
       if (!isPlainObject(question)) {
         errors.push(path + ': must be an object');
@@ -72,6 +127,10 @@
       if (question.type === 'choice') checkChoiceQuestion(question, path);
       else if (question.type === 'input') checkInputQuestion(question, path);
       else errors.push(path + '.type: must be "choice" or "input"');
+      if (question.graph !== undefined) checkGraph(question.graph, path + '.graph');
+      if (question.calculator !== undefined && typeof question.calculator !== 'boolean') {
+        errors.push(path + '.calculator: must be true or false');
+      }
     }
 
     function checkLesson(lesson, path) {
@@ -80,6 +139,15 @@
         return;
       }
       requireUniqueId(lesson, 'lesson', path + '.');
+      if (lesson.teach !== undefined) {
+        if (!Array.isArray(lesson.teach) || lesson.teach.length < 1 || lesson.teach.length > MAX_TEACH_CARDS) {
+          errors.push(path + '.teach: must have 1 to ' + MAX_TEACH_CARDS + ' cards');
+        } else {
+          lesson.teach.forEach(function (card, index) {
+            checkTeachCard(card, path + '.teach[' + index + ']');
+          });
+        }
+      }
       if (!Array.isArray(lesson.questions) || lesson.questions.length < 1) {
         errors.push(path + '.questions: must have at least 1 question');
         return;
@@ -116,6 +184,18 @@
       });
     }
 
+    if (unit.test !== undefined) {
+      if (!isPlainObject(unit.test)) {
+        errors.push('test: must be an object');
+      } else if (!Array.isArray(unit.test.questions) || unit.test.questions.length < 1) {
+        errors.push('test.questions: must have at least 1 question');
+      } else {
+        unit.test.questions.forEach(function (question, index) {
+          checkQuestion(question, 'test.questions[' + index + ']');
+        });
+      }
+    }
+
     return { ok: errors.length === 0, errors: errors };
   }
 
@@ -134,6 +214,10 @@
     return null;
   }
 
+  function testQuestions(unit) {
+    return unit.test ? unit.test.questions : [];
+  }
+
   function findQuestion(unit, questionId) {
     for (var l = 0; l < unit.levels.length; l++) {
       var lessons = unit.levels[l].lessons;
@@ -143,6 +227,10 @@
           if (questions[i].id === questionId) return questions[i];
         }
       }
+    }
+    var tested = testQuestions(unit);
+    for (var t = 0; t < tested.length; t++) {
+      if (tested[t].id === questionId) return tested[t];
     }
     return null;
   }
@@ -162,6 +250,7 @@
         lesson.questions.forEach(function (question) { ids.push(question.id); });
       });
     });
+    testQuestions(unit).forEach(function (question) { ids.push(question.id); });
     return ids;
   }
 
@@ -170,7 +259,8 @@
     findLesson: findLesson,
     findQuestion: findQuestion,
     lessonIds: lessonIds,
-    questionIds: questionIds
+    questionIds: questionIds,
+    testQuestions: testQuestions
   };
   AQ.units = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
