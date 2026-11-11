@@ -14,7 +14,9 @@
     XP_PERFECT_BONUS: 10,
     XP_PER_RANK: 100,
     HEARTS_PER_LESSON: 5,
-    REVIEW_LESSON_SIZE: 8
+    REVIEW_LESSON_SIZE: 8,
+    XP_TEST_PASS: 50,
+    TEST_PASS_PERCENT: 80
   };
   var MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -137,6 +139,14 @@
     return newSession(unit, 'review', null, ids);
   }
 
+  // The final test: every test question once, in random order. No hearts, no requeue, no wait.
+  function startTest(unit, rng) {
+    var questions = AQ.units.testQuestions(unit);
+    if (questions.length === 0) return null;
+    var ids = shuffledOrder(questions.length, rng).map(function (index) { return questions[index].id; });
+    return newSession(unit, 'test', null, ids);
+  }
+
   function currentQuestion(unit, session) {
     if (session.queue.length === 0) return null;
     return AQ.units.findQuestion(unit, session.queue[0]);
@@ -180,6 +190,39 @@
     applyStreak(save, today);
   }
 
+  function testScore(session) {
+    return Math.round(100 * session.firstTryCorrect / session.total);
+  }
+
+  function testPassed(session) {
+    return testScore(session) >= CONSTANTS.TEST_PASS_PERCENT;
+  }
+
+  function completeTest(save, session, today) {
+    var progress = save.progress[session.unitId];
+    var score = testScore(session);
+    session.status = 'complete';
+    session.perfect = session.wrongCount === 0;
+    if (testPassed(session)) awardXp(save, session, CONSTANTS.XP_TEST_PASS);
+    if (typeof progress.testBest !== 'number' || score > progress.testBest) progress.testBest = score;
+    applyStreak(save, today);
+  }
+
+  // A test question is answered once. Right or wrong, it leaves the queue and the test moves on.
+  function recordTestAnswer(save, session, progress, question, correct, today) {
+    session.queue.shift();
+    if (correct) {
+      awardXp(save, session, CONSTANTS.XP_CORRECT);
+      session.firstTryCorrect += 1;
+    } else {
+      session.wrongCount += 1;
+      addOnce(session.missed, question.id);
+      addOnce(progress.review, question.id);
+    }
+    addOnce(session.seen, question.id);
+    if (session.queue.length === 0) completeTest(save, session, today);
+  }
+
   // Grades the question at the head of the queue and updates the save and the session.
   // Returns null, changing nothing, when the session is not waiting for an answer or the response is empty.
   // Only a review session removes ids from the review pile; a normal lesson never does.
@@ -190,6 +233,11 @@
 
     var progress = save.progress[session.unitId];
     var correct = isRightAnswer(question, response);
+
+    if (session.kind === 'test') {
+      recordTestAnswer(save, session, progress, question, correct, today);
+      return { correct: correct, question: question };
+    }
     session.queue.shift();
 
     if (correct) {
@@ -214,6 +262,21 @@
     return { correct: correct, question: question };
   }
 
+  // Counts the current test question as wrong. Only an active test can be skipped.
+  function skipQuestion(save, unit, session, today) {
+    if (session.kind !== 'test' || session.status !== 'active') return null;
+    var question = currentQuestion(unit, session);
+    if (!question) return null;
+    recordTestAnswer(save, session, save.progress[session.unitId], question, false, today);
+    return { correct: false, question: question };
+  }
+
+  // The test opens once the unit has one and every level is complete.
+  function isTestUnlocked(unit, progress) {
+    if (AQ.units.testQuestions(unit).length === 0) return false;
+    return unit.levels.every(function (level) { return isLevelComplete(level, progress); });
+  }
+
   function continueSession(session) {
     session.awaitingContinue = false;
   }
@@ -235,6 +298,11 @@
     shuffledOrder: shuffledOrder,
     startLesson: startLesson,
     startReview: startReview,
+    startTest: startTest,
+    skipQuestion: skipQuestion,
+    testScore: testScore,
+    testPassed: testPassed,
+    isTestUnlocked: isTestUnlocked,
     currentQuestion: currentQuestion,
     submitAnswer: submitAnswer,
     continueSession: continueSession,
