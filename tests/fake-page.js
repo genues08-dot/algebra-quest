@@ -3,6 +3,15 @@
 // Options: `failWrites` makes every write fail, like full storage.
 // `confirm` is the answer every confirm() dialog gives (default true).
 const KEY = 'algebraQuest.v1';
+const UNESCAPES = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" };
+
+// The value a freshly drawn input would hold: its value="..." attribute, unescaped,
+// or '' when the input has no value attribute or is not on the page.
+function inputValue(html, role) {
+  const tag = html.match(new RegExp('<input[^>]*data-role="' + role + '"[^>]*>'));
+  const value = tag && tag[0].match(/\svalue="([^"]*)"/);
+  return value ? value[1].replace(/&(amp|lt|gt|quot|#39);/g, entity => UNESCAPES[entity]) : '';
+}
 
 function makeEnv(stored, options = {}) {
   const data = {};
@@ -19,10 +28,17 @@ function makeEnv(stored, options = {}) {
   const handlers = {};
   let keydown = null;
   // The answer box and the calculator box. Each is found only while the page HTML has it.
+  // Every redraw resets them to what the new HTML holds, as a real page makes fresh inputs.
   const answerBox = { value: '', focus() {}, setSelectionRange() {} };
   const calcBox = { value: '', focus() {}, setSelectionRange() {} };
+  let html = '';
   const rootEl = {
-    innerHTML: '',
+    get innerHTML() { return html; },
+    set innerHTML(text) {
+      html = String(text);
+      answerBox.value = inputValue(html, 'answer');
+      calcBox.value = inputValue(html, 'calc-input');
+    },
     addEventListener: (type, handler) => { handlers[type] = handler; },
     querySelector: selector => {
       for (const [role, box] of [['answer', answerBox], ['calc-input', calcBox]]) {

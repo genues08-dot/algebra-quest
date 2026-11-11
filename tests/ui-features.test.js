@@ -52,6 +52,31 @@ test('Notes returns to the same question with nothing lost', () => {
   assert.match(tag(env.html(), 'data-role="answer"'), /value="x = 7"/);
 });
 
+test('the next typed question starts with an empty box, and a review has no cards or Notes', () => {
+  const env = open();
+  start(env, 'a1');
+  env.click('teach-skip');
+  env.click('choose', { 'data-index': '1' });
+  env.click('check');
+  env.click('continue');
+  env.answerBox.value = '99';
+  env.click('check');
+  assert.match(tag(env.html(), 'data-role="answer"'), /value="99"/);
+  env.click('continue');
+  assert.match(env.html(), /P q2/);
+  assert.doesNotMatch(tag(env.html(), 'data-role="answer"'), /\svalue=/);
+  assert.equal(env.answerBox.value, '');
+  env.click('check');
+  assert.doesNotMatch(env.html(), /Correct!|Not quite/);
+
+  const save = makeSave(makeRichUnit());
+  save.progress.u1.review = ['q1', 'q2'];
+  const review = makeEnv(storage.serialize(save));
+  review.click('start-review');
+  assert.match(review.html(), /P q1/);
+  assert.doesNotMatch(review.html(), /Card one|data-action="notes"/);
+});
+
 test('calculator: number, graph, zoom, error, and it stays open on the next question', () => {
   const env = open();
   start(env, 'a1');
