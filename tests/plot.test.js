@@ -74,3 +74,8 @@ test('steep curves and jumps draw safely', () => {
   const pieces = jump.match(/<path[^>]*class="plot-curve"[^>]*d="([^"]*)"/)[1].match(/M/g).length;
   assert.ok(pieces >= 2, 'the curve should break at the jump');
 });
+
+test('poles are not zeros or turning points', () => {
+  assert.deepEqual(plot.features(f('1/(x - 0.03)'), W), { zeros: [], turningPoints: [] });
+  assert.deepEqual(plot.features(f('1/(x - 0.03)^2'), W), { zeros: [], turningPoints: [] });
+});

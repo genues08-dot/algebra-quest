@@ -60,15 +60,20 @@
       if (!isFinite_(ys[i])) continue;
       if (ys[i] === 0) zeros.push(xs[i]);
       if (i < SAMPLES && isFinite_(ys[i + 1]) && ys[i] * ys[i + 1] < 0) {
-        zeros.push(bisect(evaluate, xs[i], xs[i + 1]));
+        // A real root is smaller than both bracketing samples. A pole is not.
+        var root = bisect(evaluate, xs[i], xs[i + 1]);
+        if (Math.abs(evaluate(root)) <= Math.max(Math.abs(ys[i]), Math.abs(ys[i + 1]))) zeros.push(root);
       }
       if (i > 0 && i < SAMPLES && isFinite_(ys[i - 1]) && isFinite_(ys[i + 1])) {
         var before = ys[i] - ys[i - 1];
         var after = ys[i + 1] - ys[i];
         if ((before > 0 && after < 0) || (before < 0 && after > 0)) {
+          // The slope must really change sign; across a pole the values flip but the slope does not.
+          if (sign(slope(xs[i - 1])) === sign(slope(xs[i + 1]))) continue;
           var tx = bisect(slope, xs[i - 1], xs[i + 1]);
           var ty = evaluate(tx);
-          if (isFinite_(ty)) {
+          // A real turning point stays near its neighbors; a pole gives an enormous y.
+          if (isFinite_(ty) && Math.abs(ty) <= 2 * Math.max(Math.abs(ys[i - 1]), Math.abs(ys[i]), Math.abs(ys[i + 1])) + 1) {
             turns.push({ x: tx, y: ty, kind: before > 0 ? 'max' : 'min' });
             if (Math.abs(ty) < ZERO_TOLERANCE) zeros.push(tx);
           }
