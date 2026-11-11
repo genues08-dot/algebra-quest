@@ -1,0 +1,251 @@
+{
+  "format": 1,
+  "id": "sample-equations",
+  "title": "Sample: One-step and Two-step Equations",
+  "levels": [
+    {
+      "id": "one-step",
+      "title": "One-step equations",
+      "lessons": [
+        {
+          "id": "one-step-1",
+          "questions": [
+            {
+              "id": "os1-q1",
+              "type": "choice",
+              "prompt": "To solve x + 5 = 12, what should you do to both sides?",
+              "choices": ["Add 5", "Subtract 5", "Multiply by 5", "Divide by 5"],
+              "answer": 1,
+              "hint": "You want x alone. What undoes adding 5?",
+              "solution": "x has 5 added to it. Subtracting undoes adding, so subtract 5 from both sides: x = 12 − 5 = 7."
+            },
+            {
+              "id": "os1-q2",
+              "type": "input",
+              "prompt": "Solve: x + 5 = 12",
+              "answers": ["7"],
+              "hint": "Subtract 5 from both sides.",
+              "solution": "Subtract 5 from both sides: x + 5 − 5 = 12 − 5, so x = 7. Check: 7 + 5 = 12."
+            },
+            {
+              "id": "os1-q3",
+              "type": "input",
+              "prompt": "Solve: x − 4 = 9",
+              "answers": ["13"],
+              "hint": "x has 4 subtracted from it. What undoes subtracting 4?",
+              "solution": "Add 4 to both sides: x − 4 + 4 = 9 + 4, so x = 13. Check: 13 − 4 = 9."
+            },
+            {
+              "id": "os1-q4",
+              "type": "input",
+              "prompt": "Solve: x + 8 = 3",
+              "answers": ["-5"],
+              "hint": "Subtract 8 from both sides. The answer can be negative.",
+              "solution": "Subtract 8 from both sides: x = 3 − 8, so x = −5. Check: −5 + 8 = 3."
+            },
+            {
+              "id": "os1-q5",
+              "type": "choice",
+              "prompt": "Solve: x − 6 = −2",
+              "choices": ["x = −8", "x = 4", "x = −4", "x = 8"],
+              "answer": 1,
+              "hint": "Add 6 to both sides. Be careful with the negative number.",
+              "solution": "Add 6 to both sides: x = −2 + 6, so x = 4. Check: 4 − 6 = −2."
+            },
+            {
+              "id": "os1-q6",
+              "type": "input",
+              "prompt": "Solve: 15 = x + 9",
+              "answers": ["6"],
+              "hint": "The x is on the right side this time. Subtract 9 from both sides.",
+              "solution": "Subtract 9 from both sides: 15 − 9 = x, so x = 6. Check: 6 + 9 = 15."
+            }
+          ]
+        },
+        {
+          "id": "one-step-2",
+          "questions": [
+            {
+              "id": "os2-q1",
+              "type": "choice",
+              "prompt": "To solve 3x = 21, what should you do to both sides?",
+              "choices": ["Subtract 3", "Multiply by 3", "Divide by 3", "Add 3"],
+              "answer": 2,
+              "hint": "3x means 3 times x. What undoes multiplying by 3?",
+              "solution": "x is multiplied by 3. Dividing undoes multiplying, so divide both sides by 3: x = 21 / 3 = 7."
+            },
+            {
+              "id": "os2-q2",
+              "type": "input",
+              "prompt": "Solve: 3x = 21",
+              "answers": ["7"],
+              "hint": "Divide both sides by 3.",
+              "solution": "Divide both sides by 3: x = 21 / 3, so x = 7. Check: 3 × 7 = 21."
+            },
+            {
+              "id": "os2-q3",
+              "type": "input",
+              "prompt": "Solve: x/4 = 5",
+              "answers": ["20"],
+              "hint": "x is divided by 4. What undoes dividing by 4?",
+              "solution": "Multiply both sides by 4: x = 5 × 4, so x = 20. Check: 20/4 = 5."
+            },
+            {
+              "id": "os2-q4",
+              "type": "choice",
+              "prompt": "Solve: −2x = 10",
+              "choices": ["x = 5", "x = −5", "x = 12", "x = −20"],
+              "answer": 1,
+              "hint": "Divide both sides by −2. A positive divided by a negative is negative.",
+              "solution": "Divide both sides by −2: x = 10 / (−2), so x = −5. Check: −2 × (−5) = 10."
+            },
+            {
+              "id": "os2-q5",
+              "type": "input",
+              "prompt": "Solve: 4x = 2. Write your answer as a fraction or a decimal.",
+              "answers": ["1/2"],
+              "hint": "Divide both sides by 4, then simplify the fraction.",
+              "solution": "Divide both sides by 4: x = 2/4, which simplifies to x = 1/2. Check: 4 × 1/2 = 2."
+            },
+            {
+              "id": "os2-q6",
+              "type": "choice",
+              "prompt": "If 5x = 30, which statement is true?",
+              "choices": ["x < 5", "x > 5", "x = 5"],
+              "answer": 1,
+              "hint": "Solve for x first, then compare it to 5.",
+              "solution": "Divide both sides by 5: x = 30 / 5 = 6. Since 6 is more than 5, x > 5."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "two-step",
+      "title": "Two-step equations",
+      "lessons": [
+        {
+          "id": "two-step-1",
+          "questions": [
+            {
+              "id": "ts1-q1",
+              "type": "choice",
+              "prompt": "To solve 2x + 3 = 11, what is the best first step?",
+              "choices": [
+                "Divide both sides by 2",
+                "Subtract 3 from both sides",
+                "Add 3 to both sides",
+                "Subtract 11 from both sides"
+              ],
+              "answer": 1,
+              "hint": "Undo adding or subtracting first. Undo multiplying or dividing second.",
+              "solution": "Undo the + 3 first: subtract 3 from both sides to get 2x = 8. Then divide both sides by 2 to get x = 4."
+            },
+            {
+              "id": "ts1-q2",
+              "type": "input",
+              "prompt": "Solve: 2x + 3 = 11",
+              "answers": ["4"],
+              "hint": "Subtract 3 from both sides, then divide by 2.",
+              "solution": "Subtract 3 from both sides: 2x = 8. Divide both sides by 2: x = 4. Check: 2 × 4 + 3 = 11."
+            },
+            {
+              "id": "ts1-q3",
+              "type": "input",
+              "prompt": "Solve: 3x − 5 = 16",
+              "answers": ["7"],
+              "hint": "Add 5 to both sides, then divide by 3.",
+              "solution": "Add 5 to both sides: 3x = 21. Divide both sides by 3: x = 7. Check: 3 × 7 − 5 = 16."
+            },
+            {
+              "id": "ts1-q4",
+              "type": "input",
+              "prompt": "Solve: 5x + 2 = 27",
+              "answers": ["5"],
+              "hint": "Subtract 2 from both sides, then divide by 5.",
+              "solution": "Subtract 2 from both sides: 5x = 25. Divide both sides by 5: x = 5. Check: 5 × 5 + 2 = 27."
+            },
+            {
+              "id": "ts1-q5",
+              "type": "choice",
+              "prompt": "Solve: 4x − 7 = 9",
+              "choices": ["x = 4", "x = 1/2", "x = 16", "x = 2"],
+              "answer": 0,
+              "hint": "Add 7 to both sides, then divide by 4.",
+              "solution": "Add 7 to both sides: 4x = 16. Divide both sides by 4: x = 4. Check: 4 × 4 − 7 = 9."
+            },
+            {
+              "id": "ts1-q6",
+              "type": "input",
+              "prompt": "Solve: 6x + 4 = 4",
+              "answers": ["0"],
+              "hint": "Subtract 4 from both sides. What number times 6 gives that result?",
+              "solution": "Subtract 4 from both sides: 6x = 0. Divide both sides by 6: x = 0. Check: 6 × 0 + 4 = 4."
+            }
+          ]
+        },
+        {
+          "id": "two-step-2",
+          "questions": [
+            {
+              "id": "ts2-q1",
+              "type": "input",
+              "prompt": "Solve: 2x + 9 = 3",
+              "answers": ["-3"],
+              "hint": "Subtract 9 from both sides. The result is negative.",
+              "solution": "Subtract 9 from both sides: 2x = −6. Divide both sides by 2: x = −3. Check: 2 × (−3) + 9 = 3."
+            },
+            {
+              "id": "ts2-q2",
+              "type": "input",
+              "prompt": "Solve: x/3 + 2 = 6",
+              "answers": ["12"],
+              "hint": "Subtract 2 from both sides, then multiply by 3.",
+              "solution": "Subtract 2 from both sides: x/3 = 4. Multiply both sides by 3: x = 12. Check: 12/3 + 2 = 6."
+            },
+            {
+              "id": "ts2-q3",
+              "type": "choice",
+              "prompt": "Solve: −3x + 4 = 19",
+              "choices": ["x = 5", "x = −5", "x = −23/3", "x = −45"],
+              "answer": 1,
+              "hint": "Subtract 4 from both sides, then divide by −3.",
+              "solution": "Subtract 4 from both sides: −3x = 15. Divide both sides by −3: x = −5. Check: −3 × (−5) + 4 = 19."
+            },
+            {
+              "id": "ts2-q4",
+              "type": "input",
+              "prompt": "Solve: 2x − 1 = 4. Write your answer as a fraction or a decimal.",
+              "answers": ["5/2"],
+              "hint": "Add 1 to both sides, then divide by 2. The answer is not a whole number.",
+              "solution": "Add 1 to both sides: 2x = 5. Divide both sides by 2: x = 5/2, which is 2.5. Check: 2 × 2.5 − 1 = 4."
+            },
+            {
+              "id": "ts2-q5",
+              "type": "choice",
+              "prompt": "A student solves 3x + 6 = 18 and writes x = 8. What mistake did they make?",
+              "choices": [
+                "They added 6 instead of subtracting 6",
+                "They forgot to divide by 3",
+                "They divided by 3 too early",
+                "No mistake: x = 8 is correct"
+              ],
+              "answer": 0,
+              "hint": "Solve it yourself first, then work out how someone could get 8.",
+              "solution": "The correct steps: subtract 6 to get 3x = 12, then divide by 3 to get x = 4. Adding 6 instead gives 3x = 24 and x = 8."
+            },
+            {
+              "id": "ts2-q6",
+              "type": "choice",
+              "prompt": "If 2x + 1 = 9, which statement is true?",
+              "choices": ["x < 3", "x = 3", "x > 3"],
+              "answer": 2,
+              "hint": "Solve for x first, then compare it to 3.",
+              "solution": "Subtract 1 from both sides: 2x = 8. Divide both sides by 2: x = 4. Since 4 is more than 3, x > 3."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
