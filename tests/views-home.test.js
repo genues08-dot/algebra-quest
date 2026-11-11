@@ -1,0 +1,65 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const views = require('../js/views.js');
+const storage = require('../js/storage.js');
+const { makeUnit, makeSave } = require('./fixtures.js');
+
+const tag = (html, marker) => html.match(new RegExp('<[a-z]+[^>]*' + marker + '[^>]*>'))[0];
+function busySave() {
+  const unit = makeUnit();
+  unit.title = 'Unit <1>';
+  const save = makeSave(unit);
+  save.xp = 250;
+  save.streak = 4;
+  save.progress.u1 = { completedLessons: ['a1'], review: ['q2', 'q4'] };
+  return save;
+}
+
+test('escapeHtml', () => {
+  assert.equal(views.escapeHtml('x < 5 & y > "2" \'z\''), 'x &lt; 5 &amp; y &gt; &quot;2&quot; &#39;z&#39;');
+});
+
+test('homeModel', () => {
+  assert.deepEqual(views.homeModel(busySave()), {
+    rank: 3, xpIntoRank: 50, xpPerRank: 100, streak: 4,
+    units: [{ id: 'u1', title: 'Unit <1>' }], currentUnitId: 'u1', reviewCount: 2,
+    levels: [
+      { title: 'Level A', state: 'open', lessons: [{ id: 'a1', number: 1, complete: true }, { id: 'a2', number: 2, complete: false }] },
+      { title: 'Level B', state: 'locked', lessons: [{ id: 'b1', number: 1, complete: false }] }
+    ]
+  });
+  assert.deepEqual(views.homeModel(storage.newSave()), {
+    rank: 1, xpIntoRank: 0, xpPerRank: 100, streak: 0, units: [], currentUnitId: null, reviewCount: 0, levels: []
+  });
+});
+
+test('homeHtml with a unit', () => {
+  const html = views.homeHtml(views.homeModel(busySave()));
+  assert.match(html, /Rank 3/);
+  assert.match(html, /50 \/ 100 XP/);
+  assert.match(html, /Review \(2\)/);
+  assert.match(html, /Unit &lt;1&gt;/);
+  assert.doesNotMatch(html, /Unit <1>/);
+  assert.match(tag(html, 'data-lesson-id="a1"'), /data-action="start-lesson"/);
+  assert.doesNotMatch(tag(html, 'data-lesson-id="a2"'), /disabled/);
+  assert.match(tag(html, 'data-lesson-id="b1"'), /disabled/);
+  assert.doesNotMatch(tag(html, 'data-action="start-review"'), /disabled/);
+  for (const action of ['import', 'backup', 'remove-unit']) assert.match(html, new RegExp('data-action="' + action + '"'));
+});
+
+test('homeHtml with no units and with an empty review pile', () => {
+  const empty = views.homeHtml(views.homeModel(storage.newSave()));
+  assert.match(empty, /Import a unit to start/);
+  assert.match(empty, /data-action="import"/);
+  assert.doesNotMatch(empty, /data-action="start-review"/);
+  const save = busySave();
+  save.progress.u1.review = [];
+  assert.match(tag(views.homeHtml(views.homeModel(save)), 'data-action="start-review"'), /disabled/);
+});
+
+test('messageHtml escapes its lines', () => {
+  const html = views.messageHtml({ title: 'Import failed', lines: ['a < b'], actions: [{ action: 'home', label: 'OK' }] });
+  assert.match(html, /Import failed/);
+  assert.match(html, /a &lt; b/);
+  assert.match(html, /data-action="home"/);
+});
