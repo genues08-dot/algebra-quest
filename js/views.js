@@ -141,11 +141,112 @@
     '</section>';
   }
 
+  // ----- Lesson screen -----
+
+  function heartsHtml(hearts, maxHearts) {
+    var icons = '';
+    for (var i = 0; i < maxHearts; i++) {
+      icons += i < hearts ? '<span class="heart">&#9829;</span>' : '<span class="heart heart-lost">&#9825;</span>';
+    }
+    return '<div class="hearts" aria-label="' + hearts + ' of ' + maxHearts + ' hearts">' + icons + '</div>';
+  }
+
+  function choicesHtml(model) {
+    var disabled = model.locked ? ' disabled' : '';
+    var buttons = model.choices.map(function (choice) {
+      var pressed = choice.index === model.selected;
+      return '<button type="button" class="choice"' +
+        ' data-action="choose" data-index="' + choice.index + '" aria-pressed="' + pressed + '"' + disabled + '>' +
+        escapeHtml(choice.text) +
+      '</button>';
+    }).join('');
+    return '<div class="choices">' + buttons + '</div>';
+  }
+
+  function answerBoxHtml(model) {
+    var value = model.answerText ? ' value="' + escapeHtml(model.answerText) + '"' : '';
+    return '<input type="text" class="answer" data-role="answer" autocomplete="off" spellcheck="false"' +
+      ' aria-label="Your answer" placeholder="Type your answer"' + value + (model.locked ? ' disabled' : '') + '>';
+  }
+
+  // `locked` and `answerText` are optional. A locked lesson shows the question as answered,
+  // with no Check or Hint buttons, so a feedback panel can sit under it.
+  function lessonHtml(model) {
+    var percent = Math.round(100 * model.done / model.total);
+    var buttons = model.locked ? '' :
+      '<div class="lesson-actions">' +
+        '<button type="button" class="btn" data-action="hint">Hint</button>' +
+        '<button type="button" class="btn btn-primary" data-action="check">Check</button>' +
+      '</div>';
+    return '<section class="lesson-screen">' +
+      '<div class="lesson-top">' +
+        '<button type="button" class="btn btn-quiet quit" data-action="quit" aria-label="Quit lesson">&#10005;</button>' +
+        '<div class="progress" aria-label="Question ' + model.done + ' of ' + model.total + ' done">' +
+          '<div class="progress-fill" style="width:' + percent + '%"></div>' +
+        '</div>' +
+        heartsHtml(model.hearts, model.maxHearts) +
+      '</div>' +
+      '<h1 class="prompt">' + escapeHtml(model.prompt) + '</h1>' +
+      (model.type === 'choice' ? choicesHtml(model) : answerBoxHtml(model)) +
+      (model.hintVisible ? '<p class="hint"><strong>Hint:</strong> ' + escapeHtml(model.hint) + '</p>' : '') +
+      buttons +
+    '</section>';
+  }
+
+  function feedbackHtml(feedback) {
+    var body = feedback.correct ?
+      '<h2 class="feedback-title">Correct!</h2>' :
+      '<h2 class="feedback-title">Not quite</h2>' +
+      '<p class="feedback-solution">' + escapeHtml(feedback.solution) + '</p>';
+    return '<section class="feedback ' + (feedback.correct ? 'feedback-correct' : 'feedback-wrong') + '">' +
+      body +
+      '<button type="button" class="btn btn-primary" data-action="continue">Continue</button>' +
+    '</section>';
+  }
+
+  // ----- End-of-lesson screens -----
+
+  function completeHtml(result) {
+    return '<section class="result">' +
+      '<h1 class="result-title">Lesson complete!</h1>' +
+      '<div class="result-stats">' +
+        '<div class="result-stat"><div class="result-value">+' + result.xpEarned + ' XP</div><div class="result-label">earned</div></div>' +
+        '<div class="result-stat"><div class="result-value">' + result.accuracy + '%</div><div class="result-label">right on the first try</div></div>' +
+      '</div>' +
+      (result.perfect ? '<p class="result-perfect">Perfect! No mistakes.</p>' : '') +
+      '<div class="result-actions">' +
+        '<button type="button" class="btn btn-primary" data-action="home">Continue</button>' +
+      '</div>' +
+    '</section>';
+  }
+
+  function failedHtml(result) {
+    var missed = result.missed.map(function (item) {
+      return '<li class="missed-item">' +
+        '<div class="missed-prompt">' + escapeHtml(item.prompt) + '</div>' +
+        '<div class="missed-solution">' + escapeHtml(item.solution) + '</div>' +
+      '</li>';
+    }).join('');
+    return '<section class="result">' +
+      '<h1 class="result-title">Out of hearts</h1>' +
+      '<p class="result-note">Read through the ones you missed, then try again.</p>' +
+      '<ul class="missed">' + missed + '</ul>' +
+      '<div class="result-actions">' +
+        '<button type="button" class="btn btn-primary" data-action="retry">Retry</button>' +
+        '<button type="button" class="btn" data-action="home">Home</button>' +
+      '</div>' +
+    '</section>';
+  }
+
   var api = {
     escapeHtml: escapeHtml,
     homeModel: homeModel,
     homeHtml: homeHtml,
-    messageHtml: messageHtml
+    messageHtml: messageHtml,
+    lessonHtml: lessonHtml,
+    feedbackHtml: feedbackHtml,
+    completeHtml: completeHtml,
+    failedHtml: failedHtml
   };
   AQ.views = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
