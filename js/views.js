@@ -397,7 +397,7 @@
       (result.missed.length === 0 ? '<p class="result-perfect">You got every question right.</p>' :
         '<p class="result-note">Questions you missed:</p><ul class="missed">' + missed + '</ul>') +
       '<div class="result-actions">' +
-        '<button type="button" class="btn btn-primary" data-action="retry">Retry</button>' +
+        '<button type="button" class="btn btn-primary" data-action="retry">Retake</button>' +
         '<button type="button" class="btn" data-action="home">Home</button>' +
       '</div>' +
     '</section>';

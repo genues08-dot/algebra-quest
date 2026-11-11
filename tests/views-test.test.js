@@ -59,6 +59,7 @@ test('testResultHtml', () => {
   assert.match(passed, /a &lt; b/);
   assert.match(passed, /c &amp; d/);
   for (const action of ['retry', 'home']) assert.equal(has(passed, action), true);
+  assert.match(passed, /data-action="retry"[^>]*>Retake</);
   const failed = views.testResultHtml({ score: 60, passed: false, xpEarned: 120, missed: [] });
   assert.match(failed, /Not passed yet\. You need 80%\./);
   assert.doesNotMatch(failed, /Passed/);
