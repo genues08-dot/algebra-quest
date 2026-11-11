@@ -22,14 +22,14 @@ test('escapeHtml', () => {
 test('homeModel', () => {
   assert.deepEqual(views.homeModel(busySave()), {
     rank: 3, xpIntoRank: 50, xpPerRank: 100, streak: 4,
-    units: [{ id: 'u1', title: 'Unit <1>' }], currentUnitId: 'u1', reviewCount: 2,
+    units: [{ id: 'u1', title: 'Unit <1>' }], currentUnitId: 'u1', reviewCount: 2, test: null, soundOn: true,
     levels: [
       { title: 'Level A', state: 'open', lessons: [{ id: 'a1', number: 1, complete: true }, { id: 'a2', number: 2, complete: false }] },
       { title: 'Level B', state: 'locked', lessons: [{ id: 'b1', number: 1, complete: false }] }
     ]
   });
   assert.deepEqual(views.homeModel(storage.newSave()), {
-    rank: 1, xpIntoRank: 0, xpPerRank: 100, streak: 0, units: [], currentUnitId: null, reviewCount: 0, levels: []
+    rank: 1, xpIntoRank: 0, xpPerRank: 100, streak: 0, units: [], currentUnitId: null, reviewCount: 0, levels: [], test: null, soundOn: true
   });
 });
 

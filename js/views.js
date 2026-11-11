@@ -29,7 +29,9 @@
       }),
       currentUnitId: save.currentUnitId,
       reviewCount: 0,
-      levels: []
+      levels: [],
+      test: null,
+      soundOn: !save.settings || save.settings.sound !== false
     };
     if (save.currentUnitId === null) return model;
 
@@ -37,6 +39,12 @@
     var progress = save.progress[unit.id];
     var states = AQ.game.levelStates(unit, progress);
     model.reviewCount = progress.review.length;
+    if (AQ.units.testQuestions(unit).length > 0) {
+      model.test = {
+        state: AQ.game.isTestUnlocked(unit, progress) ? 'open' : 'locked',
+        best: typeof progress.testBest === 'number' ? progress.testBest : null
+      };
+    }
     model.levels = unit.levels.map(function (level, levelIndex) {
       return {
         title: level.title,
@@ -101,30 +109,44 @@
     '</section>';
   }
 
-  function footerHtml() {
+  function footerHtml(model) {
     return '<footer class="footer">' +
       '<button type="button" class="btn" data-action="import">Import</button>' +
       '<button type="button" class="btn" data-action="backup">Backup</button>' +
+      '<button type="button" class="btn" data-action="toggle-sound">Sound: ' + (model.soundOn ? 'on' : 'off') + '</button>' +
     '</footer>';
+  }
+
+  function testEntryHtml(test) {
+    if (!test) return '';
+    return '<section class="test-entry test-' + test.state + '">' +
+      '<div class="test-info">' +
+        '<h2 class="test-title">Final test</h2>' +
+        '<span class="test-best">' + (test.best === null ? 'Not taken yet' : 'Best: ' + test.best + '%') + '</span>' +
+      '</div>' +
+      '<button type="button" class="btn btn-primary" data-action="start-test"' +
+        (test.state === 'locked' ? ' disabled' : '') + '>Start test</button>' +
+    '</section>';
   }
 
   function homeHtml(model) {
     if (model.units.length === 0) {
       return headerHtml(model) +
         '<section class="empty"><p class="empty-text">Import a unit to start</p></section>' +
-        footerHtml();
+        footerHtml(model);
     }
     var reviewDisabled = model.reviewCount === 0 ? ' disabled' : '';
     return headerHtml(model) +
       unitBarHtml(model) +
       '<div class="path">' + model.levels.map(levelHtml).join('') + '</div>' +
+      testEntryHtml(model.test) +
       '<section class="review-bar">' +
         '<button type="button" class="btn btn-primary" data-action="start-review"' + reviewDisabled + '>' +
           'Review (' + model.reviewCount + ')' +
         '</button>' +
         '<span class="review-note">Questions you missed come back here.</span>' +
       '</section>' +
-      footerHtml();
+      footerHtml(model);
   }
 
   // ----- Message screen (errors and notices) -----
@@ -275,25 +297,38 @@
   // `locked` and `answerText` are optional. A locked lesson shows the question as answered,
   // with no Check or Hint buttons, so a feedback panel can sit under it.
   function lessonHtml(model) {
+    var testMode = model.mode === 'test';
     var percent = Math.round(100 * model.done / model.total);
-    var buttons = model.locked ? '' :
+    var buttons = model.locked ? '' : (testMode ?
+      '<div class="lesson-actions">' +
+        '<button type="button" class="btn" data-action="skip">Skip</button>' +
+        '<button type="button" class="btn btn-primary" data-action="check">Submit</button>' +
+      '</div>' :
       '<div class="lesson-actions">' +
         '<button type="button" class="btn" data-action="hint">Hint</button>' +
         '<button type="button" class="btn btn-primary" data-action="check">Check</button>' +
-      '</div>';
+      '</div>');
+    var top = testMode ?
+      '<div class="test-count">Question ' + (model.done + 1) + ' of ' + model.total + '</div>' :
+      '<div class="progress" aria-label="Question ' + model.done + ' of ' + model.total + ' done">' +
+        '<div class="progress-fill" style="width:' + percent + '%"></div>' +
+      '</div>' + heartsHtml(model.hearts, model.maxHearts);
+    var toolsModel = model;
+    if (testMode) {
+      toolsModel = {};
+      Object.keys(model).forEach(function (key) { toolsModel[key] = model[key]; });
+      toolsModel.hasNotes = false;
+    }
     return '<section class="lesson-screen">' +
       '<div class="lesson-top">' +
         '<button type="button" class="btn btn-quiet quit" data-action="quit" aria-label="Quit lesson">&#10005;</button>' +
-        '<div class="progress" aria-label="Question ' + model.done + ' of ' + model.total + ' done">' +
-          '<div class="progress-fill" style="width:' + percent + '%"></div>' +
-        '</div>' +
-        heartsHtml(model.hearts, model.maxHearts) +
+        top +
       '</div>' +
       '<h1 class="prompt">' + escapeHtml(model.prompt) + '</h1>' +
       (model.graph ? graphHtml(model.graph, 'Graph for this question') : '') +
       (model.type === 'choice' ? choicesHtml(model) : answerBoxHtml(model)) +
-      (model.hintVisible ? '<p class="hint"><strong>Hint:</strong> ' + escapeHtml(model.hint) + '</p>' : '') +
-      toolsHtml(model) +
+      (model.hintVisible && !testMode ? '<p class="hint"><strong>Hint:</strong> ' + escapeHtml(model.hint) + '</p>' : '') +
+      toolsHtml(toolsModel) +
       buttons +
     '</section>';
   }
@@ -343,6 +378,31 @@
     '</section>';
   }
 
+  function testResultHtml(result) {
+    var missed = result.missed.map(function (item) {
+      return '<li class="missed-item">' +
+        '<div class="missed-prompt">' + escapeHtml(item.prompt) + '</div>' +
+        '<div class="missed-solution">' + escapeHtml(item.solution) + '</div>' +
+      '</li>';
+    }).join('');
+    var pass = AQ.game.CONSTANTS.TEST_PASS_PERCENT;
+    return '<section class="result test-result">' +
+      '<h1 class="result-title">Final test</h1>' +
+      '<div class="test-score">' + result.score + '%</div>' +
+      '<p class="test-verdict ' + (result.passed ? 'test-passed' : 'test-failed') + '">' +
+        (result.passed ? 'Passed' : 'Not passed yet. You need ' + pass + '%.') + '</p>' +
+      '<div class="result-stats">' +
+        '<div class="result-stat"><div class="result-value">+' + result.xpEarned + ' XP</div><div class="result-label">earned</div></div>' +
+      '</div>' +
+      (result.missed.length === 0 ? '<p class="result-perfect">You got every question right.</p>' :
+        '<p class="result-note">Questions you missed:</p><ul class="missed">' + missed + '</ul>') +
+      '<div class="result-actions">' +
+        '<button type="button" class="btn btn-primary" data-action="retry">Retry</button>' +
+        '<button type="button" class="btn" data-action="home">Home</button>' +
+      '</div>' +
+    '</section>';
+  }
+
   var api = {
     escapeHtml: escapeHtml,
     homeModel: homeModel,
@@ -354,7 +414,8 @@
     calculatorHtml: calculatorHtml,
     feedbackHtml: feedbackHtml,
     completeHtml: completeHtml,
-    failedHtml: failedHtml
+    failedHtml: failedHtml,
+    testResultHtml: testResultHtml
   };
   AQ.views = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
