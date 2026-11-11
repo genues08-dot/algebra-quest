@@ -20,7 +20,8 @@
       lastStudyDate: null,
       currentUnitId: null,
       units: {},
-      progress: {}
+      progress: {},
+      settings: { sound: true }
     };
   }
 
@@ -53,9 +54,22 @@
       var progress = candidate.progress[id];
       if (!isPlainObject(progress)) return false;
       if (!isStringArray(progress.completedLessons) || !isStringArray(progress.review)) return false;
+      if (has(progress, 'testBest') && progress.testBest !== null &&
+          !(Number.isInteger(progress.testBest) && progress.testBest >= 0 && progress.testBest <= 100)) return false;
     }
+    if (has(candidate, 'settings') &&
+        !(isPlainObject(candidate.settings) && typeof candidate.settings.sound === 'boolean')) return false;
     if (candidate.currentUnitId !== null && unitIds.indexOf(candidate.currentUnitId) === -1) return false;
     return true;
+  }
+
+  // Older v1 saves lack settings and testBest. Fill them in on the object in hand.
+  function fillDefaults(save) {
+    if (!has(save, 'settings')) save.settings = { sound: true };
+    Object.keys(save.progress).forEach(function (id) {
+      if (!has(save.progress[id], 'testBest')) save.progress[id].testBest = null;
+    });
+    return save;
   }
 
   function serialize(save) {
@@ -73,7 +87,7 @@
       return { ok: false, raw: raw };
     }
     if (!isValidSave(parsed)) return { ok: false, raw: raw };
-    return { ok: true, save: parsed };
+    return { ok: true, save: fillDefaults(parsed) };
   }
 
   // A failed write leaves the previous stored value in place.
@@ -93,13 +107,14 @@
   // Adds or replaces a unit and makes it current.
   // Replacing keeps completed lessons and review entries whose ids still exist in the new unit.
   function addUnit(save, unit) {
-    var kept = { completedLessons: [], review: [] };
+    var kept = { completedLessons: [], review: [], testBest: null };
     var old = hasUnit(save, unit.id) ? save.progress[unit.id] : null;
     if (old) {
       var lessonIds = AQ.units.lessonIds(unit);
       var questionIds = AQ.units.questionIds(unit);
       kept.completedLessons = old.completedLessons.filter(function (id) { return lessonIds.indexOf(id) !== -1; });
       kept.review = old.review.filter(function (id) { return questionIds.indexOf(id) !== -1; });
+      kept.testBest = has(old, 'testBest') ? old.testBest : null;
     }
     save.units[unit.id] = unit;
     save.progress[unit.id] = kept;
@@ -133,7 +148,7 @@
       return { kind: 'error', messages: result.errors.slice(0, MAX_IMPORT_ERRORS) };
     }
     if (has(parsed, 'version') && has(parsed, 'xp')) {
-      return isValidSave(parsed) ? { kind: 'backup', save: parsed } : badFile;
+      return isValidSave(parsed) ? { kind: 'backup', save: fillDefaults(parsed) } : badFile;
     }
     return badFile;
   }

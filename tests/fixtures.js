@@ -18,7 +18,8 @@ function makeSave(unit) {
   return {
     version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: unit.id,
     units: { [unit.id]: unit },
-    progress: { [unit.id]: { completedLessons: [], review: [] } }
+    progress: { [unit.id]: { completedLessons: [], review: [], testBest: null } },
+    settings: { sound: true }
   };
 }
 

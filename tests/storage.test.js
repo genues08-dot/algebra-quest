@@ -14,7 +14,7 @@ function fakeLs(initial) {
 test('load: empty storage gives a new save', () => {
   assert.equal(storage.KEY, KEY);
   assert.deepEqual(storage.load(fakeLs()), { ok: true, save: {
-    version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: null, units: {}, progress: {}
+    version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: null, units: {}, progress: {}, settings: { sound: true }
   } });
 });
 
@@ -62,9 +62,9 @@ test('addUnit: a new unit becomes current with empty progress', () => {
 test('addUnit: replacing keeps progress only for ids that still exist', () => {
   const save = makeSave(makeUnit());
   save.xp = 70;
-  save.progress.u1 = { completedLessons: ['a1', 'old-lesson'], review: ['q2', 'old-question'] };
+  save.progress.u1 = { completedLessons: ['a1', 'old-lesson'], review: ['q2', 'old-question'], testBest: 85 };
   storage.addUnit(save, makeUnit());
-  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'] });
+  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'], testBest: 85 });
   assert.equal(save.xp, 70);
 });
 
@@ -102,6 +102,35 @@ test('parseImportText', () => {
   const all = units.validate(messy).errors;
   assert.equal(all.length, 7);
   assert.deepEqual(storage.parseImportText(JSON.stringify(messy)), { kind: 'error', messages: all.slice(0, 5) });
+});
+
+test('load: a v1 save is valid and gets the new fields', () => {
+  const old = makeSave(makeUnit());
+  delete old.settings;
+  delete old.progress.u1.testBest;
+  const raw = JSON.stringify(old);
+  const ls = fakeLs({ [KEY]: raw });
+  const loaded = storage.load(ls);
+  assert.equal(loaded.ok, true);
+  assert.deepEqual(loaded.save.settings, { sound: true });
+  assert.equal(loaded.save.progress.u1.testBest, null);
+  assert.equal(ls.data[KEY], raw);
+});
+
+test('isValidSave checks testBest and settings', () => {
+  const withBest = value => { const save = makeSave(makeUnit()); save.progress.u1.testBest = value; return save; };
+  const withSettings = value => { const save = makeSave(makeUnit()); save.settings = value; return save; };
+  for (const good of [withBest(0), withBest(100), withBest(null), withSettings({ sound: false })]) assert.equal(storage.isValidSave(good), true);
+  for (const bad of [withBest(101), withBest(-1), withBest(2.5), withBest('x'), withSettings([]), withSettings({ sound: 'yes' }), withSettings({})]) {
+    assert.equal(storage.isValidSave(bad), false);
+  }
+});
+
+test('a backup with the new fields restores', () => {
+  const save = makeSave(makeUnit());
+  save.settings.sound = false;
+  save.progress.u1.testBest = 90;
+  assert.deepEqual(storage.parseImportText(storage.serialize(save)), { kind: 'backup', save });
 });
 
 test('backupFilename', () => {
