@@ -2,54 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const storage = require('../js/storage.js');
 const { makeUnit, makeSave } = require('./fixtures.js');
+const { makeEnv } = require('./fake-page.js');
 
 const KEY = 'algebraQuest.v1';
-
-// A minimal stand-in for the page: just enough for ui.js to mount, draw, and receive events.
-// `stored` is the text already in storage. `failWrites` makes every write fail, like full storage.
-function makeEnv(stored, options = {}) {
-  const data = {};
-  if (stored !== undefined) data[KEY] = stored;
-  const ls = {
-    data,
-    getItem: key => (key in data ? data[key] : null),
-    setItem(key, value) {
-      if (options.failWrites) throw new Error('QuotaExceededError');
-      data[key] = String(value);
-    }
-  };
-
-  const handlers = {};
-  const answerBox = { value: '', focus() {}, setSelectionRange() {} };
-  const rootEl = {
-    innerHTML: '',
-    addEventListener: (type, handler) => { handlers[type] = handler; },
-    querySelector: selector => {
-      const wantsAnswerBox = selector.includes('data-role="answer"');
-      return wantsAnswerBox && rootEl.innerHTML.includes('data-role="answer"') ? answerBox : null;
-    }
-  };
-  const fileInput = { addEventListener() {}, click() {}, files: [], value: '' };
-  globalThis.document = { getElementById: () => fileInput, addEventListener() {} };
-  globalThis.scrollTo = () => {};
-  globalThis.confirm = () => true;
-
-  // ui.js keeps its state in the module, so each test loads a fresh copy.
-  delete require.cache[require.resolve('../js/ui.js')];
-  const ui = require('../js/ui.js');
-  ui.mount(rootEl, ls);
-
-  const click = (action, attributes = {}) => handlers.click({
-    target: {
-      closest: () => ({
-        disabled: false,
-        tagName: 'BUTTON',
-        getAttribute: name => (name === 'data-action' ? action : attributes[name])
-      })
-    }
-  });
-  return { ls, answerBox, click, html: () => rootEl.innerHTML };
-}
 
 test('a lesson can be played from start to finish', () => {
   const env = makeEnv(storage.serialize(makeSave(makeUnit())));

@@ -5,16 +5,20 @@
   if (typeof module !== 'undefined' && module.exports) {
     require('./storage.js');
     require('./views.js');
+    require('./calc.js');
   }
 
   var views = AQ.views;
   var storage = AQ.storage;
   var game = AQ.game;
+  var calc = AQ.calc;
 
   var RAW_SAVE_FILENAME = 'algebra-quest-raw-save.txt';
   var OK_ACTION = [{ action: 'home', label: 'OK' }];
+  var ANSWER_BOX = '[data-role="answer"]';
+  var CALC_BOX = '[data-role="calc-input"]';
 
-  // screen is 'home', 'message', 'broken', 'lesson', 'feedback', 'complete', or 'failed'.
+  // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', or 'failed'.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
     screen: 'home',
@@ -22,11 +26,15 @@
     message: null,
     rawSave: null,
     session: null,       // the running lesson or review session
+    teach: null,         // { index, fromNotes } while the teaching cards show
     order: null,         // display order of the current choice question's choices
     selected: null,      // the picked choice, as its index in the unit file
     typedText: '',       // what is in the answer box
     hintVisible: false,
-    lastResult: null     // { correct, question } from the answer just checked
+    lastResult: null,    // { correct, question } from the answer just checked
+    // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
+    // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
+    calc: { open: false, text: '', result: null, error: null, window: calc.DEFAULT_WINDOW, graphText: null }
   };
   var rootEl = null;
   var ls = null;
@@ -57,8 +65,32 @@
     return state.save.units[state.save.currentUnitId];
   }
 
+  // The teaching cards of the running lesson. Review sessions have none.
+  function lessonCards() {
+    var session = state.session;
+    if (!session || session.kind !== 'lesson') return [];
+    var found = AQ.units.findLesson(currentUnit(), session.lessonId);
+    return found && found.lesson.teach ? found.lesson.teach : [];
+  }
+
+  function teachModel() {
+    var cards = lessonCards();
+    var card = cards[state.teach.index];
+    return {
+      index: state.teach.index,
+      total: cards.length,
+      fromNotes: state.teach.fromNotes,
+      title: card.title,
+      text: card.text,
+      example: card.example,
+      graph: card.graph
+    };
+  }
+
   function lessonModel(question, locked) {
     var session = state.session;
+    var calculatorAllowed = question.calculator !== false;
+    var panel = state.calc;
     return {
       done: session.total - session.queue.length,
       total: session.total,
@@ -73,7 +105,12 @@
       hint: question.hint,
       hintVisible: state.hintVisible,
       locked: locked,
-      answerText: state.typedText
+      answerText: state.typedText,
+      graph: question.graph || null,
+      hasNotes: lessonCards().length > 0,
+      calculatorAllowed: calculatorAllowed,
+      calculatorPanel: panel.open && calculatorAllowed ?
+        { text: panel.text, result: panel.result, error: panel.error } : null
     };
   }
 
@@ -92,6 +129,8 @@
         return views.messageHtml(state.message);
       case 'broken':
         return views.messageHtml(BROKEN_MESSAGE);
+      case 'teach':
+        return views.teachHtml(teachModel());
       case 'lesson':
         return views.lessonHtml(lessonModel(game.currentQuestion(currentUnit(), session), false));
       case 'feedback':
@@ -106,12 +145,16 @@
     }
   }
 
-  // Puts the keyboard where the next key press belongs.
-  function placeFocus() {
-    var selector = null;
-    if (state.screen === 'feedback') selector = '[data-action="continue"]';
-    else if (state.screen === 'lesson' && state.selected !== null) selector = '[data-index="' + state.selected + '"]';
-    else if (state.screen === 'lesson') selector = '[data-role="answer"]';
+  function focusSelector() {
+    if (state.screen === 'feedback') return '[data-action="continue"]';
+    if (state.screen === 'lesson' && state.selected !== null) return '[data-index="' + state.selected + '"]';
+    if (state.screen === 'lesson') return ANSWER_BOX;
+    return null;
+  }
+
+  // Puts the keyboard where the next key press belongs. `selector`, when given, picks the element.
+  function placeFocus(selector) {
+    selector = selector || focusSelector();
     var element = selector ? rootEl.querySelector(selector) : null;
     if (!element) return;
     element.focus();
@@ -119,10 +162,10 @@
     if (element.setSelectionRange) element.setSelectionRange(element.value.length, element.value.length);
   }
 
-  // Redraws the current screen in place.
-  function render() {
+  // Redraws the current screen in place. `focus` is an optional selector for placeFocus.
+  function render(focus) {
     rootEl.innerHTML = screenHtml();
-    placeFocus();
+    placeFocus(focus);
   }
 
   // Switches to a screen and starts it at the top of the window.
@@ -243,10 +286,16 @@
 
   // ----- Lesson flow -----
 
-  function readTypedText() {
-    var input = rootEl.querySelector('[data-role="answer"]');
-    if (input) state.typedText = input.value;
-    return state.typedText;
+  // Copies the answer box and the calculator box into the state, so a redraw keeps what was typed.
+  // The click and Enter key handlers call this before acting. It is not done during a redraw:
+  // the feedback screen still shows the old answer in a disabled box, which must not carry into
+  // the next question.
+  function readBoxes() {
+    if (state.screen !== 'lesson') return;
+    var answer = rootEl.querySelector(ANSWER_BOX);
+    if (answer) state.typedText = answer.value;
+    var calcInput = rootEl.querySelector(CALC_BOX);
+    if (calcInput) state.calc.text = calcInput.value;
   }
 
   function showQuestion() {
@@ -260,17 +309,34 @@
   }
 
   // `session` is null when the lesson id is unknown or the review pile is empty.
+  // A lesson with teaching cards opens on its first card.
   function beginSession(session) {
     if (!session) return;
     state.session = session;
-    showQuestion();
+    state.teach = null;
+    if (lessonCards().length > 0) openCards(false);
+    else showQuestion();
+  }
+
+  // `fromNotes` is true when the cards were opened from a question with the Notes button.
+  function openCards(fromNotes) {
+    state.teach = { index: 0, fromNotes: fromNotes };
+    show('teach');
+  }
+
+  // Leaving the cards from Notes goes back to the same question with nothing changed.
+  function leaveCards() {
+    var fromNotes = state.teach.fromNotes;
+    state.teach = null;
+    if (fromNotes) show('lesson');
+    else showQuestion();
   }
 
   function checkAnswer() {
     if (state.screen !== 'lesson') return;
     var unit = currentUnit();
     var question = game.currentQuestion(unit, state.session);
-    var response = question.type === 'choice' ? state.selected : readTypedText();
+    var response = question.type === 'choice' ? state.selected : state.typedText;
     var result = game.submitAnswer(state.save, unit, state.session, response, today());
     if (!result) return;
     state.lastResult = result;
@@ -285,6 +351,40 @@
     if (state.session.status === 'complete') show('complete');
     else if (state.session.status === 'failed') show('failed');
     else showQuestion();
+  }
+
+  // ----- Calculator -----
+  // After each calculator action the keyboard goes back to the calculator box, so the next
+  // Enter runs the calculator again instead of checking the answer.
+
+  function calculatorShowing() {
+    if (state.screen !== 'lesson' || !state.calc.open) return false;
+    return game.currentQuestion(currentUnit(), state.session).calculator !== false;
+  }
+
+  // An error keeps the last result on show. Any other result replaces it.
+  function runCalculator() {
+    if (!calculatorShowing()) return;
+    var panel = state.calc;
+    var result = calc.run(panel.text, panel.window);
+    if (result.kind === 'error') {
+      panel.error = result.message;
+    } else {
+      panel.result = result;
+      panel.error = null;
+      panel.graphText = result.kind === 'graph' ? panel.text : null;
+    }
+    render(CALC_BOX);
+  }
+
+  // Sets the graph window and draws the last graph again in it. An error stays on show,
+  // because it is about the text in the box, which zooming does not change.
+  function setCalculatorWindow(nextWindow) {
+    if (!calculatorShowing()) return;
+    var panel = state.calc;
+    panel.window = nextWindow;
+    if (panel.graphText !== null) panel.result = calc.run(panel.graphText, panel.window);
+    render(CALC_BOX);
   }
 
   // ----- Actions: one entry per data-action name -----
@@ -305,12 +405,51 @@
       render();
     },
     'hint': function () {
-      readTypedText();
       state.hintVisible = true;
       render();
     },
     'check': checkAnswer,
     'continue': continueLesson,
+    'teach-next': function () {
+      if (state.screen !== 'teach') return;
+      if (state.teach.index < lessonCards().length - 1) {
+        state.teach.index++;
+        show('teach');
+      } else {
+        leaveCards();
+      }
+    },
+    'teach-back': function () {
+      if (state.screen !== 'teach' || state.teach.index === 0) return;
+      state.teach.index--;
+      show('teach');
+    },
+    'teach-skip': function () {
+      if (state.screen === 'teach') leaveCards();
+    },
+    'notes': function () {
+      if (state.screen === 'lesson' && lessonCards().length > 0) openCards(true);
+    },
+    'calc-open': function () {
+      if (state.screen !== 'lesson') return;
+      state.calc.open = true;
+      render(CALC_BOX);
+    },
+    'calc-close': function () {
+      if (!calculatorShowing()) return;
+      state.calc.open = false;
+      render();
+    },
+    'calc-run': runCalculator,
+    'calc-zoom-in': function () {
+      setCalculatorWindow(calc.zoom(state.calc.window, 0.5));
+    },
+    'calc-zoom-out': function () {
+      setCalculatorWindow(calc.zoom(state.calc.window, 2));
+    },
+    'calc-reset': function () {
+      setCalculatorWindow(calc.DEFAULT_WINDOW);
+    },
     'quit': function () {
       if (root.confirm('Quit this lesson? XP you earned stays.')) showHome();
     },
@@ -352,7 +491,9 @@
     var target = event.target.closest('[data-action]');
     if (!target || target.disabled || target.tagName === 'SELECT') return;
     var handler = actions[target.getAttribute('data-action')];
-    if (handler) handler(target);
+    if (!handler) return;
+    readBoxes();
+    handler(target);
   }
 
   function onChange(event) {
@@ -363,13 +504,18 @@
     if (commit(next)) showHome();
   }
 
-  // Enter checks a typed answer, and Enter on the feedback panel continues.
+  // Enter checks a typed answer, Enter in the calculator box runs the calculator (and never checks
+  // the answer), and Enter on the feedback panel continues.
   // preventDefault stops the same key press from also clicking the button that gets focus next,
   // and a held-down key (event.repeat) is ignored so it cannot skip through questions.
   function onKeyDown(event) {
     if (event.key !== 'Enter') return;
-    var inAnswerBox = event.target.getAttribute && event.target.getAttribute('data-role') === 'answer';
-    if (state.screen === 'lesson' && inAnswerBox) {
+    readBoxes();
+    var role = event.target.getAttribute ? event.target.getAttribute('data-role') : null;
+    if (state.screen === 'lesson' && role === 'calc-input') {
+      event.preventDefault();
+      if (!event.repeat) runCalculator();
+    } else if (state.screen === 'lesson' && role === 'answer') {
       event.preventDefault();
       if (!event.repeat) checkAnswer();
     } else if (state.screen === 'feedback') {
