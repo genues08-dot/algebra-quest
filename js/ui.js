@@ -4,8 +4,10 @@
   var AQ = root.AQ = root.AQ || {};
   if (typeof module !== 'undefined' && module.exports) {
     require('./storage.js');
+    require('./game.js');
     require('./views.js');
     require('./calc.js');
+    require('./sound.js');
   }
 
   var views = AQ.views;
@@ -18,14 +20,15 @@
   var ANSWER_BOX = '[data-role="answer"]';
   var CALC_BOX = '[data-role="calc-input"]';
 
-  // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', or 'failed'.
+  // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
+  // or 'test-result'. A final test question shows on the 'lesson' screen, drawn in test mode.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
     screen: 'home',
     save: null,
     message: null,
     rawSave: null,
-    session: null,       // the running lesson or review session
+    session: null,       // the running lesson, review, or final test session
     teach: null,         // { index, fromNotes } while the teaching cards show
     order: null,         // display order of the current choice question's choices
     selected: null,      // the picked choice, as its index in the unit file
@@ -65,6 +68,16 @@
     return state.save.units[state.save.currentUnitId];
   }
 
+  function inTest() {
+    return state.session !== null && state.session.kind === 'test';
+  }
+
+  // AQ.sound is looked up at each call, so a replacement made after mount (as the tests do) is used.
+  // sound.js plays nothing when the setting is off.
+  function playSound(name) {
+    AQ.sound.play(name, state.save.settings.sound);
+  }
+
   // The teaching cards of the running lesson. Review sessions have none.
   function lessonCards() {
     var session = state.session;
@@ -92,6 +105,7 @@
     var calculatorAllowed = question.calculator !== false;
     var panel = state.calc;
     return {
+      mode: session.kind === 'test' ? 'test' : 'lesson',
       done: session.total - session.queue.length,
       total: session.total,
       hearts: session.hearts,
@@ -140,6 +154,13 @@
         return views.completeHtml({ xpEarned: session.xpEarned, accuracy: game.accuracy(session), perfect: session.perfect });
       case 'failed':
         return views.failedHtml({ missed: missedList() });
+      case 'test-result':
+        return views.testResultHtml({
+          score: game.testScore(session),
+          passed: game.testPassed(session),
+          xpEarned: session.xpEarned,
+          missed: missedList()
+        });
       default:
         return views.homeHtml(views.homeModel(state.save));
     }
@@ -308,8 +329,8 @@
     show('lesson');
   }
 
-  // `session` is null when the lesson id is unknown or the review pile is empty.
-  // A lesson with teaching cards opens on its first card.
+  // `session` is null when the lesson id is unknown, the review pile is empty, or the test is locked.
+  // A lesson with teaching cards opens on its first card. Reviews and tests have no cards.
   function beginSession(session) {
     if (!session) return;
     state.session = session;
@@ -332,25 +353,64 @@
     else showQuestion();
   }
 
+  // In a test there is no feedback: the answer is saved and the test moves on at once.
   function checkAnswer() {
     if (state.screen !== 'lesson') return;
     var unit = currentUnit();
     var question = game.currentQuestion(unit, state.session);
     var response = question.type === 'choice' ? state.selected : state.typedText;
     var result = game.submitAnswer(state.save, unit, state.session, response, today());
-    if (!result) return;
+    if (!result || !commit(state.save)) return;
+    if (inTest()) {
+      afterTestAnswer();
+      return;
+    }
     state.lastResult = result;
-    if (!commit(state.save)) return;
     state.screen = 'feedback';
     render();
+    playSound(result.correct ? 'correct' : 'wrong');
   }
 
   function continueLesson() {
     if (state.screen !== 'feedback') return;
-    game.continueSession(state.session);
-    if (state.session.status === 'complete') show('complete');
-    else if (state.session.status === 'failed') show('failed');
-    else showQuestion();
+    var session = state.session;
+    game.continueSession(session);
+    if (session.status === 'complete') {
+      show('complete');
+      playSound(session.perfect ? 'perfect' : 'complete');
+    } else if (session.status === 'failed') {
+      show('failed');
+      playSound('failed');
+    } else {
+      showQuestion();
+    }
+  }
+
+  // ----- Final test -----
+  // Right and wrong are never shown or played during a test: they would give the answer away.
+
+  // Returns null when the unit has no test or a level is still incomplete.
+  function newTestSession(unit) {
+    if (!unit || !game.isTestUnlocked(unit, state.save.progress[unit.id])) return null;
+    return game.startTest(unit);
+  }
+
+  // Called once a test answer or skip is saved.
+  function afterTestAnswer() {
+    var session = state.session;
+    playSound('submit');
+    if (session.status !== 'complete') {
+      showQuestion();
+      return;
+    }
+    show('test-result');
+    playSound(game.testPassed(session) ? 'testPass' : 'testFail');
+  }
+
+  function skipQuestion() {
+    if (state.screen !== 'lesson' || !inTest()) return;
+    var result = game.skipQuestion(state.save, currentUnit(), state.session, today());
+    if (result && commit(state.save)) afterTestAnswer();
   }
 
   // ----- Calculator -----
@@ -400,15 +460,21 @@
       var unit = currentUnit();
       beginSession(game.startReview(unit, state.save.progress[unit.id]));
     },
+    'start-test': function () {
+      beginSession(newTestSession(currentUnit()));
+    },
     'choose': function (target) {
       state.selected = Number(target.getAttribute('data-index'));
       render();
+      playSound('select');
     },
     'hint': function () {
+      if (inTest()) return;
       state.hintVisible = true;
       render();
     },
     'check': checkAnswer,
+    'skip': skipQuestion,
     'continue': continueLesson,
     'teach-next': function () {
       if (state.screen !== 'teach') return;
@@ -450,17 +516,29 @@
     'calc-reset': function () {
       setCalculatorWindow(calc.DEFAULT_WINDOW);
     },
+    // Quitting a test saves no score, but XP from its right answers stays.
     'quit': function () {
-      if (root.confirm('Quit this lesson? XP you earned stays.')) showHome();
+      var question = inTest() ? 'Quit the test? You will have to start it again.' :
+        'Quit this lesson? XP you earned stays.';
+      if (root.confirm(question)) showHome();
     },
+    // Retry on the out-of-hearts screen, and Retake on the test result screen.
     'retry': function () {
       var unit = currentUnit();
       var previous = state.session;
-      var next = previous.kind === 'lesson' ?
-        game.startLesson(unit, previous.lessonId) :
-        game.startReview(unit, state.save.progress[unit.id]);
+      var next;
+      if (previous.kind === 'lesson') next = game.startLesson(unit, previous.lessonId);
+      else if (previous.kind === 'test') next = newTestSession(unit);
+      else next = game.startReview(unit, state.save.progress[unit.id]);
       if (next) beginSession(next);
       else showHome();
+    },
+    // Redraws home in place, keeping the window's scroll position and the keyboard on the button.
+    'toggle-sound': function () {
+      if (state.screen !== 'home') return;
+      var next = copyOfSave();
+      next.settings.sound = !next.settings.sound;
+      if (commit(next)) render('[data-action="toggle-sound"]');
     },
     'import': function () {
       fileInput.click();
@@ -504,8 +582,8 @@
     if (commit(next)) showHome();
   }
 
-  // Enter checks a typed answer, Enter in the calculator box runs the calculator (and never checks
-  // the answer), and Enter on the feedback panel continues.
+  // Enter checks a typed answer (in a test it submits it), Enter in the calculator box runs the
+  // calculator (and never checks the answer), and Enter on the feedback panel continues.
   // preventDefault stops the same key press from also clicking the button that gets focus next,
   // and a held-down key (event.repeat) is ignored so it cannot skip through questions.
   function onKeyDown(event) {
