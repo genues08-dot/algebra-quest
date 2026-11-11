@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Algebra Quest</title>
+<h1>Algebra Quest</h1>
+<p id="probe"></p>
+<script>
+  var n = Number(localStorage.getItem('algebraQuest.probe') || 0) + 1;
+  localStorage.setItem('algebraQuest.probe', String(n));
+  document.getElementById('probe').textContent = 'Opened ' + n + ' times';
+</script>
