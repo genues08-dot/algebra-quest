@@ -50,7 +50,7 @@
     crown: '<path d="M14 64 L10 22 L32 40 L50 12 L68 40 L90 22 L86 64 Z" fill="#F2C94C" stroke="#C9A227" stroke-width="3"/>' +
       '<circle cx="50" cy="48" r="6" fill="#D63E8A"/><circle cx="29" cy="52" r="4" fill="#2F80ED"/><circle cx="71" cy="52" r="4" fill="#2E9E4F"/>'
   };
-  var HAT_SCALE = 0.72;   // hat width as a share of the head's width
+  var HAT_SCALE = 0.9;    // hat width as a share of the head's width
   var HAT_SINK = 0.06;    // how far the hat sits down onto the head, as a share of the picture
 
   function hatSvg(id) {

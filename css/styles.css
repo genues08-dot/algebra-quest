@@ -517,7 +517,7 @@ button:disabled { cursor: not-allowed; }
   font-size: 12px;
   font-weight: 800;
 }
-.tab-icon { display: grid; place-items: center; height: 30px; font-size: 25px; line-height: 1; }
+.tab-icon { position: relative; display: grid; place-items: center; height: 30px; font-size: 25px; line-height: 1; }
 .tab-axl { width: 32px; height: 32px; object-fit: contain; }
 .tab-active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 
@@ -684,6 +684,7 @@ button:disabled { cursor: not-allowed; }
 /* ----- Feedback panel ----- */
 
 .feedback {
+  position: relative;
   margin-top: 24px;
   padding: 18px;
   border-radius: var(--radius);
@@ -903,9 +904,9 @@ button:disabled { cursor: not-allowed; }
 
 /* Home: a gentle bob. A tap bounces it, and the cheer pose bounces once when it appears. */
 .mascot-big { margin: 10px 0 6px; }
-.mascot-big .mascot-button .mascot-img { animation: mascot-bob 3s ease-in-out infinite; }
-.mascot.mascot-bounce .mascot-button .mascot-img,
-.mascot-cheer .mascot-img { animation: mascot-bounce 0.6s ease-out 1; }
+.mascot-big .mascot-button { animation: mascot-bob 3s ease-in-out infinite; }
+.mascot.mascot-bounce .mascot-button,
+.mascot-cheer > .mascot-img, .mascot-cheer > .axl-wrap { animation: mascot-bounce 0.6s ease-out 1; }
 
 .feedback .mascot, .teach .mascot { margin-bottom: 12px; }
 .result .mascot { justify-content: center; max-width: 420px; margin: 0 auto 18px; text-align: left; }
@@ -945,5 +946,177 @@ button:disabled { cursor: not-allowed; }
 .mascot-name { flex: 1; min-width: 0; font-size: 18px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .mascot-img { animation: none !important; }
+  .mascot-img, .mascot-button, .axl-wrap { animation: none !important; }
+  .confetti, .xp-pop { display: none; }
+  .speed-fill { animation: none; }
 }
+
+/* ----- Rewards: gems, chests, hats, quests, shop, practice modes ----- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.stat-gems { color: #1C8FD6; }
+.stat-freeze { margin-left: -2px; color: #3BA7E0; font-size: 14px; }
+.day-frozen .day-dot { display: grid; place-items: center; background: #CDEBFA; color: #2C8BC9; font-size: 12px; }
+:root[data-theme="dark"] .day-frozen .day-dot { background: #1D3A4D; color: #8FD3FF; }
+
+.tab-dot {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--card);
+  border-radius: 50%;
+  background: var(--wrong);
+}
+
+/* The axolotl picture with a hat on it. */
+.axl-wrap { position: relative; display: inline-block; flex: none; line-height: 0; }
+.axl-hat { position: absolute; pointer-events: none; }
+.axl-hat svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mascot-choice .axl-wrap { width: 100%; max-width: 110px; }
+.mascot-choice .axl-wrap .mascot-choice-img { width: 100%; }
+
+/* Chests on the path. */
+.node.node-chest { border: 3px solid var(--line); background: var(--card); box-shadow: 0 6px 0 var(--line-dark); }
+.chest-svg { width: 62%; height: auto; }
+.node-chest.chest-ready { border-color: var(--gold); background: #FFF6DA; animation: node-glow 1.8s ease-in-out infinite; }
+:root[data-theme="dark"] .node-chest.chest-ready { background: #3A3218; }
+.node-chest.chest-locked .chest-svg { filter: grayscale(1); opacity: 0.55; }
+.node-chest.chest-open { opacity: 0.7; }
+.node-chest:disabled { background: var(--card); }
+
+.reward-chest { width: 130px; margin: 0 auto 6px; }
+.reward-chest .chest-svg { width: 100%; }
+.reward-gems { margin-bottom: 14px; font-size: 40px; font-weight: 800; color: #1C8FD6; }
+
+/* Confetti: falls once over the screen. */
+.confetti { position: fixed; inset: 0; z-index: 50; overflow: hidden; pointer-events: none; }
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 9px;
+  height: 15px;
+  border-radius: 2px;
+  animation: confetti-fall 2.2s ease-in forwards;
+}
+@keyframes confetti-fall {
+  0% { top: -20px; opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 105%; opacity: 0; margin-left: 40px; }
+}
+
+/* Feedback: combo and the floating XP. */
+.combo { margin: 6px 0 12px; font-size: 18px; font-weight: 800; color: var(--streak-text); }
+.xp-pop {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--correct-text);
+  animation: xp-float 1.2s ease-out forwards;
+}
+@keyframes xp-float {
+  0% { transform: translateY(8px); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
+
+/* Speed Round. */
+.speed-bar { flex: 1; height: 16px; overflow: hidden; border-radius: 8px; background: var(--line); }
+.speed-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--wrong), var(--gold), var(--correct));
+  animation: speed-drain linear forwards;
+}
+@keyframes speed-drain {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+.speed-count { flex: none; font-size: 18px; font-weight: 800; }
+
+/* Quests. */
+.quests-head { padding: 18px; border-radius: 22px; background: var(--accent); color: #FFFFFF; box-shadow: 0 5px 0 var(--accent-dark); }
+.quests-head .screen-title { color: #FFFFFF; }
+.quest-note {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--correct-soft);
+  color: var(--correct-text);
+  font-weight: 800;
+  text-align: center;
+}
+.quest-card { padding: 16px; border: 2px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 4px 0 var(--line); }
+.quest-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.quest-card-head h2 { font-size: 19px; font-weight: 800; }
+.quest-timer { font-size: 14px; font-weight: 700; color: var(--muted); }
+.quest-list { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.quest { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 2px solid var(--line); border-radius: 16px; }
+.quest-ready { border-color: var(--accent); background: var(--accent-soft); }
+.quest-text { flex: 1; min-width: 0; }
+.quest-title { font-weight: 700; }
+.quest-count { font-size: 13px; color: var(--muted); }
+.quest-reward { flex: none; font-weight: 800; color: var(--muted); }
+.quest-done { flex: none; font-weight: 800; color: var(--correct-text); }
+.qbar { height: 12px; margin-top: 6px; overflow: hidden; border-radius: 6px; background: var(--line); }
+.qbar-fill { height: 100%; border-radius: 6px; background: var(--gold); }
+.qbar-this .qbar-fill { background: var(--accent); }
+.qbar-last .qbar-fill { background: var(--muted); }
+
+.week-slots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.week-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.slot-icon { font-size: 18px; line-height: 1.2; }
+.slot-day { color: var(--muted); }
+.slot-claimed { border-color: var(--correct); background: var(--correct-soft); color: var(--correct-text); }
+.slot-ready { border-color: var(--accent); background: var(--accent-soft); animation: node-glow 1.8s ease-in-out infinite; }
+.slot-waiting { border-style: dashed; border-color: var(--accent); }
+.slot-later { opacity: 0.55; }
+
+.challenge-line { margin-bottom: 8px; font-weight: 700; }
+.challenge-row { display: grid; grid-template-columns: 82px 1fr 48px; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+.challenge-row .qbar { margin-top: 0; }
+.challenge-row span:last-child { text-align: right; }
+
+/* Shop. */
+.shop-gems { font-size: 22px; font-weight: 800; color: #1C8FD6; }
+.shop-preview { display: flex; justify-content: center; padding: 10px; border-radius: 22px; background: var(--accent-soft); }
+.shop-axl { width: 140px; height: auto; }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 4px 0 var(--line);
+}
+.shop-worn { border-color: var(--accent); background: var(--accent-soft); }
+.shop-hat { width: 72px; }
+.shop-hat svg { display: block; width: 100%; height: auto; }
+.shop-name { font-weight: 800; }
+.shop-item .btn { width: 100%; }
+.profile-shop { margin-top: 6px; }
