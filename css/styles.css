@@ -1125,4 +1125,4 @@ button:disabled { cursor: not-allowed; }
 .shop-hat svg { display: block; width: 100%; height: auto; }
 .shop-name { font-weight: 800; }
 .shop-item .btn { width: 100%; }
-.profile-shop { margin-top: 6px; }
+.profile-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }

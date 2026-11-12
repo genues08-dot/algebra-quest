@@ -10,6 +10,7 @@
     require('./sound.js');
     require('./mascot.js');
     require('./rewards.js');
+    require('./online.js');
   }
 
   var views = AQ.views;
@@ -24,7 +25,7 @@
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
   // 'test-result', 'calculator', 'badges', 'mascot', 'practice', 'profile', 'more', 'guide', 'quests',
-  // 'shop', 'reward', or 'speed-result'. TAB_SCREENS have the tab bar. 'guide' shows a level's
+  // 'shop', 'reward', 'speed-result', or 'leaderboard' (online app only). TAB_SCREENS have the tab bar. 'guide' shows a level's
   // teaching cards from its banner. 'reward' shows gems from an opened chest. A final test question shows on the 'lesson' screen,
   // drawn in test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
@@ -50,6 +51,8 @@
     reward: null,        // { title, gems } while the reward screen shows
     note: null,          // a short message on the Quests or Shop screen after a claim or a buy
     speedTimer: null,    // the timer that ends a running Speed Round
+    // The leaderboard (online app). rows are the players' rows as the server gave them.
+    board: { mode: 'week', status: 'loading', rows: [] },
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -74,7 +77,13 @@
       ranText: null
     }
   };
-  var TAB_SCREENS = ['home', 'quests', 'practice', 'badges', 'profile', 'more', 'shop'];
+  var TAB_SCREENS = ['home', 'quests', 'practice', 'badges', 'profile', 'more', 'shop', 'leaderboard'];
+  // The online app's account and leaderboard, from mount's options. Null in the offline app.
+  // { uid, name, leaderboard() -> Promise of rows, logOut(), deleteAccount() -> Promise that
+  // rejects with a message }.
+  var online = null;
+  // Counts leaderboard loads, so only the newest one's answer is drawn.
+  var boardRequest = 0;
   var rootEl = null;
   var ls = null;
   var fileInput = null;
@@ -252,6 +261,24 @@
     return model;
   }
 
+  function boardModel() {
+    var model = views.homeModel(state.save, today());
+    var board = state.board;
+    var ranked = [];
+    if (board.status === 'ready') {
+      var mine = AQ.online.playerRow(state.save, online.name, today());
+      ranked = AQ.online.rankRows(AQ.online.withMyRow(board.rows, online.uid, mine), board.mode, today(), online.uid);
+    }
+    model.board = { mode: board.mode, status: board.status, rows: ranked, line: AQ.online.boardLine(ranked, board.mode) };
+    return model;
+  }
+
+  function moreModel() {
+    var model = views.homeModel(state.save, today());
+    model.account = online === null ? null : { name: online.name };
+    return model;
+  }
+
   function homeHtml() {
     var model = views.homeModel(state.save, today());
     if (state.mascotTap !== null) {
@@ -330,7 +357,9 @@
       case 'profile':
         return views.profileHtml(views.homeModel(state.save, today()));
       case 'more':
-        return views.moreHtml(views.homeModel(state.save, today()));
+        return views.moreHtml(moreModel());
+      case 'leaderboard':
+        return views.leaderboardHtml(boardModel());
       case 'guide':
         return views.teachHtml(guideModel());
       default:
@@ -860,6 +889,31 @@
     'open-badges': function () {
       if (onTabScreen()) show('badges');
     },
+    'open-leaderboard': function () {
+      if (online === null || !onTabScreen()) return;
+      show('leaderboard');
+      loadBoard();
+    },
+    'board-mode': function (target) {
+      var mode = target.getAttribute('data-mode');
+      if (state.screen !== 'leaderboard' || (mode !== 'week' && mode !== 'all')) return;
+      state.board.mode = mode;
+      render();
+    },
+    'board-retry': function () {
+      if (state.screen === 'leaderboard') loadBoard();
+    },
+    'log-out': function () {
+      if (online === null || state.screen !== 'more') return;
+      if (root.confirm('Log out of Algebra Quest on this device?')) online.logOut();
+    },
+    'delete-account': function () {
+      if (online === null || state.screen !== 'more') return;
+      if (!root.confirm('Delete your account, your progress, and your leaderboard spot? This cannot be undone.')) return;
+      online.deleteAccount().then(null, function (message) {
+        showMessage('Your account was not deleted', [String(message)]);
+      });
+    },
     'open-practice': function () {
       if (onTabScreen()) show('practice');
     },
@@ -1200,11 +1254,31 @@
     }
   }
 
+  // Loads the players' rows and draws the leaderboard when they arrive.
+  function loadBoard() {
+    var request = ++boardRequest;
+    state.board.status = 'loading';
+    render();
+    online.leaderboard().then(function (rows) {
+      if (request !== boardRequest) return;
+      state.board.rows = rows;
+      state.board.status = 'ready';
+      if (state.screen === 'leaderboard') render();
+    }, function () {
+      if (request !== boardRequest) return;
+      state.board.status = 'error';
+      if (state.screen === 'leaderboard') render();
+    });
+  }
+
   // ----- Startup -----
 
-  function mount(rootElement, storageObject) {
+  // options.online, when given, turns on the online app's Leaders tab and Account section.
+  function mount(rootElement, storageObject, options) {
     rootEl = rootElement;
     ls = storageObject;
+    online = options && options.online ? options.online : null;
+    views.useLeadersTab(online !== null);
     fileInput = document.getElementById('import-file');
     rootEl.addEventListener('click', onClick);
     rootEl.addEventListener('change', onChange);

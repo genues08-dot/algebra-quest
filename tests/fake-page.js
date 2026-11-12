@@ -2,6 +2,7 @@
 // `stored` is the text already in storage.
 // Options: `failWrites` makes every write fail, like full storage.
 // `confirm` is the answer every confirm() dialog gives (default true).
+// `online` is passed to mount as the online app's account and leaderboard.
 const KEY = 'algebraQuest.v1';
 const UNESCAPES = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" };
 
@@ -81,7 +82,7 @@ function makeEnv(stored, options = {}) {
   // ui.js keeps its state in the module, so each test loads a fresh copy.
   delete require.cache[require.resolve('../js/ui.js')];
   const ui = require('../js/ui.js');
-  ui.mount(rootEl, ls);
+  ui.mount(rootEl, ls, options.online ? { online: options.online } : undefined);
 
   // `detail` is the click count, as on a real click: 2 is the second click of a double-click.
   const click = (action, attributes = {}, detail = 1) => handlers.click({

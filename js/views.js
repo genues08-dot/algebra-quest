@@ -463,11 +463,19 @@
     { id: 'profile', action: 'open-profile', label: 'Profile', icon: null },
     { id: 'more', action: 'open-more', label: 'More', icon: '&#8943;' }
   ];
+  // In the online app, the Leaders tab takes the Badges tab's place. Badges open from Profile.
+  var LEADERS_TAB = { id: 'leaderboard', action: 'open-leaderboard', label: 'Leaders', icon: '&#127942;' };
+  var leadersTab = false;
+
+  function useLeadersTab(on) {
+    leadersTab = Boolean(on);
+  }
 
   // The bar pinned to the bottom of the main screens. The Profile tab shows the player's axolotl.
   // dot: how many rewards wait on the Quests tab (a red dot shows when it is more than 0).
   function tabBarHtml(active, mascotColor, dot) {
-    return '<nav class="tabbar" aria-label="Main">' + TABS.map(function (tab) {
+    var tabs = leadersTab ? TABS.map(function (tab) { return tab.id === 'badges' ? LEADERS_TAB : tab; }) : TABS;
+    return '<nav class="tabbar" aria-label="Main">' + tabs.map(function (tab) {
       var on = tab.id === active;
       var waiting = tab.id === 'quests' && dot > 0;
       var icon = tab.icon ||
@@ -555,7 +563,10 @@
         '<div class="profile-who">' +
           '<h1 class="screen-title">' + escapeHtml(model.mascot.name) + '</h1>' +
           '<button type="button" class="btn btn-quiet" data-action="open-mascot">Change color or name</button>' +
-          '<button type="button" class="btn btn-primary profile-shop" data-action="open-shop">&#128142; Shop</button>' +
+          '<div class="profile-buttons">' +
+            '<button type="button" class="btn btn-primary" data-action="open-shop">&#128142; Shop</button>' +
+            '<button type="button" class="btn" data-action="open-badges">&#127941; Badges</button>' +
+          '</div>' +
         '</div>' +
       '</header>' +
       '<section class="profile-card">' +
@@ -687,7 +698,55 @@
         moreRowHtml('toggle-theme', '&#127769;', 'Dark mode: ' + (model.darkOn ? 'on' : 'off')) +
         (model.currentUnitId !== null ? moreRowHtml('remove-unit', '&#128465;', 'Remove this unit') : '') +
       '</div>' +
+      (model.account ? accountHtml(model.account) : '') +
     '</section>' + tabBarHtml('more', model.mascot.color, model.claimable);
+  }
+
+  // The Account section on More, in the online app. account: { name }.
+  function accountHtml(account) {
+    return '<h2 class="mascot-heading">Account</h2>' +
+      '<p class="account-who">Logged in as <strong>' + escapeHtml(account.name) + '</strong></p>' +
+      '<div class="more-list">' +
+        moreRowHtml('log-out', '&#128682;', 'Log out') +
+        moreRowHtml('delete-account', '&#9888;&#65039;', 'Delete my account') +
+      '</div>';
+  }
+
+  // ----- Leaderboard screen (online app) -----
+
+  function boardTabHtml(mode, label, current) {
+    var on = mode === current;
+    return '<button type="button" class="board-tab' + (on ? ' board-tab-on' : '') + '" data-action="board-mode" data-mode="' + mode + '"' +
+      ' aria-pressed="' + on + '">' + label + '</button>';
+  }
+
+  function boardRowHtml(row) {
+    return '<li class="board-row' + (row.me ? ' board-me' : '') + '">' +
+      '<span class="board-rank">' + (row.medal || row.rank) + '</span>' +
+      axlImgHtml(row.color, 'happy', row.hat, 'board-axl', '') +
+      '<span class="board-name">' + escapeHtml(row.name) + (row.me ? ' <span class="board-you">(you)</span>' : '') + '</span>' +
+      '<span class="board-xp">' + row.xp + ' XP</span>' +
+    '</li>';
+  }
+
+  // model: homeModel plus board: { mode ('week' or 'all'), status ('loading', 'ready', or
+  // 'error'), rows (ranked, from AQ.online.rankRows), line (what Axl says) }.
+  function leaderboardHtml(model) {
+    var board = model.board;
+    var body;
+    if (board.status === 'loading') {
+      body = '<p class="board-note">Loading&hellip;</p>';
+    } else if (board.status === 'error') {
+      body = '<p class="board-note">The leaderboard could not load. Check your internet connection.</p>' +
+        '<button type="button" class="btn btn-primary" data-action="board-retry">Try again</button>';
+    } else {
+      body = mascotHtml(Object.assign({}, model.mascot, { mood: 'cheer', line: board.line })) +
+        '<ol class="board-list">' + board.rows.map(boardRowHtml).join('') + '</ol>';
+    }
+    return '<section class="tab-screen leaderboard">' + screenHeadHtml('Leaderboard') +
+      '<div class="board-tabs">' + boardTabHtml('week', 'This week', board.mode) + boardTabHtml('all', 'All time', board.mode) + '</div>' +
+      body +
+    '</section>' + tabBarHtml('leaderboard', model.mascot.color, model.claimable);
   }
 
   // ----- Badges screen -----
@@ -1240,6 +1299,8 @@
     hatSvg: hatSvg,
     profileHtml: profileHtml,
     moreHtml: moreHtml,
+    leaderboardHtml: leaderboardHtml,
+    useLeadersTab: useLeadersTab,
     tabBarHtml: tabBarHtml,
     mascotHtml: mascotHtml,
     mascotScreenHtml: mascotScreenHtml,
