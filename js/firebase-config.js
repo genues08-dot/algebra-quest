@@ -8,3 +8,7 @@ window.AQ_FIREBASE_CONFIG = {
   messagingSenderId: '796009946632',
   appId: '1:796009946632:web:fa3940cefbe7858fe2fbbd'
 };
+
+// Usernames log in as "<username>@" this domain. firestore.rules checks the same domain, so the
+// two must always match. It never changes, even if the project gets a custom domain.
+window.AQ_LOGIN_DOMAIN = 'algebra-quest1.firebaseapp.com';

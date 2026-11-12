@@ -17,7 +17,7 @@ It comes in two versions:
    - **PC:** in Edge, click the app icon at the right end of the address bar, or the menu, then **Apps**, then **Install Algebra Quest**.
 4. Send your friends the link. Everyone who makes an account shows on the leaderboard.
 
-- **Your progress** is saved to your account, so you get the same streak, gems, and axolotl on every device. Each device also keeps a copy, so the app opens offline after the first visit and syncs when it is back online. Use one device at a time: if two devices both change your progress while offline, the one changed last wins.
+- **Your progress** is saved to your account, so you get the same streak, gems, and axolotl on every device. Each device also keeps a copy, so the app opens offline after the first visit and syncs when it is back online. If two devices both change your progress while offline, the first one back online keeps its play, and the other one reloads with that progress, dropping its own offline play.
 - **Leaderboard:** the **Leaders** tab ranks everyone by XP. **This week** starts over every Monday. **All time** counts all your XP. Your row is highlighted. On the online app, **Badges** open from your **Profile**.
 - **Account:** **More** shows who is logged in, with **Log out** and **Delete my account**. Deleting removes your progress, your leaderboard spot, and your login for good. If it asks you to log in again first, log out, log back in, and delete within a few minutes.
 - **Forgot your password?** It can't be reset by email, because there is no email. Ask the owner (see below).
@@ -27,7 +27,7 @@ It comes in two versions:
 
 The website is this folder, served by GitHub Pages from the `main` branch of `genues08-dot/algebra-quest`. Accounts, saves, and the leaderboard live in the Firebase project `algebra-quest1`.
 
-- **Reset a friend's password:** Firebase can't set a password for someone. Instead, open https://console.firebase.google.com/project/algebra-quest1/authentication/users, find their login (it shows as `username@algebra-quest1.firebaseapp.com`), and delete it from its ⋮ menu. Then they tap **Create account** with the same username and a new password. Their progress and leaderboard spot come back, because both are stored under the username.
+- **Reset a friend's password:** Firebase can't set a password for someone. Instead, open https://console.firebase.google.com/project/algebra-quest1/authentication/users, find their login (it shows as `username@algebra-quest1.firebaseapp.com`), and delete it from its ⋮ menu. Then they tap **Create account** with the same username and a new password. Their progress and leaderboard spot come back, because both are stored under the username. Do this when they are ready to sign up right away: whoever signs up with that name first gets the progress.
 - **Remove a player from the leaderboard:** in the Firebase console, open **Firestore Database**, then `players`, and delete their row. Delete their login under **Authentication** too, or the row comes back when they play.
 - **Database rules:** `firestore.rules` holds them. After changing the file, paste it into the console under **Firestore Database**, then **Rules**, then click **Publish**.
 - **Publish a change:** commit it to `main` and push. GitHub Pages updates the site within a few minutes, and players get it the next time they open the app online.

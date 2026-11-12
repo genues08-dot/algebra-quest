@@ -24,6 +24,7 @@ var FILES = [
   'js/views.js',
   'js/ui.js',
   'js/online.js',
+  'js/cloud-sync.js',
   'js/phone-units.js',
   'js/firebase-config.js',
   'js/cloud.js',
@@ -31,6 +32,7 @@ var FILES = [
   'img/icon-180.png',
   'img/icon-192.png',
   'img/icon-512.png',
+  'img/icon-maskable-512.png',
   'img/axl/pink-happy.png',
   'img/axl/pink-cheer.png',
   'img/axl/pink-encourage.png',
@@ -62,22 +64,51 @@ self.addEventListener('activate', function (event) {
   }));
 });
 
+function fromCache(request) {
+  return caches.match(request, { ignoreSearch: true }).then(function (cached) {
+    return cached || (request.mode === 'navigate' ? caches.match('index.html') : undefined);
+  });
+}
+
+// The network's answer, which also refreshes the cache. If it takes longer than NETWORK_WAIT_MS
+// (a weak signal) and the cache has the file, the cached copy is used; the network's answer still
+// refreshes the cache for next time. 'no-cache' asks the server whether the file changed, so the
+// browser's own cache can't mix files from two versions after an update.
+var NETWORK_WAIT_MS = 3000;
+function networkFirst(request) {
+  var network = fetch(request, { cache: 'no-cache' }).then(function (response) {
+    if (response.ok) {
+      var copy = response.clone();
+      caches.open(CACHE).then(function (cache) { cache.put(request, copy); });
+    }
+    return response;
+  });
+  return new Promise(function (resolve) {
+    var answered = false;
+    function answer(response) {
+      if (answered) return;
+      answered = true;
+      resolve(response);
+    }
+    var timer = setTimeout(function () {
+      fromCache(request).then(function (cached) { if (cached) answer(cached); });
+    }, NETWORK_WAIT_MS);
+    network.then(function (response) {
+      clearTimeout(timer);
+      answer(response);
+    }, function () {
+      clearTimeout(timer);
+      fromCache(request).then(function (cached) { answer(cached || Response.error()); });
+    });
+  });
+}
+
 self.addEventListener('fetch', function (event) {
   var request = event.request;
   if (request.method !== 'GET') return;
   var url = new URL(request.url);
   if (url.origin === self.location.origin) {
-    event.respondWith(fetch(request).then(function (response) {
-      if (response.ok) {
-        var copy = response.clone();
-        caches.open(CACHE).then(function (cache) { cache.put(request, copy); });
-      }
-      return response;
-    }).catch(function () {
-      return caches.match(request, { ignoreSearch: true }).then(function (cached) {
-        return cached || (request.mode === 'navigate' ? caches.match('index.html') : Response.error());
-      });
-    }));
+    event.respondWith(networkFirst(request));
   } else if (request.url.indexOf(FIREBASE) === 0) {
     event.respondWith(caches.match(request).then(function (cached) {
       return cached || fetch(request);

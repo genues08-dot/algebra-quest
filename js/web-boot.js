@@ -1,10 +1,8 @@
 // Startup for the online app (index.html). It replaces main.js:
-// - The login screen comes first. After login the app (ui.js) runs unchanged on a storage
-//   object made here.
-// - The save is kept in the cloud (AQ.cloud), with a copy on this device for offline play.
-//   Each account has its own device copy, so friends can share a phone.
+// - The login screen comes first. After login the app (ui.js) runs unchanged on the storage
+//   object from js/cloud-sync.js, which keeps the save in the cloud with a copy on this device
+//   and keeps the player's leaderboard row up to date.
 // - Everything is kept under the account's key, its username in lowercase (see cloud.js).
-// - The player's leaderboard row is updated from the save as it changes.
 (function (root) {
   'use strict';
   var AQ = root.AQ;
@@ -12,12 +10,9 @@
   var cloud = AQ.cloud;
   var KEY = AQ.storage.KEY;
   var BUNDLED = root.AQ_PHONE_UNITS || [];
-  var LOCAL_PREFIX = 'algebraQuest.web.';
-  var WAIT_MS = 10000;        // longest wait for the cloud save at start
-  var FIRST_ROW_MS = 3000;    // the first leaderboard write waits this long after the first save
-  var ROW_EVERY_MS = 15000;   // later leaderboard writes are at least this far apart
-  var CHECK_AGAIN_MS = 15000; // wait before checking the cloud again after it could not be reached
-  var IDLE_WAIT_MS = 4000;    // longest wait for the last save to reach the cloud before logging out
+  var WAIT_MS = 10000;       // longest wait for the cloud save at start
+  var IDLE_WAIT_MS = 4000;   // longest wait for the last save to reach the cloud before logging out
+  var DELETE_WAIT_MS = 20000;
 
   var app = document.getElementById('app');
   var toastEl = document.getElementById('app-toast');
@@ -39,23 +34,19 @@
     return AQ.game.localDateString(new Date());
   }
 
-  // ----- This device's copy of each account's save: { save, savedAt } -----
-
-  function readLocal(key) {
+  // localStorage, or a stand-in kept in memory when the browser blocks it.
+  function deviceStorage() {
     try {
-      var doc = JSON.parse(root.localStorage.getItem(LOCAL_PREFIX + key));
-      return doc && typeof doc.save === 'string' ? doc : null;
+      root.localStorage.getItem('x');
+      return root.localStorage;
     } catch (e) {
-      return null;
+      var data = {};
+      return {
+        getItem: function (key) { return Object.prototype.hasOwnProperty.call(data, key) ? data[key] : null; },
+        setItem: function (key, value) { data[key] = String(value); },
+        removeItem: function (key) { delete data[key]; }
+      };
     }
-  }
-
-  function writeLocal(key, doc) {
-    try { root.localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(doc)); } catch (e) { /* the cloud still has it */ }
-  }
-
-  function removeLocal(key) {
-    try { root.localStorage.removeItem(LOCAL_PREFIX + key); } catch (e) { /* nothing to remove */ }
   }
 
   // ----- Screens before the app: a problem, and the login form -----
@@ -138,189 +129,83 @@
     }
   }
 
-  // ----- The cloud save -----
+  // ----- The app -----
 
-  var account = null;   // { key, name } once logged in
-  var opened = false;   // openApp has run
-  var mounted = false;  // the app is drawing the page
-  var closing = false;  // logging out or deleting: nothing more is sent
-  var memory = {};
-  var writing = false;  // a save is on its way to the cloud
-  var queued = null;    // the newest save not yet sent: { save, savedAt }
-  var lastSent = null;  // the save text the cloud has
-  var warned = false;
-  // When the app started from this device's copy without reaching the cloud, the cloud may hold
-  // newer progress from another device. Nothing is sent until that is checked.
-  var verified = false;
-  var startedAt = null; // savedAt of the copy the app started from, for that check
-
-  function pump() {
-    if (closing || writing || queued === null) return;
-    if (!verified) {
-      checkCloud();
-      return;
-    }
-    var doc = queued;
-    queued = null;
-    if (doc.save === lastSent) return;
-    writing = true;
-    var again = false;
-    cloud.writeSave(account.key, doc).then(function () {
-      lastSent = doc.save;
-    }, function (error) {
-      var code = (error && error.code) || 'error';
-      // A brief outage: send it again soon, unless a newer save is waiting.
-      if ((code === 'unavailable' || code === 'deadline-exceeded') && queued === null) {
-        queued = doc;
-        again = true;
-      }
-      if (!warned) {
-        warned = true;
-        toast('Your progress could not be saved online (' + code + '). It is saved on this device and will be sent again.', 8000);
-      }
-    }).then(function () {
-      writing = false;
-      if (again) setTimeout(pump, 5000);
-      else pump();
-    });
-  }
-
-  var checking = false;
-  function checkCloud() {
-    if (checking) return;
-    checking = true;
-    cloud.loadSave(account.key).then(function (doc) {
-      checking = false;
-      // The cloud changed after the copy this visit started from: another device played since.
-      // Its progress is kept, and this visit's offline play is dropped.
-      if (online.newerSave({ save: 'x', savedAt: startedAt }, doc) === 'cloud' && doc.savedAt !== startedAt) {
-        closing = true;
-        writeLocal(account.key, doc);
-        root.alert('Newer progress from another device was found online. The app will reload with it.');
-        reload();
-        return;
-      }
-      verified = true;
-      lastSent = doc ? doc.save : null;
-      pump();
-    }, function () {
-      checking = false;
-      setTimeout(pump, CHECK_AGAIN_MS);
-    });
-  }
-
-  // Resolves once nothing is waiting to be sent, or after IDLE_WAIT_MS.
-  function whenIdle() {
-    var waited = 0;
-    return new Promise(function (resolve) {
-      (function check() {
-        if ((!writing && queued === null) || waited >= IDLE_WAIT_MS) return resolve();
-        waited += 100;
-        setTimeout(check, 100);
-      })();
-    });
-  }
-
-  // The storage object the app uses in place of localStorage.
-  var store = {
-    getItem: function (key) { return Object.prototype.hasOwnProperty.call(memory, key) ? memory[key] : null; },
-    setItem: function (key, value) {
-      memory[key] = String(value);
-      if (key !== KEY || closing) return;
-      var doc = { save: online.packSave(memory[key], BUNDLED), savedAt: new Date().toISOString() };
-      writeLocal(account.key, doc);
-      queued = doc;
-      pump();
-      scheduleRow();
-    },
-    removeItem: function (key) { delete memory[key]; }
-  };
-
-  // ----- The leaderboard row -----
-
-  var rowTimer = null;
-  var lastRow = null;
-  var lastRowAt = 0;
-
-  function scheduleRow() {
-    if (rowTimer !== null || closing) return;
-    var wait = lastRowAt === 0 ? FIRST_ROW_MS : Math.max(0, ROW_EVERY_MS - (Date.now() - lastRowAt));
-    rowTimer = setTimeout(writeRow, wait);
-  }
-
-  function writeRow() {
-    if (rowTimer !== null) clearTimeout(rowTimer);
-    rowTimer = null;
-    if (closing) return;
-    var save = null;
-    try { save = JSON.parse(memory[KEY]); } catch (e) { return; }
-    if (!save) return;
-    var row = online.playerRow(save, account.name, today());
-    if (online.sameRow(row, lastRow)) return;
-    lastRow = row;
-    lastRowAt = Date.now();
-    cloud.writePlayer(account.key, row).then(null, function () { lastRow = null; });
-  }
-
-  // Send a waiting row now, when the player leaves the app.
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'hidden' && rowTimer !== null) writeRow();
-  });
-
-  // ----- Account actions the app calls -----
+  var account = null;  // { uid, key, name } once logged in
+  var sync = null;     // from AQ.cloudSync.create
+  var opened = false;  // openApp has run
+  var mounted = false; // the app is drawing the page
+  var deleting = null; // the account delete under way
 
   function logOut() {
-    if (rowTimer !== null) writeRow();
-    return whenIdle().then(function () {
-      closing = true;
+    sync.flushRow();
+    return sync.whenIdle(IDLE_WAIT_MS).then(function () {
+      sync.close();
       return cloud.logOut();
     }).then(reload, reload);
   }
 
-  function deleteAccount() {
-    closing = true;
-    if (rowTimer !== null) clearTimeout(rowTimer);
-    rowTimer = null;
-    return whenIdle().then(function () {
-      return cloud.deleteAccount(account.key);
-    }).then(function () {
-      removeLocal(account.key);
-      reload();
-    }, function (message) {
-      closing = false;
-      throw message;
+  // Rejects after ms with a message, unless work settles first.
+  function withTimeout(work, ms, message) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(message); }, ms);
+      work.then(function (value) { clearTimeout(timer); resolve(value); }, function (error) { clearTimeout(timer); reject(error); });
     });
   }
 
-  // ----- Starting the app -----
+  function deleteAccount() {
+    if (deleting) return deleting;
+    toast('Deleting your account…', DELETE_WAIT_MS);
+    deleting = sync.whenIdle(IDLE_WAIT_MS).then(function () {
+      sync.close();
+      return withTimeout(cloud.deleteAccount(account.key), DELETE_WAIT_MS, 'No internet connection. Try again when you are online.');
+    }).then(function () {
+      sync.forgetDevice();
+      reload();
+    }, function (message) {
+      deleting = null;
+      toastEl.hidden = true;
+      sync.reopen();
+      throw message;
+    });
+    return deleting;
+  }
 
   function openApp(found) {
     if (opened || !found) return;
     opened = true;
     account = found;
     app.innerHTML = '<p class="boot-note">Loading your progress&hellip;</p>';
-    var local = readLocal(account.key);
-    var done = false;
+    sync = AQ.cloudSync.create({
+      cloud: cloud,
+      account: account,
+      bundled: BUNDLED,
+      device: deviceStorage(),
+      prefix: cloud.devicePrefix || 'algebraQuest.web.',
+      today: today,
+      onConflict: function () {
+        root.alert('Newer progress from another device was found online. The app will reload with it.');
+        reload();
+      },
+      onWarn: function (message) { toast(message, 8000); },
+      firstRowMs: 3000,
+      rowEveryMs: 15000,
+      retryMs: 10000
+    });
 
+    var done = false;
     function finish(cloudDoc, reached) {
       if (done) return;
       done = true;
       clearTimeout(timer);
-      if (reached) {
-        verified = true;
-        lastSent = cloudDoc ? cloudDoc.save : null;
-        var pick = online.newerSave(local, cloudDoc);
-        start(pick === 'local' ? local : (pick === 'cloud' ? cloudDoc : null), null);
-      } else if (local) {
-        startedAt = local.savedAt;
-        start(local, 'Your online progress could not be reached, so this visit saves on this device. It syncs when you are back online.');
-      } else {
-        // Starting fresh here could replace real progress in the cloud, so wait for it instead.
+      var how = sync.start(cloudDoc, reached);
+      if (how === 'wait') {
         opened = false;
         showProblem("Can't reach your progress", 'Check your internet connection and try again.');
+        return;
       }
+      start(reached ? null : 'Your online progress could not be reached, so this visit saves on this device. It syncs when you are back online.');
     }
-
     var timer = setTimeout(function () { finish(null, false); }, WAIT_MS);
     cloud.loadSave(account.key).then(function (doc) {
       finish(doc && typeof doc.save === 'string' ? doc : null, true);
@@ -329,11 +214,10 @@
     });
   }
 
-  function start(doc, note) {
-    if (doc) memory[KEY] = online.unpackSave(doc.save, BUNDLED);
+  function start(note) {
     app.innerHTML = '';
     mounted = true;
-    AQ.ui.mount(app, store, {
+    AQ.ui.mount(app, sync.store, {
       online: {
         uid: account.key,
         name: account.name,
@@ -344,7 +228,7 @@
     });
     // The bundled units are added to a new save, so nothing has to be imported.
     var saved = null;
-    try { saved = JSON.parse(store.getItem(KEY)); } catch (e) { saved = null; }
+    try { saved = JSON.parse(sync.store.getItem(KEY)); } catch (e) { saved = null; }
     if (saved && saved.units) {
       BUNDLED.forEach(function (unit) {
         if (!saved.units[unit.id]) AQ.ui.importText(JSON.stringify(unit));
@@ -352,6 +236,11 @@
     }
     if (note) toast(note, 8000);
   }
+
+  // Send a waiting leaderboard row when the player leaves the app.
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden' && sync) sync.flushRow();
+  });
 
   app.addEventListener('submit', onLoginSubmit);
   app.addEventListener('click', onLoginClick);

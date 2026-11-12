@@ -3,11 +3,18 @@
 // under "fakeCloud.v1", so it lasts across reloads. Every call waits a moment, like a network.
 // To make every save and leaderboard call fail, run localStorage.setItem('fakeCloud.down', '1')
 // in the console (it lasts across reloads), or set window.FAKE_CLOUD_DOWN = true.
+// It refuses to run anywhere but this PC (localhost), so nobody types a real password into it
+// on the published site, and its device copies use their own prefix, apart from the real app's.
 (function (root) {
   'use strict';
   var AQ = root.AQ = root.AQ || {};
   var STORE = 'fakeCloud.v1';
   var DELAY_MS = 300;
+
+  if (['localhost', '127.0.0.1'].indexOf(root.location.hostname) === -1) {
+    AQ.cloud = { ready: false };
+    return;
+  }
 
   function load() {
     try {
@@ -56,11 +63,12 @@
 
   function accountOf(data, key) {
     var user = data.users[key];
-    return user ? { key: key, name: user.name } : null;
+    return user ? { uid: user.uid, key: key, name: user.name } : null;
   }
 
   AQ.cloud = {
     ready: true,
+    devicePrefix: 'fakeCloud.copy.',
     onAccount: function (callback) {
       listeners.push(callback);
       later(function (data) { callback(data.session ? accountOf(data, data.session) : null); });
@@ -69,7 +77,7 @@
       return later(function (data) {
         var key = name.trim().toLowerCase();
         if (data.users[key]) fail('auth/email-already-in-use');
-        data.users[key] = { name: name.trim(), password: password };
+        data.users[key] = { uid: 'fake-' + Math.random().toString(36).slice(2, 10), name: name.trim(), password: password };
         data.session = key;
         keep(data);
         var account = accountOf(data, key);
@@ -105,7 +113,10 @@
     writeSave: function (key, doc) {
       return later(function (data) {
         down();
-        data.saves[key] = { save: doc.save, savedAt: doc.savedAt };
+        // Like the database rules: a save must grow from the one in the cloud.
+        var current = data.saves[key];
+        if (current && doc.base !== current.rev) fail('permission-denied');
+        data.saves[key] = { save: doc.save, rev: doc.rev, base: doc.base };
         keep(data);
       });
     },

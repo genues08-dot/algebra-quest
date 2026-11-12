@@ -124,15 +124,17 @@ test('Axl says the viewer place', () => {
   assert.equal(online.boardLine([], 'all'), 'Earn XP to get on the board!');
 });
 
-test('the newer save wins; on a tie, the cloud', () => {
-  const at = time => ({ save: '{}', savedAt: time });
-  assert.equal(online.newerSave(at('2026-11-12T10:00:00Z'), at('2026-11-12T09:00:00Z')), 'local');
-  assert.equal(online.newerSave(at('2026-11-12T08:00:00Z'), at('2026-11-12T09:00:00Z')), 'cloud');
-  assert.equal(online.newerSave(at('2026-11-12T09:00:00Z'), at('2026-11-12T09:00:00Z')), 'cloud');
-  assert.equal(online.newerSave(null, at('x')), 'cloud');
-  assert.equal(online.newerSave(at('x'), null), 'local');
-  assert.equal(online.newerSave(null, { save: '' }), null);
-  assert.equal(online.newerSave(at('bad date'), at('2026-11-12T09:00:00Z')), 'cloud');
+test('the device copy wins only with unsent changes grown from the cloud as it is now', () => {
+  const cloud = { save: '{"c":1}', rev: 'B' };
+  const device = (base, dirty) => ({ save: '{"d":1}', base, dirty });
+  assert.equal(online.chooseStart(device('B', true), cloud), 'local');
+  assert.equal(online.chooseStart(device('B', false), cloud), 'cloud');
+  assert.equal(online.chooseStart(device('A', true), cloud), 'cloud'); // another device saved B since
+  assert.equal(online.chooseStart(device(null, true), cloud), 'cloud');
+  assert.equal(online.chooseStart(null, cloud), 'cloud');
+  assert.equal(online.chooseStart(device('A', false), null), 'local');
+  assert.equal(online.chooseStart(null, null), null);
+  assert.equal(online.chooseStart({ save: '' }, { save: '' }), null);
 });
 
 test('bundled units are packed to a marker and unpacked to the newest copy', () => {

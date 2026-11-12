@@ -164,21 +164,18 @@
 
   // ----- Saves -----
 
-  function savedTime(doc) {
-    var time = doc && typeof doc.savedAt === 'string' ? Date.parse(doc.savedAt) : NaN;
-    return isFinite(time) ? time : 0;
-  }
-
   function usable(doc) {
     return Boolean(doc) && typeof doc.save === 'string' && doc.save !== '';
   }
 
   // Which copy to start from: 'local' (this device), 'cloud', or null when neither has a save.
-  // Each is { save, savedAt } or null. The newer wins; on a tie, the cloud.
-  function newerSave(local, cloud) {
-    if (!usable(local)) return usable(cloud) ? 'cloud' : null;
-    if (!usable(cloud)) return 'local';
-    return savedTime(local) > savedTime(cloud) ? 'local' : 'cloud';
+  // local is this device's copy, { save, base, dirty }: base is the cloud revision it grew from,
+  // and dirty is true when it has changes the cloud never got. cloud is { save, rev } or null.
+  // The device's copy wins only when it has such changes and grew from the cloud's revision as
+  // it is now. Clocks are never compared, so a device with a wrong clock can't win.
+  function chooseStart(local, cloud) {
+    if (!usable(cloud)) return usable(local) ? 'local' : null;
+    return usable(local) && local.dirty === true && local.base === cloud.rev ? 'local' : 'cloud';
   }
 
   // Bundled units are stored as the marker "bundled", so a saved document stays small and always
@@ -229,7 +226,7 @@
     withMyRow: withMyRow,
     rankRows: rankRows,
     boardLine: boardLine,
-    newerSave: newerSave,
+    chooseStart: chooseStart,
     packSave: packSave,
     unpackSave: unpackSave
   };

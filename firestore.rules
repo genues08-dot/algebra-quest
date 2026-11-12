@@ -3,8 +3,8 @@ rules_version = '2';
 // Algebra Quest's database rules. Paste this file into the Firebase console:
 // Firestore Database, then Rules, then Publish.
 //
-// Both are named by the username in lowercase, so a player who signs up again with the same
-// username (after the owner deletes a login with a forgotten password) gets them back.
+// Both kinds of document are named by the username in lowercase, so a player who signs up again
+// with the same username (after the owner deletes a login with a forgotten password) gets them back.
 // - saves/{name}: a player's progress. Only that player can read or change it.
 // - players/{name}: a player's leaderboard row. Every logged-in player can read it; only its
 //   owner can change it.
@@ -12,16 +12,20 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // The app logs in username "axl_fan" as "axl_fan@algebra-quest1.firebaseapp.com". The whole
-    // address is checked, so a login made some other way (such as "axl_fan@gmail.com") owns nothing.
+    // The app logs in username "axl_fan" as "axl_fan@algebra-quest1.firebaseapp.com" (the domain
+    // is AQ_LOGIN_DOMAIN in js/firebase-config.js). The whole address is checked, so a login made
+    // some other way (such as "axl_fan@gmail.com") owns nothing.
     function isOwner(name) {
-      return request.auth != null && request.auth.token.email == name + '@algebra-quest1.firebaseapp.com';
+      return request.auth != null && name.matches('[a-z0-9_]{3,15}') &&
+        request.auth.token.email == name + '@algebra-quest1.firebaseapp.com';
     }
 
+    // rev names this save; base names the save it grew from (null for the first one).
     function validSave(data) {
-      return data.keys().hasOnly(['save', 'savedAt']) &&
-        data.save is string && data.save.size() < 900000 &&
-        data.savedAt is string && data.savedAt.size() < 40;
+      return data.keys().hasOnly(['save', 'rev', 'base']) &&
+        data.save is string && data.save.size() < 1000000 &&
+        data.rev is string && data.rev.size() <= 40 &&
+        (data.base == null || (data.base is string && data.base.size() <= 40));
     }
 
     function validXp(value) {
@@ -41,13 +45,20 @@ service cloud.firestore {
 
     match /saves/{name} {
       allow read, delete: if isOwner(name);
-      allow create, update: if isOwner(name) && validSave(request.resource.data);
+      allow create: if isOwner(name) && validSave(request.resource.data);
+      // Only a save that grew from the one now in the cloud. A device holding older progress
+      // (opened offline, or left open while another device played) can't write over newer progress.
+      allow update: if isOwner(name) && validSave(request.resource.data) &&
+        request.resource.data.base == resource.data.rev;
     }
 
     match /players/{name} {
       allow read: if request.auth != null;
       allow delete: if isOwner(name);
-      allow create, update: if isOwner(name) && validRow(request.resource.data, name);
+      allow create: if isOwner(name) && validRow(request.resource.data, name);
+      // At most one change every 5 seconds.
+      allow update: if isOwner(name) && validRow(request.resource.data, name) &&
+        request.time > resource.data.updated + duration.value(5, 's');
     }
   }
 }
