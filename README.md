@@ -27,10 +27,13 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 
 ## How it works
 
-- **Levels and lessons:** each unit is a path of levels. Finish every lesson in a level to unlock the next one. You can replay any finished lesson.
-- **XP and rank:** each correct answer is 10 XP. Finishing a lesson adds 20, and a lesson with no mistakes adds 10 more. Every 100 XP raises your rank.
+- **Levels and lessons:** each unit is a winding path of lesson circles, grouped by level. Finish every lesson in a level to unlock the next one. You can replay any finished lesson. The glowing circle marked **Start** is your next lesson, and the trophy at the end is the final test.
+- **Continue:** the big **Continue** button starts your next lesson. When every lesson is done, it starts the final test, and after you pass, it starts a review of the questions you missed.
+- **XP and rank:** each correct answer is 10 XP. Finishing a lesson adds 20, and a lesson with no mistakes adds 10 more. Every 100 XP raises your rank. Ranks have titles, from Rookie (ranks 1–2) up to Algebra Legend (rank 30 and up). When a lesson raises your rank, its result screen says so.
+- **Daily goal:** the ring at the top fills with the XP you earn today. The goal starts at 100 XP, about one lesson. Tap **Goal** to change it to 50, 100, 200, or 300 XP.
 - **Hearts:** each lesson starts with 5. A wrong answer costs 1 and shows you the worked solution. At 0 the lesson ends and you can retry it.
-- **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets.
+- **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets. The seven dots next to it show the last seven days. A filled dot is a day you finished a lesson, review, or test, and the ringed dot is today.
+- **Badges:** there are 12 to earn, such as finishing a lesson with no mistakes or keeping a 7-day streak. New ones show on the result screen. Tap **Badges** at the bottom of the home screen to see them all and how to earn the rest.
 - **Review:** every question you miss goes into the Review pile. Answer it right in a Review lesson and it leaves the pile.
 - **Typing answers:** `x = 4`, `x=4`, `4 = x`, and `4` all count. Fractions, decimals, and mixed numbers with the same value all count, so `5/2`, `2.5`, and `2 1/2` match. For two answers, type them in any order, such as `3, -3` or `x = 3 or x = -3`. Type `<=` and `>=` for ≤ and ≥.
 - **Teaching cards:** each lesson opens on a few short cards that teach the idea with a worked example. Tap **Notes** during a lesson to read them again. You come back to the same question.
@@ -42,6 +45,7 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
   - **Graphs:** type anything with `x` in it and it draws a graph, with the zeros and turning points marked. Zoom in, zoom out, or reset the view.
 - **Final test:** after you finish every lesson in a unit, the final test unlocks. It has no hints and no feedback while you answer. You need 80% to pass. Passing gives +50 XP. Your best score is kept, and you can retake it. Every question you miss goes into the Review pile.
 - **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the home screen to turn them off. The final test plays no right or wrong sounds.
+- **Dark mode:** the **Dark mode: on / off** button at the bottom of the home screen switches to a dark theme. The app remembers your choice.
 - **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
 
 ## Back up and restore
