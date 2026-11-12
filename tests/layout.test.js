@@ -25,7 +25,7 @@ test('the tab bar marks the screen it is on', () => {
     badges: views.badgesHtml(views.badgesModel(makeSave(makeRichUnit())))
   };
   for (const [name, html] of Object.entries(screens)) {
-    assert.equal((html.match(/class="tab( tab-active)?"/g) || []).length, 5, name);
+    assert.equal((html.match(/class="tab( tab-active)?"/g) || []).length, 6, name);
     assert.equal(count(html, 'tab-active'), 1, name);
     assert.match(html, new RegExp('class="tab tab-active" data-action="' + (name === 'home' ? 'home' : 'open-' + name) + '" aria-current="page"'), name);
   }

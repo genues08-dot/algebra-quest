@@ -5,6 +5,7 @@
   var AQ = root.AQ = root.AQ || {};
   if (typeof module !== 'undefined' && module.exports) {
     require('./game.js');
+    require('./rewards.js');
     require('./mascot.js');
     require('./mathexpr.js');
     require('./plot.js');
@@ -19,11 +20,61 @@
 
   // ----- Mascot -----
 
+  // Where each pose's head is, as fractions of its picture: x is the head's centre, y its top,
+  // w its width. Measured by eye on the 12 pictures.
+  var HEADS = {
+    happy: { x: 0.52, y: 0.13, w: 0.46 },
+    encourage: { x: 0.52, y: 0.13, w: 0.46 },
+    think: { x: 0.55, y: 0.13, w: 0.44 },
+    cheer: { x: 0.5, y: 0.15, w: 0.44 },
+    'pink-cheer': { x: 0.55, y: 0.14, w: 0.44 }
+  };
+
+  // Each hat is drawn in a 100 × 70 box whose bottom edge sits on the head.
+  var HAT_SVGS = {
+    party: '<polygon points="50,4 76,66 24,66" fill="#FF6B9A"/>' +
+      '<path d="M37 36 L63 36 M31 50 L69 50" stroke="#FFE066" stroke-width="5"/>' +
+      '<circle cx="50" cy="6" r="7" fill="#FFE066"/>',
+    beanie: '<path d="M14 58 C14 20 86 20 86 58 Z" fill="#4C8BF5"/>' +
+      '<rect x="10" y="50" width="80" height="16" rx="7" fill="#2F6AD0"/>' +
+      '<circle cx="50" cy="20" r="9" fill="#FFFFFF"/>',
+    bow: '<path d="M50 50 L22 34 L22 66 Z M50 50 L78 34 L78 66 Z" fill="#FF4D8D"/>' +
+      '<circle cx="50" cy="50" r="9" fill="#D6336C"/>',
+    grad: '<polygon points="50,20 96,36 50,52 4,36" fill="#2B2540"/>' +
+      '<path d="M26 44 L26 62 C40 70 60 70 74 62 L74 44 L50 52 Z" fill="#3B3456"/>' +
+      '<path d="M50 36 L84 44 L84 60" stroke="#F2C94C" stroke-width="3" fill="none"/>' +
+      '<circle cx="84" cy="62" r="4" fill="#F2C94C"/>',
+    wizard: '<path d="M50 2 C56 20 66 40 72 58 L28 58 C34 40 44 20 50 2 Z" fill="#6C4DF5"/>' +
+      '<ellipse cx="50" cy="60" rx="46" ry="9" fill="#5236C9"/>' +
+      '<path d="M47 30 l3 -7 l3 7 l7 1 l-5 5 l1 7 l-6 -4 l-6 4 l1 -7 l-5 -5 Z" fill="#FFE066"/>',
+    crown: '<path d="M14 64 L10 22 L32 40 L50 12 L68 40 L90 22 L86 64 Z" fill="#F2C94C" stroke="#C9A227" stroke-width="3"/>' +
+      '<circle cx="50" cy="48" r="6" fill="#D63E8A"/><circle cx="29" cy="52" r="4" fill="#2F80ED"/><circle cx="71" cy="52" r="4" fill="#2E9E4F"/>'
+  };
+  var HAT_SCALE = 0.72;   // hat width as a share of the head's width
+  var HAT_SINK = 0.06;    // how far the hat sits down onto the head, as a share of the picture
+
+  function hatSvg(id) {
+    return HAT_SVGS[id] ? '<svg viewBox="0 0 100 70" aria-hidden="true">' + HAT_SVGS[id] + '</svg>' : '';
+  }
+
+  // The axolotl picture, with its hat when one is worn. cls is the picture's class.
+  function axlImgHtml(color, mood, hat, cls, alt) {
+    var img = '<img class="' + cls + '" src="' + AQ.mascot.imagePath(color, mood) + '" alt="' + escapeHtml(alt || '') + '">';
+    if (!hat || !HAT_SVGS[hat]) return img;
+    var head = HEADS[color + '-' + mood] || HEADS[mood] || HEADS.happy;
+    var width = head.w * HAT_SCALE;
+    var top = head.y + HAT_SINK - width * 0.7;
+    return '<span class="axl-wrap">' + img +
+      '<span class="axl-hat" style="left:' + ((head.x - width / 2) * 100).toFixed(1) + '%;top:' + (top * 100).toFixed(1) +
+        '%;width:' + (width * 100).toFixed(1) + '%">' + hatSvg(hat) + '</span>' +
+    '</span>';
+  }
+
   // m: { color, name, mood, line, size ('big' or 'small'), tap, bounce }. A tappable mascot is a
   // button; the line sits in a speech bubble beside it.
   function mascotHtml(m) {
     var classes = 'mascot mascot-' + (m.size || 'small') + ' mascot-' + m.mood + (m.bounce ? ' mascot-bounce' : '');
-    var img = '<img class="mascot-img" src="' + AQ.mascot.imagePath(m.color, m.mood) + '" alt="' + escapeHtml(m.name) + '">';
+    var img = axlImgHtml(m.color, m.mood, m.hat, 'mascot-img', m.name);
     var figure = m.tap ?
       '<button type="button" class="mascot-button" data-action="mascot-tap" aria-label="Talk to ' + escapeHtml(m.name) + '">' + img + '</button>' :
       img;
@@ -43,7 +94,7 @@
       var chosen = color === model.color;
       return '<button type="button" class="mascot-choice' + (chosen ? ' mascot-chosen' : '') + '" data-action="mascot-color"' +
         ' data-color="' + color + '" aria-pressed="' + chosen + '">' +
-        '<img class="mascot-choice-img" src="' + AQ.mascot.imagePath(color, 'happy') + '" alt="">' +
+        axlImgHtml(color, 'happy', model.hat, 'mascot-choice-img', '') +
         '<span class="mascot-choice-name">' + color.charAt(0).toUpperCase() + color.slice(1) + '</span>' +
       '</button>';
     }).join('');
@@ -96,10 +147,16 @@
       soundOn: !save.settings || save.settings.sound !== false,
       darkOn: Boolean(save.settings) && save.settings.theme === 'dark',
       badgeCount: AQ.game.BADGES.filter(function (badge) { return has(badges, badge.id); }).length,
-      badgeTotal: AQ.game.BADGES.length
+      badgeTotal: AQ.game.BADGES.length,
+      gems: save.gems || 0,
+      freezes: save.freezes || 0,
+      bestCombo: save.bestCombo || 0,
+      claimable: claimableCount(save, today),
+      finishedLessons: 0,
+      speedBest: null
     };
     var mascot = mascotOf(save);
-    model.mascot = { color: mascot.color, name: mascot.name, line: '' };
+    model.mascot = { color: mascot.color, name: mascot.name, line: '', hat: save.outfits ? save.outfits.worn : null };
     var lineInfo = {
       name: mascot.name,
       hasUnit: save.currentUnitId !== null,
@@ -120,6 +177,8 @@
     var stars = progress.stars || {};
     var states = AQ.game.levelStates(unit, progress);
     model.reviewCount = progress.review.length;
+    model.finishedLessons = progress.completedLessons.length;
+    model.speedBest = typeof progress.speedBest === 'number' ? progress.speedBest : null;
     model.next = AQ.game.nextStep(unit, progress);
     lineInfo.next = model.next;
     model.mascot.line = AQ.mascot.homeLine(lineInfo);
@@ -136,6 +195,8 @@
         state: states[levelIndex],
         color: levelIndex % LEVEL_COLORS,
         hasNotes: level.lessons.some(function (lesson) { return Boolean(lesson.teach && lesson.teach.length); }),
+        chest: AQ.rewards.chestState(unit, progress, levelIndex),
+        chestGems: AQ.rewards.chestGems(levelIndex),
         lessons: level.lessons.map(function (lesson, lessonIndex) {
           var complete = progress.completedLessons.indexOf(lesson.id) !== -1;
           return {
@@ -154,6 +215,15 @@
 
   function has(object, key) {
     return Object.prototype.hasOwnProperty.call(object, key);
+  }
+
+  // How many rewards wait on the Quests tab: finished quests, the week reward, the challenge.
+  function claimableCount(save, today) {
+    var count = AQ.rewards.questStatus(save, today).filter(function (q) { return q.done && !q.claimed; }).length;
+    if (AQ.rewards.weekRewardStatus(save, today).canClaim) count++;
+    var challenge = AQ.rewards.challengeStatus(save, today);
+    if (challenge.beaten && !challenge.claimed) count++;
+    return count;
   }
 
   var RING_RADIUS = 18;
@@ -192,12 +262,16 @@
         '<span class="stat-label rank-title-text">' + escapeHtml(model.title.name) + '</span>' +
       '</button>' +
       '<button type="button" class="stat stat-streak' + (model.streak > 0 ? '' : ' stat-off') + '" data-action="open-profile"' +
-        ' aria-label="' + model.streak + '-day streak">' +
+        ' aria-label="' + model.streak + '-day streak' + (model.freezes > 0 ? ', ' + model.freezes + ' streak freeze' + (model.freezes === 1 ? '' : 's') : '') + '">' +
         '<span class="stat-icon" aria-hidden="true">&#128293;</span><span class="stat-value">' + model.streak + '</span>' +
+        (model.freezes > 0 ? '<span class="stat-freeze" aria-hidden="true">&#10052;</span>' : '') +
       '</button>' +
       '<button type="button" class="stat stat-goal' + (met ? ' goal-met' : '') + '" data-action="open-profile"' +
         ' aria-label="' + model.todayXp + ' of ' + model.goal + ' XP today">' +
         ringSvg(model, 'stat-ring', '') + '<span class="stat-value">' + model.todayXp + '</span>' +
+      '</button>' +
+      '<button type="button" class="stat stat-gems" data-action="open-shop" aria-label="' + model.gems + ' gems, open the shop">' +
+        '<span class="stat-icon" aria-hidden="true">&#128142;</span><span class="stat-value">' + model.gems + '</span>' +
       '</button>' +
       '<button type="button" class="stat stat-review" data-action="open-practice"' +
         ' aria-label="' + model.reviewCount + ' questions to review">' +
@@ -216,9 +290,10 @@
   function weekHtml(model) {
     var days = model.streak === 1 ? 'day' : 'days';
     var dots = model.week.map(function (day) {
-      return '<span class="day' + (day.studied ? ' day-studied' : '') + (day.today ? ' day-today' : '') + '"' +
-        ' role="img" aria-label="' + weekdayName(day.date) + (day.today ? ', today' : '') + ': ' + (day.studied ? 'studied' : 'not studied') + '">' +
-        '<span class="day-dot"></span><span class="day-letter">' + day.letter + '</span>' +
+      var status = day.studied ? 'studied' : (day.frozen ? 'streak freeze used' : 'not studied');
+      return '<span class="day' + (day.studied ? ' day-studied' : '') + (day.frozen ? ' day-frozen' : '') + (day.today ? ' day-today' : '') + '"' +
+        ' role="img" aria-label="' + weekdayName(day.date) + (day.today ? ', today' : '') + ': ' + status + '">' +
+        '<span class="day-dot">' + (day.frozen ? '&#10052;' : '') + '</span><span class="day-letter">' + day.letter + '</span>' +
       '</span>';
     }).join('');
     return '<section class="week">' +
@@ -277,7 +352,7 @@
     return '<div class="mascot mascot-big path-axl path-axl-' + side + (mascot.bounce ? ' mascot-bounce' : '') + '">' +
       '<p class="mascot-bubble path-bubble">' + escapeHtml(mascot.line) + '</p>' +
       '<button type="button" class="mascot-button" data-action="mascot-tap" aria-label="Talk to ' + escapeHtml(mascot.name) + '">' +
-        '<img class="mascot-img" src="' + AQ.mascot.imagePath(mascot.color, 'happy') + '" alt="' + escapeHtml(mascot.name) + '">' +
+        axlImgHtml(mascot.color, 'happy', mascot.hat, 'mascot-img', mascot.name) +
       '</button>' +
     '</div>';
   }
@@ -324,6 +399,25 @@
       '</div>';
   }
 
+  // A chest drawn in SVG, closed or with its lid up.
+  function chestSvg(open) {
+    return '<svg class="chest-svg" viewBox="0 0 64 56" aria-hidden="true">' +
+      '<rect x="6" y="24" width="52" height="28" rx="5" fill="#B9733A"/>' +
+      '<rect x="6" y="24" width="52" height="8" fill="#9C5E2C"/>' +
+      (open ? '<path d="M8 22 L14 4 L56 4 L58 22 Z" fill="#D08A4C"/><ellipse cx="32" cy="24" rx="20" ry="4" fill="#FFE066"/>' :
+        '<path d="M6 26 C6 8 58 8 58 26 Z" fill="#D08A4C"/>') +
+      '<rect x="27" y="' + (open ? 28 : 20) + '" width="10" height="12" rx="2" fill="#F2C94C"/>' +
+    '</svg>';
+  }
+
+  function chestNodeHtml(level, index) {
+    var labels = { locked: 'locked until you finish lessons 1 and 2', ready: 'ready to open', open: 'opened' };
+    return '<button type="button" class="node node-chest chest-' + level.chest + '" data-action="open-chest" data-level="' + index + '"' +
+      ' aria-label="Chest for level ' + (index + 1) + ', ' + labels[level.chest] + '"' + (level.chest === 'ready' ? '' : ' disabled') + '>' +
+      chestSvg(level.chest === 'open') +
+    '</button>';
+  }
+
   var LEVEL_STATE_LABELS = { locked: 'Locked &#128274;', open: '', complete: 'Complete &#10003;' };
 
   function levelBannerHtml(level, index) {
@@ -346,8 +440,10 @@
     var axlAt = nextId || (model.test ? 'trophy' : lastId);
     var index = 0;
     var levels = model.levels.map(function (level, levelIndex) {
-      var rows = level.lessons.map(function (lesson) {
-        return pathRowHtml(lessonNodeHtml(level, lesson), pathShift(index++), model, lesson.id === axlAt);
+      var rows = level.lessons.map(function (lesson, lessonIndex) {
+        var row = pathRowHtml(lessonNodeHtml(level, lesson), pathShift(index++), model, lesson.id === axlAt);
+        if (lessonIndex === 1 && level.chest) row += pathRowHtml(chestNodeHtml(level, levelIndex), pathShift(index++), model, false, 'path-chest');
+        return row;
       }).join('');
       return '<section class="path-level level-' + level.state + ' lc-' + level.color + '">' +
         levelBannerHtml(level, levelIndex) + rows +
@@ -361,6 +457,7 @@
 
   var TABS = [
     { id: 'home', action: 'home', label: 'Home', icon: '&#127968;' },
+    { id: 'quests', action: 'open-quests', label: 'Quests', icon: '&#127919;' },
     { id: 'practice', action: 'open-practice', label: 'Practice', icon: '&#128170;' },
     { id: 'badges', action: 'open-badges', label: 'Badges', icon: '&#127941;' },
     { id: 'profile', action: 'open-profile', label: 'Profile', icon: null },
@@ -368,15 +465,17 @@
   ];
 
   // The bar pinned to the bottom of the main screens. The Profile tab shows the player's axolotl.
-  function tabBarHtml(active, mascotColor) {
+  // dot: how many rewards wait on the Quests tab (a red dot shows when it is more than 0).
+  function tabBarHtml(active, mascotColor, dot) {
     return '<nav class="tabbar" aria-label="Main">' + TABS.map(function (tab) {
       var on = tab.id === active;
+      var waiting = tab.id === 'quests' && dot > 0;
       var icon = tab.icon ||
         '<img class="tab-axl" src="' + AQ.mascot.imagePath(mascotColor, 'happy') + '" alt="">';
       return '<button type="button" class="tab' + (on ? ' tab-active' : '') + '" data-action="' + tab.action + '"' +
         (on ? ' aria-current="page"' : '') + '>' +
-        '<span class="tab-icon" aria-hidden="true">' + icon + '</span>' +
-        '<span class="tab-label">' + tab.label + '</span>' +
+        '<span class="tab-icon" aria-hidden="true">' + icon + (waiting ? '<span class="tab-dot"></span>' : '') + '</span>' +
+        '<span class="tab-label">' + tab.label + (waiting ? '<span class="visually-hidden"> (rewards waiting)</span>' : '') + '</span>' +
       '</button>';
     }).join('') + '</nav>';
   }
@@ -387,7 +486,7 @@
   }
 
   function homeHtml(model) {
-    var tabs = tabBarHtml('home', model.mascot.color);
+    var tabs = tabBarHtml('home', model.mascot.color, model.claimable);
     if (model.units.length === 0) {
       return statsBarHtml(model) +
         '<section class="empty">' +
@@ -426,10 +525,21 @@
           '<button type="button" class="btn btn-primary" data-action="start-test"' + (model.test.state === 'locked' ? ' disabled' : '') + '>Start test</button>');
       }
     }
+    if (model.currentUnitId !== null) {
+      var none = model.finishedLessons === 0;
+      cards += practiceCardHtml('&#9194;', 'Unit Rewind',
+        none ? 'Finish a lesson first.' : '10 questions from lessons you finished. +' + AQ.game.CONSTANTS.XP_REWIND_BONUS + ' XP bonus.',
+        '<button type="button" class="btn btn-primary" data-action="start-rewind"' + (none ? ' disabled' : '') + '>Start +' +
+          AQ.game.CONSTANTS.XP_REWIND_BONUS + ' XP</button>');
+      cards += practiceCardHtml('&#9201;', 'Speed Round',
+        none ? 'Finish a lesson first.' : 'Answer as many as you can in ' + AQ.game.CONSTANTS.SPEED_SECONDS + ' seconds.' +
+          (model.speedBest !== null ? ' Best: ' + model.speedBest + '.' : ''),
+        '<button type="button" class="btn btn-primary" data-action="start-speed"' + (none ? ' disabled' : '') + '>Go!</button>');
+    }
     cards += practiceCardHtml('&#129518;', 'Calculator', 'Numbers, trig, and graphs.',
       '<button type="button" class="btn" data-action="open-calculator">Open</button>');
     return '<section class="tab-screen">' + screenHeadHtml('Practice', 'Sharpen up between lessons.') + cards + '</section>' +
-      tabBarHtml('practice', model.mascot.color);
+      tabBarHtml('practice', model.mascot.color, model.claimable);
   }
 
   function statHtml(value, label) {
@@ -441,10 +551,11 @@
     var best = model.test && model.test.best !== null ? model.test.best + '%' : '–';
     return '<section class="tab-screen profile">' +
       '<header class="profile-head">' +
-        '<img class="profile-axl" src="' + AQ.mascot.imagePath(model.mascot.color, 'happy') + '" alt="">' +
+        axlImgHtml(model.mascot.color, 'happy', model.mascot.hat, 'profile-axl', '') +
         '<div class="profile-who">' +
           '<h1 class="screen-title">' + escapeHtml(model.mascot.name) + '</h1>' +
           '<button type="button" class="btn btn-quiet" data-action="open-mascot">Change color or name</button>' +
+          '<button type="button" class="btn btn-primary profile-shop" data-action="open-shop">&#128142; Shop</button>' +
         '</div>' +
       '</header>' +
       '<section class="profile-card">' +
@@ -462,8 +573,98 @@
         statHtml(model.lessonsDone, 'lessons done') +
         statHtml(best, 'best test') +
         statHtml(model.badgeCount + '/' + model.badgeTotal, 'badges') +
+        statHtml('&#128142; ' + model.gems, 'gems') +
+        statHtml('&#10052; ' + model.freezes, 'streak freezes') +
+        statHtml(model.bestCombo, 'best combo') +
+        statHtml(model.speedBest === null ? '–' : model.speedBest, 'Speed Round best') +
       '</section>' +
-    '</section>' + tabBarHtml('profile', model.mascot.color);
+    '</section>' + tabBarHtml('profile', model.mascot.color, model.claimable);
+  }
+
+  function barHtml(value, target, cls) {
+    var percent = target > 0 ? Math.min(100, Math.round(100 * value / target)) : 0;
+    return '<div class="qbar' + (cls ? ' ' + cls : '') + '"><div class="qbar-fill" style="width:' + percent + '%"></div></div>';
+  }
+
+  // model: homeModel plus quests (questStatus), week (weekRewardStatus), challenge (challengeStatus),
+  // hoursLeft (until midnight), and note (a message after a claim, or null).
+  function questsHtml(model) {
+    var quests = model.quests.map(function (q) {
+      var button = q.claimed ? '<span class="quest-done">&#10003; Claimed</span>' :
+        (q.done ? '<button type="button" class="btn btn-primary" data-action="claim-quest" data-quest="' + q.id + '">Claim ' + q.gems + ' &#128142;</button>' :
+          '<span class="quest-reward">' + q.gems + ' &#128142;</span>');
+      return '<li class="quest' + (q.done && !q.claimed ? ' quest-ready' : '') + '">' +
+        '<div class="quest-text"><div class="quest-title">' + escapeHtml(q.text) + '</div>' +
+          barHtml(q.progress, q.target) + '<div class="quest-count">' + q.progress + ' / ' + q.target + '</div></div>' +
+        button +
+      '</li>';
+    }).join('');
+    var slots = model.week.slots.map(function (slot, index) {
+      return '<li class="week-slot slot-' + slot.state + '" aria-label="Day ' + (index + 1) + ': ' + slot.gems + ' gems, ' + slot.state + '">' +
+        '<span class="slot-day">' + (index + 1) + '</span>' +
+        '<span class="slot-icon" aria-hidden="true">' + (slot.state === 'claimed' ? '&#10003;' : (index === 6 ? '&#127873;' : '&#128142;')) + '</span>' +
+        '<span class="slot-gems">' + slot.gems + '</span>' +
+      '</li>';
+    }).join('');
+    var weekButton = model.week.canClaim ?
+      '<button type="button" class="btn btn-primary" data-action="claim-week">Claim today&#39;s reward</button>' :
+      '<p class="screen-note">' + (model.week.slots.some(function (s) { return s.state === 'waiting'; }) ?
+        'Finish a lesson today to claim today&#39;s reward.' : 'Come back tomorrow for the next one.') + '</p>';
+    var c = model.challenge;
+    var challengeButton = c.claimed ? '<span class="quest-done">&#10003; Claimed</span>' :
+      (c.beaten ? '<button type="button" class="btn btn-primary" data-action="claim-challenge">Claim ' + c.gems + ' &#128142;</button>' :
+        '<p class="screen-note">Earn ' + (c.target - c.thisWeek) + ' more XP this week to win ' + c.gems + ' &#128142;.</p>');
+    return '<section class="tab-screen quests">' +
+      '<header class="quests-head"><h1 class="screen-title">Quests</h1><p>Finish quests to earn gems!</p></header>' +
+      (model.note ? '<p class="quest-note" role="status">' + escapeHtml(model.note) + '</p>' : '') +
+      '<section class="quest-card">' +
+        '<div class="quest-card-head"><h2>Daily quests</h2><span class="quest-timer">&#9200; ' + model.hoursLeft + 'h left</span></div>' +
+        '<ul class="quest-list">' + quests + '</ul>' +
+      '</section>' +
+      '<section class="quest-card">' +
+        '<div class="quest-card-head"><h2>Week rewards</h2></div>' +
+        '<ul class="week-slots">' + slots + '</ul>' + weekButton +
+      '</section>' +
+      '<section class="quest-card">' +
+        '<div class="quest-card-head"><h2>Weekly challenge</h2></div>' +
+        '<p class="challenge-line">Beat last week&#39;s XP</p>' +
+        '<div class="challenge-row"><span>This week</span>' + barHtml(c.thisWeek, c.target, 'qbar-this') + '<span>' + c.thisWeek + '</span></div>' +
+        '<div class="challenge-row"><span>Last week</span>' + barHtml(c.lastWeek, c.target, 'qbar-last') + '<span>' + c.lastWeek + '</span></div>' +
+        challengeButton +
+      '</section>' +
+    '</section>' + tabBarHtml('quests', model.mascot.color, model.claimable);
+  }
+
+  // model: gems, freezes, hats (with owned and worn), mascot, note.
+  function shopHtml(model) {
+    var maxFreezes = AQ.game.CONSTANTS.MAX_FREEZES;
+    var freezeButton = model.freezes >= maxFreezes ? '<span class="quest-done">Full (' + maxFreezes + '/' + maxFreezes + ')</span>' :
+      '<button type="button" class="btn btn-primary" data-action="buy-freeze"' + (model.gems < AQ.rewards.FREEZE_PRICE ? ' disabled' : '') + '>' +
+        AQ.rewards.FREEZE_PRICE + ' &#128142;</button>';
+    var hats = model.hats.map(function (hat) {
+      var button = hat.owned ?
+        '<button type="button" class="btn' + (hat.worn ? ' btn-primary' : '') + '" data-action="wear-hat" data-hat="' + hat.id + '">' +
+          (hat.worn ? 'Take off' : 'Wear') + '</button>' :
+        '<button type="button" class="btn btn-primary" data-action="buy-hat" data-hat="' + hat.id + '"' + (model.gems < hat.price ? ' disabled' : '') + '>' +
+          hat.price + ' &#128142;</button>';
+      return '<li class="shop-item' + (hat.worn ? ' shop-worn' : '') + '">' +
+        '<span class="shop-hat">' + hatSvg(hat.id) + '</span>' +
+        '<span class="shop-name">' + escapeHtml(hat.name) + '</span>' + button +
+      '</li>';
+    }).join('');
+    return '<section class="tab-screen shop">' +
+      '<header class="screen-head badges-bar"><h1 class="screen-title">Shop</h1><span class="shop-gems">&#128142; ' + model.gems + '</span></header>' +
+      (model.note ? '<p class="quest-note" role="status">' + escapeHtml(model.note) + '</p>' : '') +
+      '<div class="shop-preview">' + axlImgHtml(model.mascot.color, 'happy', model.mascot.hat, 'shop-axl', model.mascot.name) + '</div>' +
+      '<section class="practice-card">' +
+        '<div class="practice-icon" aria-hidden="true">&#10052;</div>' +
+        '<div class="practice-text"><h2 class="practice-title">Streak freeze</h2>' +
+          '<p class="practice-note">Saves your streak on a day you miss. You have ' + model.freezes + ' of ' + maxFreezes + '.</p></div>' +
+        freezeButton +
+      '</section>' +
+      '<h2 class="mascot-heading">Hats for ' + escapeHtml(model.mascot.name) + '</h2>' +
+      '<ul class="shop-grid">' + hats + '</ul>' +
+    '</section>' + tabBarHtml(null, model.mascot.color, model.claimable);
   }
 
   function moreRowHtml(action, icon, label) {
@@ -481,7 +682,7 @@
         moreRowHtml('toggle-theme', '&#127769;', 'Dark mode: ' + (model.darkOn ? 'on' : 'off')) +
         (model.currentUnitId !== null ? moreRowHtml('remove-unit', '&#128465;', 'Remove this unit') : '') +
       '</div>' +
-    '</section>' + tabBarHtml('more', model.mascot.color);
+    '</section>' + tabBarHtml('more', model.mascot.color, model.claimable);
   }
 
   // ----- Badges screen -----
@@ -499,8 +700,9 @@
     return MONTHS[parts[1] - 1] + ' ' + parts[2] + ', ' + parts[0];
   }
 
-  function badgesModel(save) {
+  function badgesModel(save, today) {
     var mascotColor = mascotOf(save).color;
+    var claimable = today ? claimableCount(save, today) : 0;
     var earned = save.badges || {};
     var badges = AQ.game.BADGES.map(function (badge) {
       return { id: badge.id, name: badge.name, how: badge.how, earned: has(earned, badge.id) ? earned[badge.id] : null };
@@ -509,7 +711,8 @@
       badges: badges,
       count: badges.filter(function (badge) { return badge.earned !== null; }).length,
       total: badges.length,
-      mascotColor: mascotColor
+      mascotColor: mascotColor,
+      claimable: claimable
     };
   }
 
@@ -533,7 +736,7 @@
         '<span class="badges-count">' + model.count + ' of ' + model.total + '</span>' +
       '</header>' +
       '<ul class="badge-grid">' + items + '</ul>' +
-    '</section>' + tabBarHtml('badges', model.mascotColor);
+    '</section>' + tabBarHtml('badges', model.mascotColor, model.claimable);
   }
 
   // Rank up and new badges, for the result screens. Both are optional on the result.
@@ -746,7 +949,7 @@
     // The level guide (Notes on a level banner) has its own buttons.
     var act = model.guide ? { back: 'guide-back', next: 'guide-next', skip: 'home' } :
       { back: 'teach-back', next: 'teach-next', skip: 'teach-skip' };
-    var coach = model.mascot ? mascotHtml({ color: model.mascot.color, name: model.mascot.name, mood: 'think',
+    var coach = model.mascot ? mascotHtml({ color: model.mascot.color, name: model.mascot.name, hat: model.mascot.hat, mood: 'think',
       size: 'small', line: AQ.mascot.teachLine(model.index, model.total) }) : '';
     return '<section class="teach">' +
       coach +
@@ -808,6 +1011,7 @@
   // `locked` and `answerText` are optional. A locked lesson shows the question as answered,
   // with no Check or Hint buttons, so a feedback panel can sit under it.
   function lessonHtml(model) {
+    if (model.mode === 'speed') return speedQuestionHtml(model);
     var testMode = model.mode === 'test';
     var percent = Math.round(100 * model.done / model.total);
     var buttons = model.locked ? '' : (testMode ?
@@ -844,16 +1048,57 @@
     '</section>';
   }
 
+  // A Speed Round question: a draining time bar and the count so far. The bar is a CSS animation
+  // started elapsed seconds in, so the page does not redraw every second.
+  function speedQuestionHtml(model) {
+    var total = AQ.game.CONSTANTS.SPEED_SECONDS;
+    var elapsed = Math.min(Math.max(model.elapsed || 0, 0), total);
+    return '<section class="lesson-screen speed-screen">' +
+      '<div class="lesson-top">' +
+        '<button type="button" class="btn btn-quiet quit" data-action="quit" aria-label="Quit Speed Round">&#10005;</button>' +
+        '<div class="speed-bar" role="img" aria-label="' + Math.round(total - elapsed) + ' seconds left">' +
+          '<div class="speed-fill" style="animation-duration:' + total + 's;animation-delay:-' + elapsed.toFixed(1) + 's"></div>' +
+        '</div>' +
+        '<div class="speed-count" aria-label="' + model.right + ' right">&#9989; ' + model.right + '</div>' +
+      '</div>' +
+      '<h1 class="prompt">' + escapeHtml(model.prompt) + '</h1>' +
+      (model.graph ? graphHtml(model.graph, 'Graph for this question') : '') +
+      (model.type === 'choice' ? choicesHtml(model) : answerBoxHtml(model)) +
+      '<div class="lesson-actions"><span></span>' +
+        '<button type="button" class="btn btn-primary" data-action="check">Submit</button>' +
+      '</div>' +
+    '</section>';
+  }
+
+  // About 28 falling pieces. Positions come from a fixed pattern, so the page stays the same each draw.
+  var CONFETTI_COLORS = ['#FF6B9A', '#FFE066', '#6C4DF5', '#2F80ED', '#2E9E4F', '#E07A1F'];
+  function confettiHtml() {
+    var pieces = '';
+    for (var i = 0; i < 28; i++) {
+      var left = (i * 37) % 100;
+      var delay = ((i * 7) % 10) / 10;
+      var turn = (i * 53) % 360;
+      pieces += '<span class="confetti-piece" style="left:' + left + '%;background:' + CONFETTI_COLORS[i % CONFETTI_COLORS.length] +
+        ';animation-delay:' + delay + 's;transform:rotate(' + turn + 'deg)"></span>';
+    }
+    return '<div class="confetti" aria-hidden="true">' + pieces + '</div>';
+  }
+
   function feedbackHtml(feedback) {
     var body = feedback.correct ?
       '<h2 class="feedback-title">Correct!</h2>' :
       '<h2 class="feedback-title">Not quite</h2>' +
       '<p class="feedback-solution">' + escapeHtml(feedback.solution) + '</p>';
-    var coach = feedback.mascot ? mascotHtml({ color: feedback.mascot.color, name: feedback.mascot.name,
+    var coach = feedback.mascot ? mascotHtml({ color: feedback.mascot.color, name: feedback.mascot.name, hat: feedback.mascot.hat,
       mood: feedback.correct ? 'cheer' : 'encourage', size: 'small', line: feedback.mascot.line }) : '';
+    var combo = feedback.correct && feedback.combo >= 3 ?
+      '<p class="combo">&#128293; ' + feedback.combo + ' in a row!</p>' : '';
+    var pop = feedback.correct && feedback.xp ? '<span class="xp-pop" aria-hidden="true">+' + feedback.xp + ' XP</span>' : '';
     return '<section class="feedback ' + (feedback.correct ? 'feedback-correct' : 'feedback-wrong') + '">' +
+      pop +
       coach +
       body +
+      combo +
       '<button type="button" class="btn btn-primary" data-action="continue">Continue</button>' +
     '</section>';
   }
@@ -864,11 +1109,11 @@
   function resultMascotHtml(result, kind) {
     if (!result.mascot) return '';
     var said = AQ.mascot.result(kind, result);
-    return mascotHtml({ color: result.mascot.color, name: result.mascot.name, mood: said.mood, size: 'big', line: said.line });
+    return mascotHtml({ color: result.mascot.color, name: result.mascot.name, hat: result.mascot.hat, mood: said.mood, size: 'big', line: said.line });
   }
 
   function completeHtml(result) {
-    return '<section class="result">' +
+    return confettiHtml() + '<section class="result">' +
       '<h1 class="result-title">Lesson complete!</h1>' +
       resultMascotHtml(result, 'complete') +
       '<div class="result-stats">' +
@@ -883,6 +1128,49 @@
     '</section>';
   }
 
+  // The Speed Round result. result: { right, best, newBest, xpEarned, missed, mascot, rankUp, newBadges }.
+  function speedResultHtml(result) {
+    var missed = result.missed.map(function (item) {
+      return '<li class="missed-item">' +
+        '<div class="missed-prompt">' + escapeHtml(item.prompt) + '</div>' +
+        '<div class="missed-solution">' + escapeHtml(item.solution) + '</div>' +
+      '</li>';
+    }).join('');
+    var coach = result.mascot ? mascotHtml({ color: result.mascot.color, name: result.mascot.name, hat: result.mascot.hat,
+      mood: result.newBest ? 'cheer' : (result.right > 0 ? 'happy' : 'encourage'), size: 'big',
+      line: result.newBest ? 'NEW RECORD! Lightning brain!' : (result.right > 0 ? 'Nice speed! Go again?' : "Warm-up done! Let's go again!") }) : '';
+    return (result.newBest || result.rankUp ? confettiHtml() : '') + '<section class="result speed-result">' +
+      '<h1 class="result-title">Speed Round</h1>' + coach +
+      '<div class="test-score">' + result.right + '</div>' +
+      '<p class="test-verdict">right in ' + AQ.game.CONSTANTS.SPEED_SECONDS + ' seconds' +
+        (result.newBest ? ' · New best!' : (result.best !== null ? ' · Best: ' + result.best : '')) + '</p>' +
+      '<div class="result-stats">' +
+        '<div class="result-stat"><div class="result-value">+' + result.xpEarned + ' XP</div><div class="result-label">earned</div></div>' +
+      '</div>' +
+      (missed ? '<p class="result-note">Missed (now in your review pile):</p><ul class="missed">' + missed + '</ul>' : '') +
+      newsHtml(result) +
+      '<div class="result-actions">' +
+        '<button type="button" class="btn btn-primary" data-action="retry">Go again</button>' +
+        '<button type="button" class="btn" data-action="home">Home</button>' +
+      '</div>' +
+    '</section>';
+  }
+
+  // A reward, such as an opened chest. model: { title, gems, mascot }.
+  function rewardHtml(model) {
+    var coach = model.mascot ? mascotHtml({ color: model.mascot.color, name: model.mascot.name, hat: model.mascot.hat,
+      mood: 'cheer', size: 'big', line: 'Shiny! Spend them in the shop!' }) : '';
+    return confettiHtml() + '<section class="result reward">' +
+      '<h1 class="result-title">' + escapeHtml(model.title) + '</h1>' +
+      '<div class="reward-chest">' + chestSvg(true) + '</div>' +
+      '<div class="reward-gems">+' + model.gems + ' &#128142;</div>' +
+      coach +
+      '<div class="result-actions">' +
+        '<button type="button" class="btn btn-primary" data-action="home">Continue</button>' +
+      '</div>' +
+    '</section>';
+  }
+
   function failedHtml(result) {
     var missed = result.missed.map(function (item) {
       return '<li class="missed-item">' +
@@ -891,6 +1179,7 @@
       '</li>';
     }).join('');
     return '<section class="result">' +
+      (result.rankUp ? confettiHtml() : '') +
       '<h1 class="result-title">Out of hearts</h1>' +
       resultMascotHtml(result, 'failed') +
       '<p class="result-note">Read through the ones you missed, then try again.</p>' +
@@ -911,7 +1200,7 @@
       '</li>';
     }).join('');
     var pass = AQ.game.CONSTANTS.TEST_PASS_PERCENT;
-    return '<section class="result test-result">' +
+    return (result.passed || result.rankUp ? confettiHtml() : '') + '<section class="result test-result">' +
       '<h1 class="result-title">Final test</h1>' +
       resultMascotHtml(result, 'test') +
       '<div class="test-score">' + result.score + '%</div>' +
@@ -937,6 +1226,12 @@
     badgesModel: badgesModel,
     badgesHtml: badgesHtml,
     practiceHtml: practiceHtml,
+    questsHtml: questsHtml,
+    shopHtml: shopHtml,
+    rewardHtml: rewardHtml,
+    speedResultHtml: speedResultHtml,
+    confettiHtml: confettiHtml,
+    hatSvg: hatSvg,
     profileHtml: profileHtml,
     moreHtml: moreHtml,
     tabBarHtml: tabBarHtml,

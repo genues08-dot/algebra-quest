@@ -9,6 +9,7 @@
     require('./calc.js');
     require('./sound.js');
     require('./mascot.js');
+    require('./rewards.js');
   }
 
   var views = AQ.views;
@@ -22,8 +23,9 @@
   var CALC_BOX = '[data-role="calc-input"]';
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
-  // 'test-result', 'calculator', 'badges', 'mascot', 'practice', 'profile', 'more', or 'guide'.
-  // The five TAB_SCREENS have the tab bar. 'guide' shows a level's teaching cards from its banner. A final test question shows on the 'lesson' screen,
+  // 'test-result', 'calculator', 'badges', 'mascot', 'practice', 'profile', 'more', 'guide', 'quests',
+  // 'shop', 'reward', or 'speed-result'. TAB_SCREENS have the tab bar. 'guide' shows a level's
+  // teaching cards from its banner. 'reward' shows gems from an opened chest. A final test question shows on the 'lesson' screen,
   // drawn in test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
@@ -45,6 +47,9 @@
     mascotError: null,   // the message on the Mascot screen, such as a missing name
     guide: null,         // { level, index } while a level's guide shows
     mascotDraft: null,   // the text in the Mascot screen's name box, kept across redraws until saved
+    reward: null,        // { title, gems } while the reward screen shows
+    note: null,          // a short message on the Quests or Shop screen after a claim or a buy
+    speedTimer: null,    // the timer that ends a running Speed Round
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -69,7 +74,7 @@
       ranText: null
     }
   };
-  var TAB_SCREENS = ['home', 'practice', 'badges', 'profile', 'more'];
+  var TAB_SCREENS = ['home', 'quests', 'practice', 'badges', 'profile', 'more', 'shop'];
   var rootEl = null;
   var ls = null;
   var fileInput = null;
@@ -101,6 +106,15 @@
 
   function inTest() {
     return state.session !== null && state.session.kind === 'test';
+  }
+
+  function inSpeed() {
+    return state.session !== null && state.session.kind === 'speed';
+  }
+
+  // Tests and Speed Rounds have no feedback panel: an answer is saved and the next question shows.
+  function inQuickMode() {
+    return inTest() || inSpeed();
   }
 
   // AQ.sound is looked up at each call, so a replacement made after mount (as the tests do) is used.
@@ -151,7 +165,9 @@
     var calculatorAllowed = question.calculator !== false;
     var panel = state.calc;
     return {
-      mode: session.kind === 'test' ? 'test' : 'lesson',
+      mode: session.kind === 'test' || session.kind === 'speed' ? session.kind : 'lesson',
+      elapsed: session.kind === 'speed' ? (Date.now() - (session.endsAt - game.CONSTANTS.SPEED_SECONDS * 1000)) / 1000 : 0,
+      right: session.firstTryCorrect,
       done: session.total - session.queue.length,
       total: session.total,
       hearts: session.hearts,
@@ -173,8 +189,10 @@
     };
   }
 
+  // The mascot as drawn everywhere: its color and name, and the hat it wears.
   function mascotSettings() {
-    return state.save.settings.mascot;
+    var mascot = state.save.settings.mascot;
+    return { color: mascot.color, name: mascot.name, hat: state.save.outfits ? state.save.outfits.worn : null };
   }
 
   // The rank-up and new badges of the session that just ended, and the mascot, for its result screen.
@@ -206,6 +224,32 @@
       graph: card.graph,
       mascot: mascotSettings()
     };
+  }
+
+  function hoursToMidnight() {
+    var now = new Date();
+    var midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    return Math.max(1, Math.ceil((midnight - now) / 3600000));
+  }
+
+  function questsModel() {
+    var model = views.homeModel(state.save, today());
+    model.quests = AQ.rewards.questStatus(state.save, today());
+    model.week = AQ.rewards.weekRewardStatus(state.save, today());
+    model.challenge = AQ.rewards.challengeStatus(state.save, today());
+    model.hoursLeft = hoursToMidnight();
+    model.note = state.note;
+    return model;
+  }
+
+  function shopModel() {
+    var model = views.homeModel(state.save, today());
+    var outfits = state.save.outfits || { owned: [], worn: null };
+    model.hats = AQ.rewards.HATS.map(function (hat) {
+      return { id: hat.id, name: hat.name, price: hat.price, owned: outfits.owned.indexOf(hat.id) !== -1, worn: outfits.worn === hat.id };
+    });
+    model.note = state.note;
+    return model;
   }
 
   function homeHtml() {
@@ -241,7 +285,9 @@
           views.feedbackHtml({
             correct: state.lastResult.correct,
             solution: state.lastResult.question.solution,
-            mascot: Object.assign({ line: state.mascotLine }, mascotSettings())
+            mascot: Object.assign({ line: state.mascotLine }, mascotSettings()),
+            combo: state.lastResult.combo,
+            xp: state.lastResult.xp
           });
       case 'complete':
         return views.completeHtml(withNews({ xpEarned: session.xpEarned, accuracy: game.accuracy(session), perfect: session.perfect }));
@@ -257,9 +303,24 @@
       case 'calculator':
         return views.calculatorScreenHtml(calculatorModel(false));
       case 'badges':
-        return views.badgesHtml(views.badgesModel(state.save));
+        return views.badgesHtml(views.badgesModel(state.save, today()));
+      case 'quests':
+        return views.questsHtml(questsModel());
+      case 'shop':
+        return views.shopHtml(shopModel());
+      case 'reward':
+        return views.rewardHtml({ title: state.reward.title, gems: state.reward.gems, mascot: mascotSettings() });
+      case 'speed-result':
+        return views.speedResultHtml(withNews({
+          right: session.firstTryCorrect,
+          best: typeof state.save.progress[session.unitId].speedBest === 'number' ? state.save.progress[session.unitId].speedBest : null,
+          newBest: session.newBest,
+          xpEarned: session.xpEarned,
+          missed: missedList()
+        }));
       case 'mascot':
         return views.mascotScreenHtml({
+          hat: mascotSettings().hat,
           color: mascotSettings().color,
           name: state.mascotDraft !== null ? state.mascotDraft : mascotSettings().name,
           error: state.mascotError
@@ -328,6 +389,7 @@
 
   // With no usable save (the unreadable-save screen was showing), home has nothing to draw.
   function showHome() {
+    stopSpeedTimer();
     state.session = null;
     state.mascotTap = null;
     state.guide = null;
@@ -366,7 +428,8 @@
     }
     state.save = loaded.save;
     state.rawSave = null;
-    game.refreshStreak(state.save, today());
+    var frozen = game.refreshStreak(state.save, today());
+    state.freezeNotice = frozen > 0 ? { used: frozen, streak: state.save.streak } : null;
     // Badges the save has already earned are recorded quietly. The next write saves them.
     game.earnBadges(state.save, null, today());
     return true;
@@ -494,7 +557,9 @@
   // A lesson with teaching cards opens on its first card. Reviews and tests have no cards.
   function beginSession(session) {
     if (!session) return;
+    stopSpeedTimer();
     state.session = session;
+    if (session.kind === 'speed') startSpeedTimer(session);
     state.teach = null;
     state.news = null;
     state.rankAtStart = game.rankForXp(state.save.xp);
@@ -539,10 +604,14 @@
     var unit = currentUnit();
     var question = game.currentQuestion(unit, state.session);
     var response = question.type === 'choice' ? state.selected : state.typedText;
-    var result = game.submitAnswer(state.save, unit, state.session, response, today());
+    var result = game.submitAnswer(state.save, unit, state.session, response, today(), Date.now());
     if (!result) return;
     noteSessionEnd(state.session);
     if (!commit(state.save)) return;
+    if (inSpeed()) {
+      afterSpeedAnswer();
+      return;
+    }
     if (inTest()) {
       afterTestAnswer();
       return;
@@ -588,6 +657,43 @@
     }
     show('test-result');
     playSound(game.testPassed(session) ? 'testPass' : 'testFail');
+  }
+
+  // ----- Speed Round -----
+
+  function stopSpeedTimer() {
+    if (state.speedTimer !== null) root.clearTimeout(state.speedTimer);
+    state.speedTimer = null;
+  }
+
+  // The timer ends the round when time is up, even if no answer is given.
+  function startSpeedTimer(session) {
+    stopSpeedTimer();
+    var timer = root.setTimeout(function () {
+      state.speedTimer = null;
+      if (state.session !== session || session.status !== 'active') return;
+      if (!game.finishSpeed(state.save, session, today())) return;
+      noteSessionEnd(session);
+      if (commit(state.save)) showSpeedResult();
+    }, Math.max(0, session.endsAt - Date.now()));
+    // In Node (the tests) the timer must not keep the process alive.
+    if (timer && typeof timer.unref === 'function') timer.unref();
+    state.speedTimer = timer;
+  }
+
+  function showSpeedResult() {
+    stopSpeedTimer();
+    show('speed-result');
+    playSound(state.session.newBest ? 'perfect' : 'complete');
+  }
+
+  function afterSpeedAnswer() {
+    if (state.session.status === 'complete') {
+      showSpeedResult();
+      return;
+    }
+    playSound('submit');
+    showQuestion();
   }
 
   function skipQuestion() {
@@ -757,6 +863,54 @@
     'open-practice': function () {
       if (onTabScreen()) show('practice');
     },
+    'open-quests': function () {
+      if (!onTabScreen()) return;
+      state.note = null;
+      show('quests');
+    },
+    'open-shop': function () {
+      if (!onTabScreen()) return;
+      state.note = null;
+      show('shop');
+    },
+    'start-rewind': function () {
+      if (state.screen !== 'practice' || state.save.currentUnitId === null) return;
+      var unit = currentUnit();
+      beginSession(game.startRewind(unit, state.save.progress[unit.id]));
+    },
+    'start-speed': function () {
+      if (state.screen !== 'practice' || state.save.currentUnitId === null) return;
+      var unit = currentUnit();
+      beginSession(game.startSpeed(unit, state.save.progress[unit.id], Math.random, Date.now()));
+    },
+    'open-chest': function (target) {
+      if (state.screen !== 'home' || state.save.currentUnitId === null) return;
+      var next = copyOfSave();
+      var gems = AQ.rewards.openChest(next, next.currentUnitId, Number(target.getAttribute('data-level')));
+      if (gems === 0 || !commit(next)) return;
+      state.reward = { title: 'Chest opened!', gems: gems };
+      show('reward');
+      playSound('perfect');
+    },
+    'claim-quest': function (target) {
+      claimOnQuests(function (next) { return AQ.rewards.claimQuest(next, today(), target.getAttribute('data-quest')); });
+    },
+    'claim-week': function () {
+      claimOnQuests(function (next) { return AQ.rewards.claimWeekReward(next, today()); });
+    },
+    'claim-challenge': function () {
+      claimOnQuests(function (next) { return AQ.rewards.claimChallenge(next, today()); });
+    },
+    'buy-freeze': function () {
+      shopAction(function (next) { return AQ.rewards.buyFreeze(next) ? 'Streak freeze added!' : null; });
+    },
+    'buy-hat': function (target) {
+      var hat = AQ.rewards.hatById(target.getAttribute('data-hat'));
+      shopAction(function (next) { return hat && AQ.rewards.buyHat(next, hat.id) ? hat.name + ' bought and on!' : null; });
+    },
+    'wear-hat': function (target) {
+      shopAction(function (next) { return AQ.rewards.wearHat(next, target.getAttribute('data-hat')) ? '' : null; });
+    },
     'open-profile': function () {
       if (onTabScreen()) show('profile');
     },
@@ -825,7 +979,7 @@
       playSound('select');
     },
     'hint': function () {
-      if (inTest()) return;
+      if (inQuickMode()) return;
       state.hintVisible = true;
       render();
     },
@@ -910,17 +1064,22 @@
     // Quitting a test saves no score, but XP from its right answers stays.
     'quit': function () {
       var question = inTest() ? 'Quit the test? You will have to start it again.' :
-        'Quit this lesson? XP you earned stays.';
-      if (root.confirm(question)) showHome();
+        (inSpeed() ? 'Quit the Speed Round? XP you earned stays.' : 'Quit this lesson? XP you earned stays.');
+      if (!root.confirm(question)) return;
+      stopSpeedTimer();
+      showHome();
     },
     // Retry on the out-of-hearts screen, and Retake on the test result screen.
     'retry': function () {
       var unit = currentUnit();
       var previous = state.session;
       var next;
+      var progress = state.save.progress[unit.id];
       if (previous.kind === 'lesson') next = game.startLesson(unit, previous.lessonId);
       else if (previous.kind === 'test') next = newTestSession(unit);
-      else next = game.startReview(unit, state.save.progress[unit.id]);
+      else if (previous.kind === 'rewind') next = game.startRewind(unit, progress);
+      else if (previous.kind === 'speed') next = game.startSpeed(unit, progress, Math.random, Date.now());
+      else next = game.startReview(unit, progress);
       if (next) beginSession(next);
       else showHome();
     },
@@ -955,6 +1114,29 @@
       }
     }
   };
+
+  // A claim on the Quests screen. claim(save) changes the save copy and returns the gems given.
+  function claimOnQuests(claim) {
+    if (state.screen !== 'quests') return;
+    var next = copyOfSave();
+    var gems = claim(next);
+    if (gems === 0 || !commit(next)) return;
+    state.note = '+' + gems + ' gems!';
+    render();
+    playSound('correct');
+  }
+
+  // A buy or a hat change in the Shop. act(save) changes the save copy and returns a note, or null
+  // when nothing changed.
+  function shopAction(act) {
+    if (state.screen !== 'shop') return;
+    var next = copyOfSave();
+    var note = act(next);
+    if (note === null || !commit(next)) return;
+    state.note = note || null;
+    render();
+    if (note) playSound('correct');
+  }
 
   // Saves the name in the Mascot screen's box. An empty name is not saved.
   function saveMascotName() {
@@ -1026,7 +1208,17 @@
     fileInput.addEventListener('change', onFilePicked);
 
     // The save is in memory before the first write, so a failed write still leaves a usable app.
-    if (loadFromStorage() && commit(state.save)) showHome();
+    if (loadFromStorage() && commit(state.save)) {
+      showHome();
+      if (state.freezeNotice) {
+        showMessage('\u2744 Streak freeze used!', [
+          'You missed ' + (state.freezeNotice.used === 1 ? 'a day' : state.freezeNotice.used + ' days') + ', so ' +
+            (state.freezeNotice.used === 1 ? 'a streak freeze was' : 'streak freezes were') + ' used.',
+          'Your ' + state.freezeNotice.streak + '-day streak is safe. Do a lesson today to keep it going!'
+        ]);
+        state.freezeNotice = null;
+      }
+    }
   }
 
   var api = { mount: mount, importText: importText };
