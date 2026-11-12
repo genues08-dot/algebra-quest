@@ -104,3 +104,24 @@ test('the curve breaks at a jump with one end inside the window', () => {
   assert.equal(steep.match(/M/g).length, 1);
   assert.doesNotMatch(steep, /NaN|Infinity/);
 });
+
+test('numbers on the window edges are left off, and every number is inside the picture', () => {
+  const numbers = win => [...plot.svg({ evaluate: f('x'), window: win, numbers: true, marks: [], label: 'Graph' })
+    .matchAll(/<text([^>]*)>([^<]*)<\/text>/g)].map(([, attributes, content]) => ({
+    content,
+    x: Number(attributes.match(/\sx="([^"]*)"/)[1]),
+    y: Number(attributes.match(/\sy="([^"]*)"/)[1])
+  }));
+  const onEdges = numbers({ xMin: -5, xMax: 5, yMin: -5, yMax: 5 });
+  assert.ok(onEdges.length > 0);
+  for (const n of onEdges) {
+    assert.ok(n.content !== '-5' && n.content !== '5', 'edge number ' + n.content);
+    assert.ok(n.x >= 0 && n.x <= 320 && n.y >= 0 && n.y <= 320, n.content + ' at ' + n.x + ', ' + n.y);
+  }
+  // Just inside the edges, the numbers are pulled in to 4..316.
+  const nearEdges = numbers({ xMin: -5.01, xMax: 4.99, yMin: -5.01, yMax: 4.99 });
+  assert.ok(nearEdges.some(n => n.content === '-5'));
+  for (const n of nearEdges) {
+    assert.ok(n.x >= 4 && n.x <= 316 && n.y >= 4 && n.y <= 316, n.content + ' at ' + n.x + ', ' + n.y);
+  }
+});

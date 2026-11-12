@@ -18,6 +18,8 @@
   var HUGE_HEIGHTS = 1e6;
   // A curve step that moves more than this many pixels up or down is checked for a jump.
   var JUMP_PIXELS = 16;
+  // Numbers are placed at least this far inside the picture, so none is cut off by an edge.
+  var LABEL_MARGIN = 4;
 
   function isFinite_(value) {
     return typeof value === 'number' && isFinite(value);
@@ -141,6 +143,12 @@
     return !usable(middle, limit) || middle < Math.min(y0, y1) || middle > Math.max(y0, y1);
   }
 
+  // True when a grid line sits on a window edge, where its number would be cut in half.
+  function onEdge(value, min, max, step) {
+    var near = step * 1e-6;
+    return Math.abs(value - min) < near || Math.abs(value - max) < near;
+  }
+
   function pixel(value) {
     return Math.round(clamp(value, PIXEL_LIMIT.min, PIXEL_LIMIT.max) * 10) / 10;
   }
@@ -166,14 +174,14 @@
     for (k = first; k <= last; k++) {
       if (k === 0) continue;
       grid.push('M' + pixel(px(k * xStep)) + ' 0V' + SIZE);
-      labels.push({ x: px(k * xStep), y: clamp(py(0) + 12, 12, SIZE - 4), anchor: 'middle', text: format(k * xStep, 6) });
+      if (!onEdge(k * xStep, win.xMin, win.xMax, xStep)) labels.push({ x: px(k * xStep), y: clamp(py(0) + 12, 12, SIZE - 4), anchor: 'middle', text: format(k * xStep, 6) });
     }
     first = Math.ceil(win.yMin / yStep - 1e-9);
     last = Math.floor(win.yMax / yStep + 1e-9);
     for (k = first; k <= last; k++) {
       if (k === 0) continue;
       grid.push('M0 ' + pixel(py(k * yStep)) + 'H' + SIZE);
-      labels.push({ x: clamp(px(0) - 4, 24, SIZE - 2), y: py(k * yStep) + 4, anchor: 'end', text: format(k * yStep, 6) });
+      if (!onEdge(k * yStep, win.yMin, win.yMax, yStep)) labels.push({ x: clamp(px(0) - 4, 24, SIZE - 2), y: py(k * yStep) + 4, anchor: 'end', text: format(k * yStep, 6) });
     }
 
     parts.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + SIZE + ' ' + SIZE +
@@ -214,7 +222,9 @@
     }
     if (options.numbers) {
       for (var n = 0; n < labels.length; n++) {
-        parts.push('<text class="plot-number" x="' + pixel(labels[n].x) + '" y="' + pixel(labels[n].y) +
+        var labelX = clamp(labels[n].x, LABEL_MARGIN, SIZE - LABEL_MARGIN);
+        var labelY = clamp(labels[n].y, LABEL_MARGIN, SIZE - LABEL_MARGIN);
+        parts.push('<text class="plot-number" x="' + pixel(labelX) + '" y="' + pixel(labelY) +
           '" text-anchor="' + labels[n].anchor + '">' + labels[n].text + '</text>');
       }
     }
