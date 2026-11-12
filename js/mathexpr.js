@@ -56,6 +56,11 @@
     return result;
   }
 
+  // One closure per "!", so repeated "!!" each keep their own operand.
+  function factorialOf(operand) {
+    return function (x) { return factorial(operand(x)); };
+  }
+
   function nthRoot(n, x) {
     if (x < 0 && n === Math.floor(n) && Math.abs(n) % 2 === 1) return -Math.pow(-x, 1 / n);
     return Math.pow(x, 1 / n);
@@ -230,8 +235,7 @@
       var value = atom();
       while (peek() && peek().type === 'bang') {
         pos++;
-        var operand = value;
-        value = function (x) { return factorial(operand(x)); };
+        value = factorialOf(value);
       }
       return value;
     }

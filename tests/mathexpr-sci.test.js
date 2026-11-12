@@ -51,6 +51,8 @@ test('factorial binds tighter than everything', () => {
   assert.ok(Number.isNaN(value('3.5!')));
   assert.ok(Number.isNaN(value('(-1)!')));
   assert.equal(value('171!'), Infinity);
+  assert.equal(value('3!!'), 720);
+  assert.equal(value('2!!!'), 2);
 });
 
 test('nth root', () => {
