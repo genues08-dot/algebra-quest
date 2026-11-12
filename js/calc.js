@@ -14,6 +14,8 @@
   var MAX_DENOMINATOR = 1000;
   var FRACTION_TOLERANCE = 1e-9;
   var EXACT_TOLERANCE = 1e-12;
+  var ZERO_BELOW = 1e-12;
+  var HISTORY_SIZE = 10;
   var UNDEFINED_MESSAGE = 'That is undefined, like dividing by zero.';
 
   function formatNumber(value) {
@@ -45,18 +47,19 @@
     return p.kind + ' (' + AQ.plot.format(p.x, 2) + ', ' + AQ.plot.format(p.y, 2) + ')';
   }
 
-  function run(text, win) {
+  function run(text, win, options) {
     if (typeof text !== 'string' || !text.trim()) {
       return { kind: 'error', message: 'Type something to calculate.' };
     }
-    var compiled = AQ.mathexpr.compile(text);
+    var compiled = AQ.mathexpr.compile(text, options);
     if (!compiled.ok) return { kind: 'error', message: compiled.error };
     if (!compiled.usesX) {
       var value = compiled.evaluate(0);
       if (typeof value !== 'number' || !isFinite(value)) {
         return { kind: 'error', message: UNDEFINED_MESSAGE };
       }
-      return { kind: 'number', display: numberDisplay(value) };
+      if (Math.abs(value) < ZERO_BELOW) value = 0;
+      return { kind: 'number', display: numberDisplay(value), value: value };
     }
     var found = AQ.plot.features(compiled.evaluate, win);
     var zeros = found.zeros || [];
@@ -78,6 +81,15 @@
     };
   }
 
+  function historyEntry(text, result) {
+    if (!result || result.kind === 'error') return null;
+    return { text: String(text).trim(), result: result.kind === 'graph' ? 'graph' : result.display };
+  }
+
+  function addHistory(history, entry) {
+    return [entry].concat(history).slice(0, HISTORY_SIZE);
+  }
+
   function zoom(win, factor) {
     var width = (win.xMax - win.xMin) * factor;
     if (width < MIN_WIDTH || width > MAX_WIDTH) return win;
@@ -90,7 +102,10 @@
 
   var api = {
     DEFAULT_WINDOW: DEFAULT_WINDOW,
+    HISTORY_SIZE: HISTORY_SIZE,
     run: run,
+    historyEntry: historyEntry,
+    addHistory: addHistory,
     zoom: zoom,
     formatNumber: formatNumber,
     asFraction: asFraction
