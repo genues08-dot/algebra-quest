@@ -14,7 +14,7 @@ function fakeLs(initial) {
 test('load: empty storage gives a new save', () => {
   assert.equal(storage.KEY, KEY);
   assert.deepEqual(storage.load(fakeLs()), { ok: true, save: {
-    version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: null, units: {}, progress: {}, settings: { sound: true }
+    version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: null, units: {}, progress: {}, settings: { sound: true, angle: 'deg' }
   } });
 });
 
@@ -112,7 +112,7 @@ test('load: a v1 save is valid and gets the new fields', () => {
   const ls = fakeLs({ [KEY]: raw });
   const loaded = storage.load(ls);
   assert.equal(loaded.ok, true);
-  assert.deepEqual(loaded.save.settings, { sound: true });
+  assert.deepEqual(loaded.save.settings, { sound: true, angle: 'deg' });
   assert.equal(loaded.save.progress.u1.testBest, null);
   assert.equal(ls.data[KEY], raw);
 });
@@ -124,6 +124,17 @@ test('isValidSave checks testBest and settings', () => {
   for (const bad of [withBest(101), withBest(-1), withBest(2.5), withBest('x'), withSettings([]), withSettings({ sound: 'yes' }), withSettings({})]) {
     assert.equal(storage.isValidSave(bad), false);
   }
+});
+
+test('settings.angle is filled in and checked', () => {
+  const noAngle = makeSave(makeUnit());
+  delete noAngle.settings.angle;
+  const loaded = storage.load(fakeLs({ [KEY]: JSON.stringify(noAngle) }));
+  assert.deepEqual(loaded.save.settings, { sound: true, angle: 'deg' });
+  assert.deepEqual(storage.parseImportText(JSON.stringify(noAngle)).save.settings, { sound: true, angle: 'deg' });
+  const withAngle = value => { const save = makeSave(makeUnit()); save.settings.angle = value; return save; };
+  assert.equal(storage.isValidSave(withAngle('rad')), true);
+  for (const bad of ['grad', 5, null, '']) assert.equal(storage.isValidSave(withAngle(bad)), false, String(bad));
 });
 
 test('a backup with the new fields restores', () => {

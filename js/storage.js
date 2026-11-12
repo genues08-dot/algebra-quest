@@ -21,7 +21,7 @@
       currentUnitId: null,
       units: {},
       progress: {},
-      settings: { sound: true }
+      settings: { sound: true, angle: 'deg' }
     };
   }
 
@@ -57,15 +57,19 @@
       if (has(progress, 'testBest') && progress.testBest !== null &&
           !(Number.isInteger(progress.testBest) && progress.testBest >= 0 && progress.testBest <= 100)) return false;
     }
-    if (has(candidate, 'settings') &&
-        !(isPlainObject(candidate.settings) && typeof candidate.settings.sound === 'boolean')) return false;
+    if (has(candidate, 'settings')) {
+      var settings = candidate.settings;
+      if (!(isPlainObject(settings) && typeof settings.sound === 'boolean')) return false;
+      if (has(settings, 'angle') && settings.angle !== 'deg' && settings.angle !== 'rad') return false;
+    }
     if (candidate.currentUnitId !== null && unitIds.indexOf(candidate.currentUnitId) === -1) return false;
     return true;
   }
 
-  // Older v1 saves lack settings and testBest. Fill them in on the object in hand.
+  // Older v1 saves lack settings, settings.angle and testBest. Fill them in on the object in hand.
   function fillDefaults(save) {
     if (!has(save, 'settings')) save.settings = { sound: true };
+    if (!has(save.settings, 'angle')) save.settings.angle = 'deg';
     Object.keys(save.progress).forEach(function (id) {
       if (!has(save.progress[id], 'testBest')) save.progress[id].testBest = null;
     });
