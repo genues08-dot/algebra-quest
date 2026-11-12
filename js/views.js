@@ -113,6 +113,7 @@
     return '<footer class="footer">' +
       '<button type="button" class="btn" data-action="import">Import</button>' +
       '<button type="button" class="btn" data-action="backup">Backup</button>' +
+      '<button type="button" class="btn" data-action="open-calculator">Calculator</button>' +
       '<button type="button" class="btn" data-action="toggle-sound">Sound: ' + (model.soundOn ? 'on' : 'off') + '</button>' +
     '</footer>';
   }
@@ -184,7 +185,79 @@
     return '<figure class="graph">' + svg + '</figure>';
   }
 
+  // The scientific keypad, in spec order. A key either types `insert` or runs its action.
+  function key(label, insert, aria, cls) {
+    return { label: label, action: 'calc-key', insert: insert, aria: aria, cls: cls };
+  }
+  var KEYPAD = [
+    { label: 'DEG/RAD', action: 'calc-mode', aria: 'switch degrees and radians', cls: 'calc-k-fn' },
+    key('Ans', 'Ans', 'previous answer', 'calc-k-fn'),
+    key('(', '(', 'open parenthesis', 'calc-k-fn'),
+    key(')', ')', 'close parenthesis', 'calc-k-fn'),
+    { label: '←', action: 'calc-back', aria: 'delete', cls: 'calc-k-fn' },
+    key('sin', 'sin(', 'sine', 'calc-k-fn'),
+    key('cos', 'cos(', 'cosine', 'calc-k-fn'),
+    key('tan', 'tan(', 'tangent', 'calc-k-fn'),
+    key('π', 'π', 'pi', 'calc-k-fn'),
+    { label: 'C', action: 'calc-clear', aria: 'clear', cls: 'calc-k-fn' },
+    key('sin⁻¹', 'asin(', 'inverse sine', 'calc-k-fn'),
+    key('cos⁻¹', 'acos(', 'inverse cosine', 'calc-k-fn'),
+    key('tan⁻¹', 'atan(', 'inverse tangent', 'calc-k-fn'),
+    key('e', 'e', 'e', 'calc-k-fn'),
+    key('x', 'x', 'x', 'calc-k-fn'),
+    key('x²', '^2', 'squared', 'calc-k-fn'),
+    key('xʸ', '^', 'power', 'calc-k-fn'),
+    key('√', '√(', 'square root', 'calc-k-fn'),
+    key('ˣ√', 'root(', 'nth root', 'calc-k-fn'),
+    key('|x|', 'abs(', 'absolute value', 'calc-k-fn'),
+    key('log', 'log(', 'log base ten', 'calc-k-fn'),
+    key('ln', 'ln(', 'natural log', 'calc-k-fn'),
+    key('n!', '!', 'factorial', 'calc-k-fn'),
+    key('1/x', '^(-1)', 'reciprocal', 'calc-k-fn'),
+    key('×10ⁿ', '×10^(', 'times ten to the power', 'calc-k-fn'),
+    key('7', '7', '7', 'calc-k-num'),
+    key('8', '8', '8', 'calc-k-num'),
+    key('9', '9', '9', 'calc-k-num'),
+    key('÷', '÷', 'divide', 'calc-k-op'),
+    key('(−)', '-', 'negative', 'calc-k-op'),
+    key('4', '4', '4', 'calc-k-num'),
+    key('5', '5', '5', 'calc-k-num'),
+    key('6', '6', '6', 'calc-k-num'),
+    key('×', '×', 'times', 'calc-k-op'),
+    key(',', ',', 'comma', 'calc-k-op'),
+    key('1', '1', '1', 'calc-k-num'),
+    key('2', '2', '2', 'calc-k-num'),
+    key('3', '3', '3', 'calc-k-num'),
+    key('−', '−', 'minus', 'calc-k-op'),
+    key('+', '+', 'plus', 'calc-k-op'),
+    key('0', '0', '0', 'calc-k-num'),
+    key('.', '.', 'decimal point', 'calc-k-num'),
+    { label: '=', action: 'calc-run', aria: 'equals', cls: 'calc-k-eq' }
+  ];
+
+  function keypadHtml() {
+    return '<div class="calc-keypad">' + KEYPAD.map(function (k) {
+      return '<button type="button" class="calc-k ' + k.cls + '" data-action="' + k.action + '"' +
+        (k.insert !== undefined ? ' data-insert="' + escapeHtml(k.insert) + '"' : '') +
+        ' aria-label="' + escapeHtml(k.aria) + '">' + escapeHtml(k.label) + '</button>';
+    }).join('') + '</div>';
+  }
+
+  function historyHtml(history) {
+    if (!history.length) return '';
+    return '<div class="calc-history"><h2 class="calc-history-title">History</h2>' +
+      history.map(function (entry, i) {
+        var line = entry.result === 'graph' ? entry.text + ' → graph' : entry.text + ' = ' + entry.result;
+        return '<button type="button" class="calc-history-item" data-action="calc-history" data-index="' + i + '">' +
+          escapeHtml(line) + '</button>';
+      }).join('') + '</div>';
+  }
+
   function calculatorHtml(model) {
+    var mode = model.mode === 'rad' ? 'rad' : 'deg';
+    var keysShown = model.keysShown !== false;
+    var closable = model.closable !== false;
+    var history = model.history || [];
     var result = model.result;
     var graphPart = '';
     var resultPart = '';
@@ -213,11 +286,26 @@
         '<input type="text" class="calc-input" data-role="calc-input" autocomplete="off" spellcheck="false"' +
           ' aria-label="Calculator input" placeholder="Try 2+3 or x^2-4" value="' + escapeHtml(model.text) + '">' +
         '<button type="button" class="btn btn-primary" data-action="calc-run">Go</button>' +
-        '<button type="button" class="btn btn-quiet" data-action="calc-close" aria-label="Close calculator">&#10005;</button>' +
+        (closable ? '<button type="button" class="btn btn-quiet" data-action="calc-close" aria-label="Close calculator">&#10005;</button>' : '') +
       '</div>' +
+      '<div class="calc-modebar"><span class="calc-mode-label">' + (mode === 'rad' ? 'RAD' : 'DEG') + '</span></div>' +
       (model.error ? '<p class="calc-error" role="alert">' + escapeHtml(model.error) + '</p>' : '') +
       resultPart +
       graphPart +
+      (keysShown ? keypadHtml() : '') +
+      '<button type="button" class="btn btn-quiet calc-keys-toggle" data-action="calc-keys">' + (keysShown ? 'Hide keys' : 'Show keys') + '</button>' +
+      historyHtml(history) +
+    '</section>';
+  }
+
+  function calculatorScreenHtml(model) {
+    var screenModel = Object.assign({}, model, { closable: false });
+    return '<section class="calc-screen">' +
+      '<header class="calc-screen-bar">' +
+        '<button type="button" class="btn" data-action="home">Home</button>' +
+        '<h1 class="calc-screen-title">Calculator</h1>' +
+      '</header>' +
+      calculatorHtml(screenModel) +
     '</section>';
   }
 
@@ -412,6 +500,8 @@
     graphHtml: graphHtml,
     teachHtml: teachHtml,
     calculatorHtml: calculatorHtml,
+    calculatorScreenHtml: calculatorScreenHtml,
+    KEYPAD: KEYPAD,
     feedbackHtml: feedbackHtml,
     completeHtml: completeHtml,
     failedHtml: failedHtml,

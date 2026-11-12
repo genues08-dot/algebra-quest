@@ -410,3 +410,29 @@ button:disabled { cursor: not-allowed; }
 .calc-result { font-size: 20px; font-weight: 600; margin: 8px 0 0; overflow-wrap: anywhere; }
 .calc-line { margin: 4px 0 0; font-size: 14px; overflow-wrap: anywhere; }
 .calc-zoom { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* ----- Scientific calculator keypad, history, and screen ----- */
+.calc-modebar { margin-top: 8px; }
+.calc-mode-label { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 2px 8px; }
+.calc-keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+.calc-k { font: inherit; font-size: 15px; min-height: 40px; min-width: 0; padding: 4px 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--text); cursor: pointer; transition: background-color 0.15s, transform 0.1s; }
+.calc-k:hover { background: var(--bg); }
+.calc-k:active { transform: scale(0.96); }
+.calc-k:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.calc-k-fn { background: var(--bg); color: var(--muted); font-size: 14px; }
+.calc-k-num { font-weight: 600; }
+.calc-k-op { color: var(--accent); font-weight: 600; }
+.calc-k-eq { grid-column: span 3; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.calc-k-eq:hover { background: var(--accent); filter: brightness(1.1); }
+.calc-keys-toggle { margin-top: 10px; }
+.calc-history { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.calc-history-title { font-size: 14px; color: var(--muted); margin: 0; }
+.calc-history-item { font: inherit; font-size: 14px; text-align: left; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--text); cursor: pointer; overflow-wrap: anywhere; transition: background-color 0.15s; }
+.calc-history-item:hover { background: var(--bg); }
+.calc-screen { display: flex; flex-direction: column; gap: 12px; padding: 12px; max-width: 480px; margin: 0 auto; }
+.calc-screen-bar { display: flex; align-items: center; gap: 12px; }
+.calc-screen-title { font-size: 20px; margin: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .calc-k, .calc-history-item { transition: none; }
+  .calc-k:active { transform: none; }
+}
