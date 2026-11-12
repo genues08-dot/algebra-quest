@@ -243,11 +243,18 @@
     }).join('') + '</div>';
   }
 
+  // A whole-number result already starts with "= " (such as "= 2"), so it gets no second one.
+  function historyLine(entry) {
+    if (entry.result === 'graph') return entry.text + ' → graph';
+    if (entry.result.indexOf('= ') === 0) return entry.text + ' ' + entry.result;
+    return entry.text + ' = ' + entry.result;
+  }
+
   function historyHtml(history) {
     if (!history.length) return '';
     return '<div class="calc-history"><h2 class="calc-history-title">History</h2>' +
       history.map(function (entry, i) {
-        var line = entry.result === 'graph' ? entry.text + ' → graph' : entry.text + ' = ' + entry.result;
+        var line = historyLine(entry);
         return '<button type="button" class="calc-history-item" data-action="calc-history" data-index="' + i + '">' +
           escapeHtml(line) + '</button>';
       }).join('') + '</div>';

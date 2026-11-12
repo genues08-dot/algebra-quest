@@ -49,7 +49,7 @@ All of these fields are optional. `format` stays `1`.
 ]
 ```
 
-`graph` on a question or a teaching card: `fn` is required and uses the calculator's syntax (`^`, `*`, `/`, parentheses, `2x`, `sqrt(...)`). `x` and `y` default to `[-10, 10]`. `numbers` defaults to `true`.
+`graph` on a question or a teaching card: `fn` is required and uses the calculator's syntax (`^`, `*`, `/`, parentheses, `2x`, `sqrt(...)`, `sin(...)` and the other trig names, `root(n, x)`, and `!`). Trig in a unit-file graph is always in radians, whatever the student's DEG/RAD setting. `x` and `y` default to `[-10, 10]`. `numbers` defaults to `true`.
 
 ```json
 "graph": { "fn": "x^3 - 3x^2 - 3", "x": [-5, 5], "y": [-10, 10], "numbers": true }

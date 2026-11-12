@@ -63,6 +63,11 @@ test('history lists entries newest first and escapes them', () => {
   assert.doesNotMatch(views.calculatorHtml(panel()), /History/);
 });
 
+test('a whole-number history entry reads with one equals sign', () => {
+  const html = views.calculatorHtml(panel({ history: [{ text: '1+1', result: '= 2' }] }));
+  assert.match(html, /data-action="calc-history" data-index="0"[^>]*>1\+1 = 2</);
+});
+
 test('home has a Calculator button, and the calculator screen has Home and no close', () => {
   assert.match(views.homeHtml(views.homeModel(makeSave(makeUnit()))), /data-action="open-calculator"/);
   assert.match(views.homeHtml(views.homeModel(storage.newSave())), /data-action="open-calculator"/);

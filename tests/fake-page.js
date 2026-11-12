@@ -29,8 +29,18 @@ function makeEnv(stored, options = {}) {
   let keydown = null;
   // The answer box and the calculator box. Each is found only while the page HTML has it.
   // Every redraw resets them to what the new HTML holds, as a real page makes fresh inputs.
+  // The calculator box also keeps the selection set on it, which a redraw clears.
   const answerBox = { value: '', focus() {}, setSelectionRange() {} };
-  const calcBox = { value: '', focus() {}, setSelectionRange() {} };
+  const calcBox = {
+    value: '',
+    selectionStart: undefined,
+    selectionEnd: undefined,
+    focus() {},
+    setSelectionRange(start, end) {
+      calcBox.selectionStart = start;
+      calcBox.selectionEnd = end;
+    }
+  };
   let html = '';
   const rootEl = {
     get innerHTML() { return html; },
@@ -38,6 +48,8 @@ function makeEnv(stored, options = {}) {
       html = String(text);
       answerBox.value = inputValue(html, 'answer');
       calcBox.value = inputValue(html, 'calc-input');
+      calcBox.selectionStart = undefined;
+      calcBox.selectionEnd = undefined;
     },
     addEventListener: (type, handler) => { handlers[type] = handler; },
     querySelector: selector => {

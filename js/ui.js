@@ -21,7 +21,8 @@
   var CALC_BOX = '[data-role="calc-input"]';
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
-  // or 'test-result'. A final test question shows on the 'lesson' screen, drawn in test mode.
+  // 'test-result', or 'calculator'. A final test question shows on the 'lesson' screen, drawn in
+  // test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
     screen: 'home',
@@ -36,8 +37,25 @@
     hintVisible: false,
     lastResult: null,    // { correct, question } from the answer just checked
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
+    // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
-    calc: { open: false, text: '', result: null, error: null, window: calc.DEFAULT_WINDOW, graphText: null }
+    // `keys` is whether the keypad shows. `history` is the last results, newest first.
+    // `ans` is the last number result, which `Ans` stands for (null before the first one).
+    // `caret` and `caretEnd` are the selection in the box when a button was pressed, or null
+    // when it is not known. They are equal when nothing is selected.
+    calc: {
+      open: false,
+      text: '',
+      result: null,
+      error: null,
+      window: calc.DEFAULT_WINDOW,
+      graphText: null,
+      keys: true,
+      history: [],
+      ans: null,
+      caret: null,
+      caretEnd: null
+    }
   };
   var rootEl = null;
   var ls = null;
@@ -100,6 +118,20 @@
     };
   }
 
+  // `closable` is false on the calculator screen, which has a Home button instead.
+  function calculatorModel(closable) {
+    var panel = state.calc;
+    return {
+      text: panel.text,
+      result: panel.result,
+      error: panel.error,
+      mode: state.save.settings.angle,
+      keysShown: panel.keys,
+      history: panel.history,
+      closable: closable
+    };
+  }
+
   function lessonModel(question, locked) {
     var session = state.session;
     var calculatorAllowed = question.calculator !== false;
@@ -123,8 +155,7 @@
       graph: question.graph || null,
       hasNotes: lessonCards().length > 0,
       calculatorAllowed: calculatorAllowed,
-      calculatorPanel: panel.open && calculatorAllowed ?
-        { text: panel.text, result: panel.result, error: panel.error } : null
+      calculatorPanel: panel.open && calculatorAllowed ? calculatorModel(true) : null
     };
   }
 
@@ -161,6 +192,8 @@
           xpEarned: session.xpEarned,
           missed: missedList()
         });
+      case 'calculator':
+        return views.calculatorScreenHtml(calculatorModel(false));
       default:
         return views.homeHtml(views.homeModel(state.save));
     }
@@ -170,23 +203,26 @@
     if (state.screen === 'feedback') return '[data-action="continue"]';
     if (state.screen === 'lesson' && state.selected !== null) return '[data-index="' + state.selected + '"]';
     if (state.screen === 'lesson') return ANSWER_BOX;
+    if (state.screen === 'calculator') return CALC_BOX;
     return null;
   }
 
   // Puts the keyboard where the next key press belongs. `selector`, when given, picks the element.
-  function placeFocus(selector) {
+  // `caret`, when given, is where the caret goes in that box. Otherwise it goes after the text.
+  function placeFocus(selector, caret) {
     selector = selector || focusSelector();
     var element = selector ? rootEl.querySelector(selector) : null;
     if (!element) return;
     element.focus();
     // Keep the caret after any text already typed, for example when the hint is opened mid-answer.
-    if (element.setSelectionRange) element.setSelectionRange(element.value.length, element.value.length);
+    var at = typeof caret === 'number' ? caret : element.value.length;
+    if (element.setSelectionRange) element.setSelectionRange(at, at);
   }
 
-  // Redraws the current screen in place. `focus` is an optional selector for placeFocus.
-  function render(focus) {
+  // Redraws the current screen in place. `focus` and `caret` are optional, for placeFocus.
+  function render(focus, caret) {
     rootEl.innerHTML = screenHtml();
-    placeFocus(focus);
+    placeFocus(focus, caret);
   }
 
   // Switches to a screen and starts it at the top of the window.
@@ -307,16 +343,26 @@
 
   // ----- Lesson flow -----
 
+  // A selection position read from a box, or null when the box does not give one.
+  function selectionPosition(value) {
+    return typeof value === 'number' ? value : null;
+  }
+
   // Copies the answer box and the calculator box into the state, so a redraw keeps what was typed.
+  // The calculator box's selection is kept too, so a key can type at the caret.
   // The click and Enter key handlers call this before acting. It is not done during a redraw:
   // the feedback screen still shows the old answer in a disabled box, which must not carry into
   // the next question.
   function readBoxes() {
-    if (state.screen !== 'lesson') return;
+    if (state.screen !== 'lesson' && state.screen !== 'calculator') return;
     var answer = rootEl.querySelector(ANSWER_BOX);
     if (answer) state.typedText = answer.value;
     var calcInput = rootEl.querySelector(CALC_BOX);
-    if (calcInput) state.calc.text = calcInput.value;
+    if (calcInput) {
+      state.calc.text = calcInput.value;
+      state.calc.caret = selectionPosition(calcInput.selectionStart);
+      state.calc.caretEnd = selectionPosition(calcInput.selectionEnd);
+    }
   }
 
   function showQuestion() {
@@ -417,33 +463,93 @@
   // After each calculator action the keyboard goes back to the calculator box, so the next
   // Enter runs the calculator again instead of checking the answer.
 
+  // The calculator screen always shows it. In a lesson it shows when open, unless the question
+  // says "no calculator".
   function calculatorShowing() {
+    if (state.screen === 'calculator') return true;
     if (state.screen !== 'lesson' || !state.calc.open) return false;
     return game.currentQuestion(currentUnit(), state.session).calculator !== false;
   }
 
-  // An error keeps the last result on show. Any other result replaces it.
+  // The saved angle mode and the last number result, which every run uses.
+  function calculatorOptions() {
+    return { angle: state.save.settings.angle, ans: state.calc.ans };
+  }
+
+  // An error keeps the last result on show. Any other result replaces it and goes into the history.
+  // A number result also becomes Ans. A graph leaves Ans as it was.
   function runCalculator() {
     if (!calculatorShowing()) return;
     var panel = state.calc;
-    var result = calc.run(panel.text, panel.window);
+    var result = calc.run(panel.text, panel.window, calculatorOptions());
     if (result.kind === 'error') {
       panel.error = result.message;
     } else {
       panel.result = result;
       panel.error = null;
       panel.graphText = result.kind === 'graph' ? panel.text : null;
+      if (result.kind === 'number') panel.ans = result.value;
+      var entry = calc.historyEntry(panel.text, result);
+      if (entry !== null) panel.history = calc.addHistory(panel.history, entry);
     }
     render(CALC_BOX);
+  }
+
+  // Draws the last graph again, for a new window or a new angle mode.
+  function redrawGraph() {
+    var panel = state.calc;
+    if (panel.graphText !== null) panel.result = calc.run(panel.graphText, panel.window, calculatorOptions());
   }
 
   // Sets the graph window and draws the last graph again in it. An error stays on show,
   // because it is about the text in the box, which zooming does not change.
   function setCalculatorWindow(nextWindow) {
     if (!calculatorShowing()) return;
+    state.calc.window = nextWindow;
+    redrawGraph();
+    render(CALC_BOX);
+  }
+
+  // The selection in the calculator box, kept inside the text. When the caret is not known,
+  // both ends are the end of the text, so a key types at the end.
+  function calculatorSelection() {
     var panel = state.calc;
-    panel.window = nextWindow;
-    if (panel.graphText !== null) panel.result = calc.run(panel.graphText, panel.window);
+    var length = panel.text.length;
+    if (panel.caret === null || panel.caretEnd === null) return { start: length, end: length };
+    var start = Math.min(Math.max(panel.caret, 0), length);
+    var end = Math.min(Math.max(panel.caretEnd, start), length);
+    return { start: start, end: end };
+  }
+
+  // Replaces the text from `start` to `end` with `insert`, then puts the caret after it.
+  function editCalculatorText(start, end, insert) {
+    var panel = state.calc;
+    panel.text = panel.text.slice(0, start) + insert + panel.text.slice(end);
+    render(CALC_BOX, start + insert.length);
+  }
+
+  // A keypad key types its text at the caret, over any selection.
+  function typeCalculatorKey(insert) {
+    if (!calculatorShowing() || typeof insert !== 'string') return;
+    var selection = calculatorSelection();
+    editCalculatorText(selection.start, selection.end, insert);
+  }
+
+  // ← deletes the selection, or else the character before the caret.
+  function deleteCalculatorText() {
+    if (!calculatorShowing()) return;
+    var selection = calculatorSelection();
+    var start = selection.start === selection.end ? Math.max(selection.start - 1, 0) : selection.start;
+    editCalculatorText(start, selection.end, '');
+  }
+
+  // Saves the other angle mode, like the sound switch. A graph on show is drawn again in it.
+  function switchAngleMode() {
+    if (!calculatorShowing()) return;
+    var next = copyOfSave();
+    next.settings.angle = next.settings.angle === 'rad' ? 'deg' : 'rad';
+    if (!commit(next)) return;
+    redrawGraph();
     render(CALC_BOX);
   }
 
@@ -512,6 +618,34 @@
       render();
     },
     'calc-run': runCalculator,
+    'calc-key': function (target) {
+      typeCalculatorKey(target.getAttribute('data-insert'));
+    },
+    'calc-back': deleteCalculatorText,
+    // C empties the box and clears the error. The last result and the history stay.
+    'calc-clear': function () {
+      if (!calculatorShowing()) return;
+      state.calc.text = '';
+      state.calc.error = null;
+      render(CALC_BOX);
+    },
+    'calc-mode': switchAngleMode,
+    'calc-keys': function () {
+      if (!calculatorShowing()) return;
+      state.calc.keys = !state.calc.keys;
+      render(CALC_BOX);
+    },
+    // A history entry puts its text back in the box. It does not run it.
+    'calc-history': function (target) {
+      if (!calculatorShowing()) return;
+      var entry = state.calc.history[Number(target.getAttribute('data-index'))];
+      if (!entry) return;
+      state.calc.text = entry.text;
+      render(CALC_BOX);
+    },
+    'open-calculator': function () {
+      if (state.screen === 'home') show('calculator');
+    },
     'calc-zoom-in': function () {
       setCalculatorWindow(calc.zoom(state.calc.window, 0.5));
     },
@@ -589,13 +723,14 @@
 
   // Enter checks a typed answer (in a test it submits it), Enter in the calculator box runs the
   // calculator (and never checks the answer), and Enter on the feedback panel continues.
+  // Enter in the calculator box works on the lesson screen and on the calculator screen.
   // preventDefault stops the same key press from also clicking the button that gets focus next,
   // and a held-down key (event.repeat) is ignored so it cannot skip through questions.
   function onKeyDown(event) {
     if (event.key !== 'Enter') return;
     readBoxes();
     var role = event.target.getAttribute ? event.target.getAttribute('data-role') : null;
-    if (state.screen === 'lesson' && role === 'calc-input') {
+    if ((state.screen === 'lesson' || state.screen === 'calculator') && role === 'calc-input') {
       event.preventDefault();
       if (!event.repeat) runCalculator();
     } else if (state.screen === 'lesson' && role === 'answer') {
