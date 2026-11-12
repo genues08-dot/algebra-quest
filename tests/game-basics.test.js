@@ -6,7 +6,8 @@ const { makeUnit, makeSave } = require('./fixtures.js');
 test('constants', () => assert.deepEqual(game.CONSTANTS, {
   XP_CORRECT: 10, XP_LESSON_COMPLETE: 20, XP_PERFECT_BONUS: 10,
   XP_PER_RANK: 100, HEARTS_PER_LESSON: 5, REVIEW_LESSON_SIZE: 8,
-  XP_TEST_PASS: 50, TEST_PASS_PERCENT: 80
+  XP_TEST_PASS: 50, TEST_PASS_PERCENT: 80,
+  GOAL_CHOICES: [50, 100, 200, 300], DEFAULT_GOAL: 100, DAYS_KEPT: 14
 }));
 
 test('rank', () => {

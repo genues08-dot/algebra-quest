@@ -5,11 +5,13 @@
   var AQ = root.AQ = root.AQ || {};
   if (typeof module !== 'undefined' && module.exports) {
     require('./units.js');
+    require('./game.js');
   }
 
   var KEY = 'algebraQuest.v1';
   var BAD_FILE_MESSAGE = "This file isn't a valid unit or backup.";
   var MAX_IMPORT_ERRORS = 5;
+  var THEMES = ['light', 'dark'];
   var DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
   function newSave() {
@@ -21,7 +23,9 @@
       currentUnitId: null,
       units: {},
       progress: {},
-      settings: { sound: true, angle: 'deg' }
+      days: {},
+      badges: {},
+      settings: { sound: true, angle: 'deg', goal: AQ.game.CONSTANTS.DEFAULT_GOAL, theme: 'light' }
     };
   }
 
@@ -37,13 +41,34 @@
     return Object.prototype.hasOwnProperty.call(object, key);
   }
 
+  function isDate(value) {
+    return typeof value === 'string' && DATE_PATTERN.test(value);
+  }
+
+  // The day log: { "YYYY-MM-DD": { xp, studied } }.
+  function isValidDays(days) {
+    if (!isPlainObject(days)) return false;
+    return Object.keys(days).every(function (date) {
+      var entry = days[date];
+      return isDate(date) && isPlainObject(entry) &&
+        typeof entry.xp === 'number' && isFinite(entry.xp) && entry.xp >= 0 &&
+        typeof entry.studied === 'boolean';
+    });
+  }
+
+  // Earned badges: { badgeId: "YYYY-MM-DD" }.
+  function isValidBadges(badges) {
+    if (!isPlainObject(badges)) return false;
+    return Object.keys(badges).every(function (id) { return isDate(badges[id]); });
+  }
+
   function isValidSave(candidate) {
     if (!isPlainObject(candidate)) return false;
     if (candidate.version !== 1) return false;
     if (typeof candidate.xp !== 'number' || !isFinite(candidate.xp) || candidate.xp < 0) return false;
     if (!Number.isInteger(candidate.streak) || candidate.streak < 0) return false;
     var date = candidate.lastStudyDate;
-    if (date !== null && !(typeof date === 'string' && DATE_PATTERN.test(date))) return false;
+    if (date !== null && !isDate(date)) return false;
     if (!isPlainObject(candidate.units) || !isPlainObject(candidate.progress)) return false;
 
     var unitIds = Object.keys(candidate.units);
@@ -61,15 +86,24 @@
       var settings = candidate.settings;
       if (!(isPlainObject(settings) && typeof settings.sound === 'boolean')) return false;
       if (has(settings, 'angle') && settings.angle !== 'deg' && settings.angle !== 'rad') return false;
+      if (has(settings, 'goal') && AQ.game.CONSTANTS.GOAL_CHOICES.indexOf(settings.goal) === -1) return false;
+      if (has(settings, 'theme') && THEMES.indexOf(settings.theme) === -1) return false;
     }
+    if (has(candidate, 'days') && !isValidDays(candidate.days)) return false;
+    if (has(candidate, 'badges') && !isValidBadges(candidate.badges)) return false;
     if (candidate.currentUnitId !== null && unitIds.indexOf(candidate.currentUnitId) === -1) return false;
     return true;
   }
 
-  // Older v1 saves lack settings, settings.angle and testBest. Fill them in on the object in hand.
+  // Older v1 saves lack settings, settings.angle, testBest, and the home screen fields
+  // (days, badges, settings.goal, settings.theme). Fill them in on the object in hand.
   function fillDefaults(save) {
     if (!has(save, 'settings')) save.settings = { sound: true };
     if (!has(save.settings, 'angle')) save.settings.angle = 'deg';
+    if (!has(save.settings, 'goal')) save.settings.goal = AQ.game.CONSTANTS.DEFAULT_GOAL;
+    if (!has(save.settings, 'theme')) save.settings.theme = 'light';
+    if (!has(save, 'days')) save.days = {};
+    if (!has(save, 'badges')) save.badges = {};
     Object.keys(save.progress).forEach(function (id) {
       if (!has(save.progress[id], 'testBest')) save.progress[id].testBest = null;
     });

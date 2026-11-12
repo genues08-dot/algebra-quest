@@ -19,7 +19,9 @@ function makeSave(unit) {
     version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: unit.id,
     units: { [unit.id]: unit },
     progress: { [unit.id]: { completedLessons: [], review: [], testBest: null } },
-    settings: { sound: true, angle: 'deg' }
+    days: {},
+    badges: {},
+    settings: { sound: true, angle: 'deg', goal: 100, theme: 'light' }
   };
 }
 
