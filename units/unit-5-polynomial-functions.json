@@ -298,6 +298,315 @@
               "solution": "12 · −7 = −84, a²·a⁴ = a⁶, b⁵·b⁵ = b¹⁰. So 12a²b⁵ · −7a⁴b⁵ = −84a⁶b¹⁰."
             }
           ]
+        },
+        {
+          "id": "monomials-3",
+          "teach": [
+            {
+              "title": "Signs and powers",
+              "text": [
+                "A negative number raised to an even power is positive. Raised to an odd power, it stays negative: (−2)⁴ = 16, but (−2)³ = −8.",
+                "Watch the parentheses. In −x², only x is squared, so −x² is negative. In (−x)², the negative is squared too, so (−x)² = x²."
+              ],
+              "example": {
+                "problem": "Simplify (−3x²y⁴)³ · 2xy",
+                "steps": [
+                  "Cube everything in the parentheses: (−3)³ = −27, (x²)³ = x⁶, (y⁴)³ = y¹².",
+                  "So you have −27x⁶y¹² · 2xy.",
+                  "Multiply the numbers: −27 · 2 = −54. Add the exponents: x⁶ · x = x⁷ and y¹² · y = y¹³.",
+                  "Answer: −54x⁷y¹³"
+                ]
+              }
+            },
+            {
+              "title": "A variable with no exponent",
+              "text": [
+                "A variable written alone has an exponent of 1: x = x¹.",
+                "Count that 1 when you add exponents: x⁴ · x = x⁵, not x⁴."
+              ],
+              "example": {
+                "problem": "Simplify 4a³b · 5ab²",
+                "steps": [
+                  "Numbers: 4 · 5 = 20.",
+                  "a: a³ · a¹ = a⁴.",
+                  "b: b¹ · b² = b³.",
+                  "Answer: 20a⁴b³"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "mo3-q1",
+              "type": "input",
+              "prompt": "x⁶ · x · x³ = x^n. What is n?",
+              "answers": [
+                "10"
+              ],
+              "hint": "The x in the middle has an exponent of 1.",
+              "solution": "Add all three exponents: 6 + 1 + 3 = 10, so x⁶ · x · x³ = x¹⁰."
+            },
+            {
+              "id": "mo3-q2",
+              "type": "input",
+              "prompt": "What is (−2)⁵?",
+              "answers": [
+                "-32"
+              ],
+              "hint": "An odd power of a negative number stays negative.",
+              "solution": "(−2)⁵ = (−2)(−2)(−2)(−2)(−2) = −32. The exponent 5 is odd, so the answer is negative."
+            },
+            {
+              "id": "mo3-q3",
+              "type": "choice",
+              "prompt": "Simplify (−5a³b)³.",
+              "choices": [
+                "−125a⁹b³",
+                "125a⁹b³",
+                "−15a⁹b³",
+                "−125a⁶b³"
+              ],
+              "answer": 0,
+              "hint": "Cube every factor: the −5, the a³, and the b.",
+              "solution": "(−5)³ = −125, (a³)³ = a⁹, and b³ stays b³. Answer: −125a⁹b³."
+            },
+            {
+              "id": "mo3-q4",
+              "type": "choice",
+              "prompt": "Simplify 4m³n² · (−6mn⁵).",
+              "choices": [
+                "−24m⁴n⁷",
+                "−24m³n⁷",
+                "−24m³n¹⁰",
+                "−2m⁴n⁷"
+              ],
+              "answer": 0,
+              "hint": "Multiply the numbers. Then add the exponents of m and of n. The m in −6mn⁵ has an exponent of 1.",
+              "solution": "4 · (−6) = −24. m³ · m = m⁴. n² · n⁵ = n⁷. Answer: −24m⁴n⁷."
+            },
+            {
+              "id": "mo3-q5",
+              "type": "input",
+              "prompt": "(3x⁴)² = kx⁸. What is k?",
+              "answers": [
+                "9"
+              ],
+              "hint": "Square the 3 as well as the x⁴.",
+              "solution": "(3x⁴)² = 3² · (x⁴)² = 9x⁸, so k = 9."
+            },
+            {
+              "id": "mo3-q6",
+              "type": "choice",
+              "prompt": "Simplify (2x⁴y)³ · (−x²y³)².",
+              "choices": [
+                "8x¹⁶y⁹",
+                "−8x¹⁶y⁹",
+                "6x¹⁶y⁹",
+                "8x⁴⁸y¹⁸"
+              ],
+              "answer": 0,
+              "hint": "Do each power first. An even power makes the negative positive.",
+              "solution": "(2x⁴y)³ = 8x¹²y³ and (−x²y³)² = x⁴y⁶. Multiply: 8 · 1 = 8, x¹² · x⁴ = x¹⁶, y³ · y⁶ = y⁹. Answer: 8x¹⁶y⁹."
+            },
+            {
+              "id": "mo3-q7",
+              "type": "choice",
+              "prompt": "Simplify (−2a²b³)⁴ · 3ab.",
+              "choices": [
+                "48a⁹b¹³",
+                "−48a⁹b¹³",
+                "−24a⁹b¹³",
+                "48a⁸b¹²"
+              ],
+              "answer": 0,
+              "hint": "(−2)⁴ is positive. Don't forget the a and b in 3ab.",
+              "solution": "(−2a²b³)⁴ = 16a⁸b¹². Times 3ab: 16 · 3 = 48, a⁸ · a = a⁹, b¹² · b = b¹³. Answer: 48a⁹b¹³."
+            },
+            {
+              "id": "mo3-q8",
+              "type": "choice",
+              "prompt": "Simplify 6x³y · (−2x²y)³ − 10x⁹y⁴.",
+              "choices": [
+                "−58x⁹y⁴",
+                "−38x⁹y⁴",
+                "−46x⁹y⁴",
+                "58x⁹y⁴"
+              ],
+              "answer": 0,
+              "hint": "Cube first, then multiply, then combine the like terms.",
+              "solution": "(−2x²y)³ = −8x⁶y³. 6x³y · (−8x⁶y³) = −48x⁹y⁴. Then −48x⁹y⁴ − 10x⁹y⁴ = −58x⁹y⁴."
+            },
+            {
+              "id": "mo3-q9",
+              "type": "choice",
+              "prompt": "A box has length 2x³, width 3x², and height 5x. Which expression is its volume?",
+              "choices": [
+                "30x⁶",
+                "30x⁵",
+                "10x⁶",
+                "10x⁵"
+              ],
+              "answer": 0,
+              "hint": "Volume = length · width · height. The x in 5x has an exponent of 1.",
+              "solution": "2 · 3 · 5 = 30 and x³ · x² · x = x⁶. Volume: 30x⁶."
+            }
+          ]
+        },
+        {
+          "id": "monomials-4",
+          "teach": [
+            {
+              "title": "Negative exponents on the top and bottom",
+              "text": [
+                "Use the quotient rule on each variable: top exponent minus bottom exponent. Subtracting a negative exponent is the same as adding.",
+                "If an exponent ends up negative, move that variable to the bottom and make the exponent positive."
+              ],
+              "example": {
+                "problem": "Simplify 12a⁻²b⁵ / (−4a³b⁻¹)",
+                "steps": [
+                  "Numbers: 12 / (−4) = −3.",
+                  "a: −2 − 3 = −5, so a⁻⁵ = 1/a⁵. The a⁵ goes on the bottom.",
+                  "b: 5 − (−1) = 6.",
+                  "Answer: −3b⁶/a⁵"
+                ]
+              }
+            },
+            {
+              "title": "Power of a fraction",
+              "text": [
+                "Raise the top and the bottom to the power: (a/b)^n = a^n / b^n.",
+                "A negative power flips the fraction first: (a/b)^(−n) = (b/a)^n."
+              ],
+              "example": {
+                "problem": "Simplify (x²/(3y))⁻²",
+                "steps": [
+                  "Flip the fraction to make the power positive: (3y/x²)².",
+                  "Square the top and the bottom: (3y)² = 9y² and (x²)² = x⁴.",
+                  "Answer: 9y²/x⁴"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "mo4-q1",
+              "type": "input",
+              "prompt": "x⁻³ · x⁷ = x^n. What is n?",
+              "answers": [
+                "4"
+              ],
+              "hint": "Same base, so add the exponents. One of them is negative.",
+              "solution": "−3 + 7 = 4, so x⁻³ · x⁷ = x⁴."
+            },
+            {
+              "id": "mo4-q2",
+              "type": "input",
+              "prompt": "y² / y⁹ = y^n. What is n?",
+              "answers": [
+                "-7"
+              ],
+              "hint": "Same base, so subtract the exponents: top minus bottom.",
+              "solution": "2 − 9 = −7, so y² / y⁹ = y⁻⁷ = 1/y⁷."
+            },
+            {
+              "id": "mo4-q3",
+              "type": "choice",
+              "prompt": "Write 6x⁻²y³ using positive exponents only.",
+              "choices": [
+                "6y³/x²",
+                "−6x²y³",
+                "y³/(6x²)",
+                "6x²y³"
+              ],
+              "answer": 0,
+              "hint": "Only the x has a negative exponent. A negative exponent does not make the number negative.",
+              "solution": "x⁻² = 1/x², so x² moves to the bottom. The 6 and y³ stay on top: 6y³/x²."
+            },
+            {
+              "id": "mo4-q4",
+              "type": "choice",
+              "prompt": "Simplify 20a⁵b² / (−5a²b⁶).",
+              "choices": [
+                "−4a³/b⁴",
+                "4a³/b⁴",
+                "−4a³b⁴",
+                "−4a⁷b⁸"
+              ],
+              "answer": 0,
+              "hint": "Divide the numbers. Subtract the exponents: top minus bottom.",
+              "solution": "20 / (−5) = −4. a: 5 − 2 = 3. b: 2 − 6 = −4, so b⁴ goes on the bottom. Answer: −4a³/b⁴."
+            },
+            {
+              "id": "mo4-q5",
+              "type": "choice",
+              "prompt": "Simplify (3x²/y⁴)³.",
+              "choices": [
+                "27x⁶/y¹²",
+                "9x⁶/y¹²",
+                "3x⁶/y¹²",
+                "27x⁵/y⁷"
+              ],
+              "answer": 0,
+              "hint": "Cube the top and the bottom. Cube the 3 too.",
+              "solution": "Top: (3x²)³ = 27x⁶. Bottom: (y⁴)³ = y¹². Answer: 27x⁶/y¹²."
+            },
+            {
+              "id": "mo4-q6",
+              "type": "choice",
+              "prompt": "Simplify (2a³b⁻²)⁻².",
+              "choices": [
+                "b⁴/(4a⁶)",
+                "4b⁴/a⁶",
+                "b⁴/(2a⁶)",
+                "a⁶/(4b⁴)"
+              ],
+              "answer": 0,
+              "hint": "Multiply every exponent by −2, including the invisible 1 on the 2.",
+              "solution": "2⁻² = 1/4, (a³)⁻² = a⁻⁶, (b⁻²)⁻² = b⁴. So (1/4) · a⁻⁶ · b⁴ = b⁴/(4a⁶)."
+            },
+            {
+              "id": "mo4-q7",
+              "type": "choice",
+              "prompt": "A rectangle has area 36x⁷y⁵ and length 4x³y². Which expression is its width?",
+              "choices": [
+                "9x⁴y³",
+                "32x⁴y³",
+                "9x¹⁰y⁷",
+                "144x¹⁰y⁷"
+              ],
+              "answer": 0,
+              "hint": "Width = area ÷ length. Divide the numbers and subtract the exponents.",
+              "solution": "36 / 4 = 9. x: 7 − 3 = 4. y: 5 − 2 = 3. Width: 9x⁴y³."
+            },
+            {
+              "id": "mo4-q8",
+              "type": "choice",
+              "prompt": "Simplify (4x³y⁻¹)² / (8x⁻²y³).",
+              "choices": [
+                "2x⁸/y⁵",
+                "2x⁴/y⁵",
+                "2x⁸y",
+                "x⁸/y⁵"
+              ],
+              "answer": 0,
+              "hint": "Square the top first. Then subtract exponents. 6 − (−2) means 6 + 2.",
+              "solution": "Top: (4x³y⁻¹)² = 16x⁶y⁻². Divide: 16/8 = 2, x: 6 − (−2) = 8, y: −2 − 3 = −5. Answer: 2x⁸/y⁵."
+            },
+            {
+              "id": "mo4-q9",
+              "type": "choice",
+              "prompt": "Simplify (9m⁴n⁻³ · 2m⁻⁶n⁵) / (6m⁻¹n).",
+              "choices": [
+                "3n/m",
+                "3n/m³",
+                "12n/m",
+                "3mn"
+              ],
+              "answer": 0,
+              "hint": "Simplify the top first. Then subtract the exponents, watching the negatives.",
+              "solution": "Top: 18m⁻²n². Divide by 6m⁻¹n: 18/6 = 3, m: −2 − (−1) = −1, n: 2 − 1 = 1. So 3m⁻¹n = 3n/m."
+            }
+          ]
         }
       ]
     },
@@ -588,6 +897,301 @@
               "solution": "x³ − 2x has degree 3 and 2 terms. x³ − 2x² + 1 has 3 terms. 3x + 2 and x² − 8 are not degree 3."
             }
           ]
+        },
+        {
+          "id": "classify-3",
+          "teach": [
+            {
+              "title": "Degree with more than one variable",
+              "text": [
+                "The degree of a term is the sum of the exponents of its variables. 3x²y⁴ has degree 2 + 4 = 6.",
+                "The degree of the polynomial is the highest degree of any of its terms."
+              ],
+              "example": {
+                "problem": "Find the degree of 3x²y⁴ − 7xy³ + 2x⁵.",
+                "steps": [
+                  "3x²y⁴: 2 + 4 = 6.",
+                  "−7xy³: 1 + 3 = 4.",
+                  "2x⁵: 5.",
+                  "The highest is 6, so the degree is 6."
+                ]
+              }
+            },
+            {
+              "title": "Combine like terms before you count",
+              "text": [
+                "Count the terms only after the polynomial is simplified. Like terms combine into one term, and some may cancel."
+              ],
+              "example": {
+                "problem": "Classify 4x³ − 2x + 7 − 4x³ + x.",
+                "steps": [
+                  "4x³ − 4x³ = 0, so the x³ terms cancel.",
+                  "−2x + x = −x.",
+                  "What is left: −x + 7.",
+                  "Degree 1 and 2 terms: linear binomial."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "cl3-q1",
+              "type": "input",
+              "prompt": "What is the degree of the term −6x³y⁵?",
+              "answers": [
+                "8"
+              ],
+              "hint": "Add the exponents of the variables.",
+              "solution": "x has exponent 3 and y has exponent 5. 3 + 5 = 8."
+            },
+            {
+              "id": "cl3-q2",
+              "type": "input",
+              "prompt": "How many terms does 5x⁴ − 2x³ + x − 11 have?",
+              "answers": [
+                "4"
+              ],
+              "hint": "Terms are separated by + and − signs.",
+              "solution": "The terms are 5x⁴, −2x³, x, and −11. That is 4 terms."
+            },
+            {
+              "id": "cl3-q3",
+              "type": "input",
+              "prompt": "What is the degree of 2a⁴b − 9a²b³c + ab?",
+              "answers": [
+                "6"
+              ],
+              "hint": "Find the degree of each term by adding its exponents. c has an exponent of 1.",
+              "solution": "2a⁴b: 4 + 1 = 5. −9a²b³c: 2 + 3 + 1 = 6. ab: 1 + 1 = 2. The highest is 6."
+            },
+            {
+              "id": "cl3-q4",
+              "type": "choice",
+              "prompt": "Classify 7 − 3x² + x.",
+              "choices": [
+                "quadratic trinomial",
+                "linear trinomial",
+                "quadratic binomial",
+                "cubic trinomial"
+              ],
+              "answer": 0,
+              "hint": "Find the highest exponent and count the terms.",
+              "solution": "The highest exponent is 2 (quadratic) and there are 3 terms (trinomial)."
+            },
+            {
+              "id": "cl3-q5",
+              "type": "choice",
+              "prompt": "Classify −2y⁴ + 6.",
+              "choices": [
+                "quartic binomial",
+                "quadratic binomial",
+                "quartic monomial",
+                "cubic binomial"
+              ],
+              "answer": 0,
+              "hint": "Degree 4 has a special name.",
+              "solution": "The highest exponent is 4 (quartic) and there are 2 terms (binomial)."
+            },
+            {
+              "id": "cl3-q6",
+              "type": "choice",
+              "prompt": "Write 3x − 5x⁴ + 8 − x³ in standard form.",
+              "choices": [
+                "−5x⁴ − x³ + 3x + 8",
+                "5x⁴ − x³ + 3x + 8",
+                "−5x⁴ + x³ + 3x + 8",
+                "−5x⁴ − x³ + 3x − 8"
+              ],
+              "answer": 0,
+              "hint": "Order the terms from the highest exponent down. Each sign moves with its own term.",
+              "solution": "Exponents: −5x⁴ (4), −x³ (3), 3x (1), 8 (0). In order: −5x⁴ − x³ + 3x + 8."
+            },
+            {
+              "id": "cl3-q7",
+              "type": "choice",
+              "prompt": "Combine like terms, then classify: 4x³ − x + 2x³ + 9.",
+              "choices": [
+                "cubic trinomial",
+                "cubic polynomial",
+                "quadratic trinomial",
+                "cubic binomial"
+              ],
+              "answer": 0,
+              "hint": "4x³ and 2x³ are like terms. Count the terms after you combine them.",
+              "solution": "4x³ + 2x³ = 6x³, so it simplifies to 6x³ − x + 9. Degree 3 (cubic) and 3 terms (trinomial)."
+            },
+            {
+              "id": "cl3-q8",
+              "type": "choice",
+              "prompt": "Which polynomial is a quartic trinomial?",
+              "choices": [
+                "x⁴ − 3x² + 7",
+                "x⁴ − 3x³ + x² − 7",
+                "4x³ − x + 2",
+                "x⁴ + 3x"
+              ],
+              "answer": 0,
+              "hint": "You need degree 4 and exactly 3 terms.",
+              "solution": "x⁴ − 3x² + 7 has degree 4 and 3 terms. x⁴ − 3x³ + x² − 7 has 4 terms, 4x³ − x + 2 is cubic, and x⁴ + 3x has 2 terms."
+            },
+            {
+              "id": "cl3-q9",
+              "type": "input",
+              "prompt": "What is the degree of 8m²n³ − m⁴ + 5mn?",
+              "answers": [
+                "5"
+              ],
+              "hint": "The biggest single exponent is not always the degree. Add the exponents in each term.",
+              "solution": "8m²n³: 2 + 3 = 5. −m⁴: 4. 5mn: 2. The highest is 5, so the degree is 5."
+            }
+          ]
+        },
+        {
+          "id": "classify-4",
+          "teach": [
+            {
+              "title": "Standard form with two variables",
+              "text": [
+                "Find the degree of each term by adding its exponents.",
+                "Write the terms from the highest degree to the lowest. A number with no variable goes last."
+              ],
+              "example": {
+                "problem": "Write 6x²y − 4 + x³y² + 2xy in standard form.",
+                "steps": [
+                  "Degrees: 6x²y is 3, −4 is 0, x³y² is 5, 2xy is 2.",
+                  "Order them 5, 3, 2, 0.",
+                  "Answer: x³y² + 6x²y + 2xy − 4"
+                ]
+              }
+            },
+            {
+              "title": "Expand before you classify",
+              "text": [
+                "Multiply out any parentheses and combine like terms first. Terms can cancel, so the degree can drop.",
+                "Then name the polynomial and read the leading coefficient from standard form."
+              ],
+              "example": {
+                "problem": "Classify y = (2x − 1)² − 4x² and give its leading coefficient.",
+                "steps": [
+                  "(2x − 1)² = 4x² − 4x + 1.",
+                  "Subtract 4x²: 4x² − 4x + 1 − 4x² = −4x + 1.",
+                  "Degree 1 and 2 terms: linear binomial. The leading coefficient is −4."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "cl4-q1",
+              "type": "input",
+              "prompt": "y = 5x² − 3x⁴ + x − 2. What is the leading coefficient?",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Find the term with the highest exponent. Its number is the leading coefficient.",
+              "solution": "The highest exponent is 4, in −3x⁴. In standard form y = −3x⁴ + 5x² + x − 2, so the leading coefficient is −3."
+            },
+            {
+              "id": "cl4-q2",
+              "type": "input",
+              "prompt": "y = −(2x)³ + x² − 1. What is the leading coefficient?",
+              "answers": [
+                "-8"
+              ],
+              "hint": "Cube the 2 and the x, then keep the minus sign in front.",
+              "solution": "(2x)³ = 8x³, so −(2x)³ = −8x³. y = −8x³ + x² − 1, and the leading coefficient is −8."
+            },
+            {
+              "id": "cl4-q3",
+              "type": "choice",
+              "prompt": "Write 4ab − 2a³b² + 7 + a²b in standard form.",
+              "choices": [
+                "−2a³b² + a²b + 4ab + 7",
+                "2a³b² + a²b + 4ab + 7",
+                "−2a³b² + a²b + 4ab − 7",
+                "−2a³b² − a²b + 4ab + 7"
+              ],
+              "answer": 0,
+              "hint": "Add the exponents in each term to get its degree. Keep each sign with its term.",
+              "solution": "Degrees: 4ab is 2, −2a³b² is 5, 7 is 0, a²b is 3. Order 5, 3, 2, 0: −2a³b² + a²b + 4ab + 7."
+            },
+            {
+              "id": "cl4-q4",
+              "type": "input",
+              "prompt": "Simplify y = (x − 5)(x + 2) − x². What is the degree of the result?",
+              "answers": [
+                "1"
+              ],
+              "hint": "Multiply out (x − 5)(x + 2) first. Then see what happens to the x².",
+              "solution": "(x − 5)(x + 2) = x² − 3x − 10. Subtract x²: −3x − 10. The highest exponent left is 1."
+            },
+            {
+              "id": "cl4-q5",
+              "type": "choice",
+              "prompt": "Simplify y = 2x³ − x(x² + 4), then classify it.",
+              "choices": [
+                "x³ − 4x, cubic binomial",
+                "x³ + 4x, cubic binomial",
+                "3x³ + 4x, cubic binomial",
+                "x³ − 4, cubic binomial"
+              ],
+              "answer": 0,
+              "hint": "Distribute −x to both terms in the parentheses.",
+              "solution": "−x(x² + 4) = −x³ − 4x. Then 2x³ − x³ − 4x = x³ − 4x. Degree 3 (cubic) and 2 terms (binomial)."
+            },
+            {
+              "id": "cl4-q6",
+              "type": "choice",
+              "prompt": "Simplify y = (x + 4)² − (x² + 16), then classify it.",
+              "choices": [
+                "8x, linear monomial",
+                "8x + 32, linear binomial",
+                "2x² + 8x + 32, quadratic trinomial",
+                "8x + 16, linear binomial"
+              ],
+              "answer": 0,
+              "hint": "(x + 4)² has a middle term. The minus sign goes to both terms in (x² + 16).",
+              "solution": "(x + 4)² = x² + 8x + 16. Subtract: x² + 8x + 16 − x² − 16 = 8x. Degree 1 (linear) and 1 term (monomial)."
+            },
+            {
+              "id": "cl4-q7",
+              "type": "choice",
+              "prompt": "Simplify y = 4x²(x − 1) + 4x², then classify it.",
+              "choices": [
+                "cubic monomial",
+                "cubic trinomial",
+                "cubic binomial",
+                "quadratic monomial"
+              ],
+              "answer": 0,
+              "hint": "Distribute 4x² first. Then combine like terms.",
+              "solution": "4x²(x − 1) = 4x³ − 4x². Add 4x²: 4x³. Degree 3 (cubic) and 1 term (monomial)."
+            },
+            {
+              "id": "cl4-q8",
+              "type": "choice",
+              "prompt": "Simplify y = (x² + 1)(x² − 1) + 1, then classify it.",
+              "choices": [
+                "x⁴, quartic monomial",
+                "x⁴ + 2, quartic binomial",
+                "x⁴ − 2x², quartic binomial",
+                "x⁴ + 2x², quartic binomial"
+              ],
+              "answer": 0,
+              "hint": "(x² + 1)(x² − 1) is a sum times a difference, so the middle terms cancel.",
+              "solution": "(x² + 1)(x² − 1) = x⁴ − 1. Add 1: x⁴. Degree 4 (quartic) and 1 term (monomial)."
+            },
+            {
+              "id": "cl4-q9",
+              "type": "input",
+              "prompt": "f(x) = 6 − x³ + 2x(x² − 1). What is the leading coefficient after you simplify?",
+              "answers": [
+                "1"
+              ],
+              "hint": "Distribute 2x, then combine the x³ terms.",
+              "solution": "2x(x² − 1) = 2x³ − 2x. So f(x) = 6 − x³ + 2x³ − 2x = x³ − 2x + 6. The leading coefficient is 1."
+            }
+          ]
         }
       ]
     },
@@ -835,6 +1439,305 @@
               "answer": 0,
               "hint": "Change every sign in the second part. The k² terms cancel.",
               "solution": "5k² − 3k + 2 − 5k² − 3k + 2. k²: 0. k: −3k − 3k = −6k. Numbers: 2 + 2 = 4. Answer: −6k + 4."
+            }
+          ]
+        },
+        {
+          "id": "add-subtract-3",
+          "teach": [
+            {
+              "title": "Like terms with two variables",
+              "text": [
+                "Like terms have the same variables with the same exponents. 3x²y and −5x²y are like terms. 3x²y and 3xy² are not.",
+                "Add the coefficients of like terms. The variables and exponents stay the same."
+              ],
+              "example": {
+                "problem": "(4x²y − 3xy + 2y²) + (−x²y + 5xy² + 7xy)",
+                "steps": [
+                  "x²y: 4x²y − x²y = 3x²y.",
+                  "xy: −3xy + 7xy = 4xy.",
+                  "5xy² and 2y² have no like terms to combine with.",
+                  "Answer: 3x²y + 5xy² + 4xy + 2y²"
+                ]
+              }
+            },
+            {
+              "title": "Adding three polynomials",
+              "text": [
+                "Line up like terms in columns, one column for each power. Leave a gap where a power is missing.",
+                "Then add down each column."
+              ],
+              "example": {
+                "problem": "(2x³ − x + 4) + (x² + 3x) + (−5x³ + 2x² − 6)",
+                "steps": [
+                  "x³: 2x³ − 5x³ = −3x³.",
+                  "x²: x² + 2x² = 3x².",
+                  "x: −x + 3x = 2x.",
+                  "Numbers: 4 − 6 = −2.",
+                  "Answer: −3x³ + 3x² + 2x − 2"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "as3-q1",
+              "type": "choice",
+              "prompt": "Which term is a like term with 6a²b?",
+              "choices": [
+                "−a²b",
+                "6ab²",
+                "6a²",
+                "6a²b²"
+              ],
+              "answer": 0,
+              "hint": "Like terms need the same variables with the same exponents. The number in front can be different.",
+              "solution": "−a²b has a² and b, just like 6a²b. 6ab² has the exponents switched, 6a² has no b, and 6a²b² has b²."
+            },
+            {
+              "id": "as3-q2",
+              "type": "input",
+              "prompt": "4y³ − 9y³ + 2y³ = ky³. What is k?",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Add the coefficients. The exponent stays 3.",
+              "solution": "4 − 9 + 2 = −3, so the answer is −3y³ and k = −3."
+            },
+            {
+              "id": "as3-q3",
+              "type": "choice",
+              "prompt": "Simplify (6x² − 2x + 9) + (−4x² − 7x + 1).",
+              "choices": [
+                "2x² − 9x + 10",
+                "2x² − 5x + 10",
+                "10x² − 9x + 10",
+                "2x⁴ − 9x² + 10"
+              ],
+              "answer": 0,
+              "hint": "Combine x² with x², x with x, and numbers with numbers. Adding does not change exponents.",
+              "solution": "x²: 6x² − 4x² = 2x². x: −2x − 7x = −9x. Numbers: 9 + 1 = 10. Answer: 2x² − 9x + 10."
+            },
+            {
+              "id": "as3-q4",
+              "type": "choice",
+              "prompt": "Simplify (3a³ + a − 5) + (2a² − 4a + 5).",
+              "choices": [
+                "3a³ + 2a² − 3a",
+                "5a³ − 3a",
+                "3a³ + 2a² − 3a − 10",
+                "3a³ + 2a² + 5a"
+              ],
+              "answer": 0,
+              "hint": "a³ and a² are not like terms. The numbers cancel.",
+              "solution": "a³: 3a³. a²: 2a². a: a − 4a = −3a. Numbers: −5 + 5 = 0. Answer: 3a³ + 2a² − 3a."
+            },
+            {
+              "id": "as3-q5",
+              "type": "choice",
+              "prompt": "Simplify (5ab² − 2a²b + 3) + (4a²b − ab² − 8).",
+              "choices": [
+                "2a²b + 4ab² − 5",
+                "−6a²b + 4ab² − 5",
+                "2a²b + 6ab² − 5",
+                "2a²b + 4ab² − 11"
+              ],
+              "answer": 0,
+              "hint": "a²b and ab² are different terms. Combine each one with its own match.",
+              "solution": "a²b: −2a²b + 4a²b = 2a²b. ab²: 5ab² − ab² = 4ab². Numbers: 3 − 8 = −5. Answer: 2a²b + 4ab² − 5."
+            },
+            {
+              "id": "as3-q6",
+              "type": "input",
+              "prompt": "(2n⁴ − 5n² + n) + (n³ + 5n² − 6). What is the coefficient of n² in the answer?",
+              "answers": [
+                "0"
+              ],
+              "hint": "Add only the n² terms.",
+              "solution": "−5n² + 5n² = 0n², so the n² terms cancel. The answer is 2n⁴ + n³ + n − 6, with no n² term."
+            },
+            {
+              "id": "as3-q7",
+              "type": "choice",
+              "prompt": "Simplify (x³ + 2x) + (4x² − 3x + 1) + (−2x³ − x² + 5).",
+              "choices": [
+                "−x³ + 3x² − x + 6",
+                "3x³ + 3x² − x + 6",
+                "−x³ + 3x² + 5x + 6",
+                "−x³ + 5x² − x + 6"
+              ],
+              "answer": 0,
+              "hint": "Line up the columns: x³, x², x, and numbers.",
+              "solution": "x³: x³ − 2x³ = −x³. x²: 4x² − x² = 3x². x: 2x − 3x = −x. Numbers: 1 + 5 = 6. Answer: −x³ + 3x² − x + 6."
+            },
+            {
+              "id": "as3-q8",
+              "type": "choice",
+              "prompt": "A triangle has sides 3x² + 2, x² − 4x, and 5x + 7. Which expression is its perimeter?",
+              "choices": [
+                "4x² + x + 9",
+                "4x² + 9x + 9",
+                "4x² − x + 9",
+                "4x² + x + 5"
+              ],
+              "answer": 0,
+              "hint": "Perimeter = the sum of all three sides.",
+              "solution": "x²: 3x² + x² = 4x². x: −4x + 5x = x. Numbers: 2 + 7 = 9. Perimeter: 4x² + x + 9."
+            }
+          ]
+        },
+        {
+          "id": "add-subtract-4",
+          "teach": [
+            {
+              "title": "Subtract by adding the opposite",
+              "text": [
+                "Rewrite A − B as A + (−B): change the sign of every term in B.",
+                "Then combine like terms, just as you do when adding."
+              ],
+              "example": {
+                "problem": "(6x³ − 2x² + 5) − (−3x³ + 4x − 1)",
+                "steps": [
+                  "Change every sign in the second part: −3x³ becomes +3x³, 4x becomes −4x, −1 becomes +1.",
+                  "6x³ − 2x² + 5 + 3x³ − 4x + 1.",
+                  "x³: 6x³ + 3x³ = 9x³. Numbers: 5 + 1 = 6.",
+                  "Answer: 9x³ − 2x² − 4x + 6"
+                ]
+              }
+            },
+            {
+              "title": "Adding and subtracting together",
+              "text": [
+                "Remove the parentheses one group at a time. A plus sign in front leaves the signs alone. A minus sign changes every sign in that group."
+              ],
+              "example": {
+                "problem": "(2y² + y) − (y² − 3) + (4y − 5)",
+                "steps": [
+                  "Remove the parentheses: 2y² + y − y² + 3 + 4y − 5.",
+                  "y²: 2y² − y² = y². y: y + 4y = 5y. Numbers: 3 − 5 = −2.",
+                  "Answer: y² + 5y − 2"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "as4-q1",
+              "type": "choice",
+              "prompt": "What is −(−4m³ + m − 6)?",
+              "choices": [
+                "4m³ − m + 6",
+                "4m³ + m − 6",
+                "−4m³ − m + 6",
+                "4m³ − m − 6"
+              ],
+              "answer": 0,
+              "hint": "The minus sign changes the sign of every term inside.",
+              "solution": "−4m³ becomes 4m³, m becomes −m, and −6 becomes 6. Answer: 4m³ − m + 6."
+            },
+            {
+              "id": "as4-q2",
+              "type": "choice",
+              "prompt": "Simplify (7x² + 3x − 2) − (4x² − 5x + 6).",
+              "choices": [
+                "3x² + 8x − 8",
+                "3x² − 2x + 4",
+                "3x² + 8x + 4",
+                "11x² + 8x − 8"
+              ],
+              "answer": 0,
+              "hint": "Change every sign in the second part, then combine like terms.",
+              "solution": "7x² + 3x − 2 − 4x² + 5x − 6. x²: 3x². x: 3x + 5x = 8x. Numbers: −2 − 6 = −8. Answer: 3x² + 8x − 8."
+            },
+            {
+              "id": "as4-q3",
+              "type": "choice",
+              "prompt": "Simplify (2a³ − a² + 9) − (5a³ + 3a − 4).",
+              "choices": [
+                "−3a³ − a² − 3a + 13",
+                "−3a³ − a² + 3a + 5",
+                "−3a³ − a² − 3a + 5",
+                "−3a³ − 4a² + 13"
+              ],
+              "answer": 0,
+              "hint": "The minus sign goes to 5a³, to 3a, and to −4.",
+              "solution": "2a³ − a² + 9 − 5a³ − 3a + 4. a³: 2a³ − 5a³ = −3a³. a²: −a². a: −3a. Numbers: 9 + 4 = 13. Answer: −3a³ − a² − 3a + 13."
+            },
+            {
+              "id": "as4-q4",
+              "type": "input",
+              "prompt": "Subtract (2x² − 7x) from (5x² + x). What is the coefficient of x in the answer?",
+              "answers": [
+                "8"
+              ],
+              "hint": "\"Subtract A from B\" means B − A. Here that is (5x² + x) − (2x² − 7x).",
+              "solution": "(5x² + x) − (2x² − 7x) = 5x² + x − 2x² + 7x = 3x² + 8x. The coefficient of x is 8."
+            },
+            {
+              "id": "as4-q5",
+              "type": "choice",
+              "prompt": "Subtract 3k³ − 2k + 1 from k³ + 4k² − 2k.",
+              "choices": [
+                "−2k³ + 4k² − 1",
+                "2k³ − 4k² + 1",
+                "−2k³ + 4k² − 4k − 1",
+                "−2k³ + 4k² + 1"
+              ],
+              "answer": 0,
+              "hint": "Start with k³ + 4k² − 2k, then take away 3k³ − 2k + 1.",
+              "solution": "(k³ + 4k² − 2k) − (3k³ − 2k + 1) = k³ + 4k² − 2k − 3k³ + 2k − 1. k³: −2k³. k: −2k + 2k = 0. Answer: −2k³ + 4k² − 1."
+            },
+            {
+              "id": "as4-q6",
+              "type": "choice",
+              "prompt": "Simplify (3x²y − 4xy² + y³) − (−x²y + 2xy² − 5y³).",
+              "choices": [
+                "4x²y − 6xy² + 6y³",
+                "2x²y − 2xy² − 4y³",
+                "4x²y − 2xy² + 6y³",
+                "4x²y − 6xy² − 4y³"
+              ],
+              "answer": 0,
+              "hint": "Change every sign in the second part: −x²y becomes +x²y and −5y³ becomes +5y³.",
+              "solution": "3x²y − 4xy² + y³ + x²y − 2xy² + 5y³. x²y: 4x²y. xy²: −6xy². y³: 6y³. Answer: 4x²y − 6xy² + 6y³."
+            },
+            {
+              "id": "as4-q7",
+              "type": "choice",
+              "prompt": "Simplify (4n² − 3) − (n² + 2n) + (6n − 1).",
+              "choices": [
+                "3n² + 4n − 4",
+                "3n² + 8n − 4",
+                "3n² − 8n − 4",
+                "5n² + 4n − 4"
+              ],
+              "answer": 0,
+              "hint": "Only the middle group has a minus sign in front of it.",
+              "solution": "4n² − 3 − n² − 2n + 6n − 1. n²: 3n². n: −2n + 6n = 4n. Numbers: −3 − 1 = −4. Answer: 3n² + 4n − 4."
+            },
+            {
+              "id": "as4-q8",
+              "type": "choice",
+              "prompt": "A company's revenue is 5x² + 30x − 40 dollars and its cost is 2x² + 12x + 60 dollars. Profit is revenue minus cost. Which expression is the profit?",
+              "choices": [
+                "3x² + 18x − 100",
+                "3x² + 18x + 20",
+                "7x² + 42x + 20",
+                "3x² + 42x − 100"
+              ],
+              "answer": 0,
+              "hint": "Write (5x² + 30x − 40) − (2x² + 12x + 60) and change every sign in the cost.",
+              "solution": "5x² + 30x − 40 − 2x² − 12x − 60 = 3x² + 18x − 100."
+            },
+            {
+              "id": "as4-q9",
+              "type": "input",
+              "prompt": "(a² − 2ab + b²) − (a² + 2ab + b²) = k·ab. What is k?",
+              "answers": [
+                "-4"
+              ],
+              "hint": "The a² terms cancel and so do the b² terms.",
+              "solution": "a² − 2ab + b² − a² − 2ab − b² = −4ab. So k = −4."
             }
           ]
         }
@@ -1134,6 +2037,309 @@
               ],
               "hint": "Area = ½ · base · height, so height = 2 · area ÷ base.",
               "solution": "Height = 2(14x⁵ + 63x²) / 7x² = (28x⁵ + 126x²) / 7x² = 4x³ + 18. So k = 4."
+            }
+          ]
+        },
+        {
+          "id": "multiply-divide-3",
+          "teach": [
+            {
+              "title": "A monomial times a polynomial",
+              "text": [
+                "Multiply the monomial by every term inside the parentheses.",
+                "For each product, multiply the numbers and add the exponents. Watch the signs."
+              ],
+              "example": {
+                "problem": "−4x²(3x² − 5x + 2)",
+                "steps": [
+                  "−4x² · 3x² = −12x⁴.",
+                  "−4x² · (−5x) = 20x³.",
+                  "−4x² · 2 = −8x².",
+                  "Answer: −12x⁴ + 20x³ − 8x²"
+                ]
+              }
+            },
+            {
+              "title": "Squaring a binomial",
+              "text": [
+                "(a + b)² = (a + b)(a + b) = a² + 2ab + b². Do not forget the middle term.",
+                "(a − b)² = a² − 2ab + b²."
+              ],
+              "example": {
+                "problem": "(3x − 4)²",
+                "steps": [
+                  "Here a = 3x and b = 4.",
+                  "a² = 9x². 2ab = 2 · 3x · 4 = 24x. b² = 16.",
+                  "It is a minus, so the middle term is negative.",
+                  "Answer: 9x² − 24x + 16"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "md3-q1",
+              "type": "choice",
+              "prompt": "Multiply −2y³(y² − 6y + 3).",
+              "choices": [
+                "−2y⁵ + 12y⁴ − 6y³",
+                "−2y⁵ − 12y⁴ − 6y³",
+                "−2y⁵ − 6y + 3",
+                "2y⁵ − 12y⁴ + 6y³"
+              ],
+              "answer": 0,
+              "hint": "Multiply −2y³ by all three terms. A negative times a negative is positive.",
+              "solution": "−2y³ · y² = −2y⁵. −2y³ · (−6y) = 12y⁴. −2y³ · 3 = −6y³. Answer: −2y⁵ + 12y⁴ − 6y³."
+            },
+            {
+              "id": "md3-q2",
+              "type": "input",
+              "prompt": "(x + 7)(x − 3) = x² + bx − 21. What is b?",
+              "answers": [
+                "4"
+              ],
+              "hint": "The middle term comes from the Outer and Inner products.",
+              "solution": "Outer: x · (−3) = −3x. Inner: 7 · x = 7x. −3x + 7x = 4x, so b = 4."
+            },
+            {
+              "id": "md3-q3",
+              "type": "choice",
+              "prompt": "Multiply (2x − 5)(3x + 4).",
+              "choices": [
+                "6x² − 7x − 20",
+                "6x² + 7x − 20",
+                "6x² − 20",
+                "6x² − 23x − 20"
+              ],
+              "answer": 0,
+              "hint": "FOIL, then combine the two middle terms.",
+              "solution": "First: 6x². Outer: 8x. Inner: −15x. Last: −20. 8x − 15x = −7x. Answer: 6x² − 7x − 20."
+            },
+            {
+              "id": "md3-q4",
+              "type": "choice",
+              "prompt": "Multiply (4m + 3)².",
+              "choices": [
+                "16m² + 24m + 9",
+                "16m² + 9",
+                "16m² + 12m + 9",
+                "4m² + 12m + 9"
+              ],
+              "answer": 0,
+              "hint": "(a + b)² = a² + 2ab + b² with a = 4m and b = 3.",
+              "solution": "a² = 16m². 2ab = 2 · 4m · 3 = 24m. b² = 9. Answer: 16m² + 24m + 9."
+            },
+            {
+              "id": "md3-q5",
+              "type": "choice",
+              "prompt": "Multiply (x − 2)(x² + 5x − 3).",
+              "choices": [
+                "x³ + 3x² − 13x + 6",
+                "x³ + 3x² − 13x − 6",
+                "x³ + 7x² − 13x + 6",
+                "x³ + 3x² + 7x + 6"
+              ],
+              "answer": 0,
+              "hint": "Multiply x by each term, then −2 by each term. Then combine.",
+              "solution": "x: x³ + 5x² − 3x. −2: −2x² − 10x + 6. Combine: x³ + 3x² − 13x + 6."
+            },
+            {
+              "id": "md3-q6",
+              "type": "choice",
+              "prompt": "Multiply (a + 3b)(2a − b).",
+              "choices": [
+                "2a² + 5ab − 3b²",
+                "2a² − 5ab − 3b²",
+                "2a² + 7ab − 3b²",
+                "2a² + 5ab + 3b²"
+              ],
+              "answer": 0,
+              "hint": "FOIL. The Outer and Inner products are both ab terms.",
+              "solution": "First: 2a². Outer: −ab. Inner: 6ab. Last: −3b². −ab + 6ab = 5ab. Answer: 2a² + 5ab − 3b²."
+            },
+            {
+              "id": "md3-q7",
+              "type": "choice",
+              "prompt": "Multiply 2x(x + 3)(x − 4).",
+              "choices": [
+                "2x³ − 2x² − 24x",
+                "2x³ + 2x² − 24x",
+                "2x² − 2x − 24",
+                "2x³ − 2x² − 12x"
+              ],
+              "answer": 0,
+              "hint": "Multiply the two binomials first. Then multiply every term by 2x.",
+              "solution": "(x + 3)(x − 4) = x² − x − 12. Times 2x: 2x³ − 2x² − 24x."
+            },
+            {
+              "id": "md3-q8",
+              "type": "choice",
+              "prompt": "A rectangle has length 3x + 2 and width x − 6. Which expression is its area?",
+              "choices": [
+                "3x² − 16x − 12",
+                "3x² − 12",
+                "3x² + 16x − 12",
+                "3x² − 20x − 12"
+              ],
+              "answer": 0,
+              "hint": "Area = length · width. FOIL the two binomials.",
+              "solution": "(3x + 2)(x − 6) = 3x² − 18x + 2x − 12 = 3x² − 16x − 12."
+            }
+          ]
+        },
+        {
+          "id": "multiply-divide-4",
+          "teach": [
+            {
+              "title": "Divide, then check",
+              "text": [
+                "Split the fraction: put each term of the top over the monomial and simplify each small fraction.",
+                "Check your answer by multiplying it by the monomial. You should get the top back."
+              ],
+              "example": {
+                "problem": "(18x⁴ − 12x³ + 6x²) / (6x²)",
+                "steps": [
+                  "18x⁴ / 6x² = 3x².",
+                  "−12x³ / 6x² = −2x.",
+                  "6x² / 6x² = 1.",
+                  "Answer: 3x² − 2x + 1. Check: 6x²(3x² − 2x + 1) = 18x⁴ − 12x³ + 6x²."
+                ]
+              }
+            },
+            {
+              "title": "Cubing a binomial",
+              "text": [
+                "(a + b)³ = (a + b)²(a + b). Square it first, then multiply by the binomial one more time.",
+                "It is never just a³ + b³."
+              ],
+              "example": {
+                "problem": "(x + 2)³",
+                "steps": [
+                  "(x + 2)² = x² + 4x + 4.",
+                  "(x² + 4x + 4)(x + 2) = x³ + 2x² + 4x² + 8x + 4x + 8.",
+                  "Answer: x³ + 6x² + 12x + 8"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "md4-q1",
+              "type": "input",
+              "prompt": "15x⁶ ÷ 3x² = kx⁴. What is k?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Divide the numbers and subtract the exponents.",
+              "solution": "15 ÷ 3 = 5 and x⁶⁻² = x⁴. So k = 5."
+            },
+            {
+              "id": "md4-q2",
+              "type": "choice",
+              "prompt": "Divide (12y⁵ − 18y³ + 6y) / (6y).",
+              "choices": [
+                "2y⁴ − 3y² + 1",
+                "2y⁴ − 3y²",
+                "2y⁵ − 3y³ + y",
+                "2y⁴ − 18y³ + 6y"
+              ],
+              "answer": 0,
+              "hint": "Divide every term by 6y, including the last one.",
+              "solution": "12y⁵/6y = 2y⁴. −18y³/6y = −3y². 6y/6y = 1. Answer: 2y⁴ − 3y² + 1."
+            },
+            {
+              "id": "md4-q3",
+              "type": "choice",
+              "prompt": "Divide (8a⁴b³ − 20a³b² + 4a²b) / (4a²b).",
+              "choices": [
+                "2a²b² − 5ab + 1",
+                "2a²b² − 5ab",
+                "2a²b³ − 5ab² + 1",
+                "2a⁶b⁴ − 5a⁵b³ + a⁴b²"
+              ],
+              "answer": 0,
+              "hint": "For each term, divide the numbers and subtract the exponents of a and of b.",
+              "solution": "8a⁴b³/4a²b = 2a²b². −20a³b²/4a²b = −5ab. 4a²b/4a²b = 1. Answer: 2a²b² − 5ab + 1."
+            },
+            {
+              "id": "md4-q4",
+              "type": "choice",
+              "prompt": "Divide (10x³ + 15x² − 5x) / (5x²).",
+              "choices": [
+                "2x + 3 − 1/x",
+                "2x + 3 − x",
+                "2x + 3 − 1",
+                "2x² + 3x − 1"
+              ],
+              "answer": 0,
+              "hint": "The last term has a smaller exponent than 5x². Its x ends up on the bottom.",
+              "solution": "10x³/5x² = 2x. 15x²/5x² = 3. −5x/5x² = −x⁻¹ = −1/x. Answer: 2x + 3 − 1/x."
+            },
+            {
+              "id": "md4-q5",
+              "type": "choice",
+              "prompt": "Simplify (6m⁵n² − 9m³n⁴) · (3m²n)⁻¹.",
+              "choices": [
+                "2m³n − 3mn³",
+                "2m⁷n³ − 3m⁵n⁵",
+                "2m³n − 9m³n⁴",
+                "18m⁷n³ − 27m⁵n⁵"
+              ],
+              "answer": 0,
+              "hint": "Multiplying by (3m²n)⁻¹ means dividing by 3m²n.",
+              "solution": "6m⁵n²/3m²n = 2m³n. −9m³n⁴/3m²n = −3mn³. Answer: 2m³n − 3mn³."
+            },
+            {
+              "id": "md4-q6",
+              "type": "choice",
+              "prompt": "Multiply (x + 3)(x² − 3x + 9).",
+              "choices": [
+                "x³ + 27",
+                "x³ − 27",
+                "x³ + 6x² + 18x + 27",
+                "x³ + 9"
+              ],
+              "answer": 0,
+              "hint": "Multiply x by each term, then 3 by each term. Most of the terms cancel.",
+              "solution": "x: x³ − 3x² + 9x. 3: 3x² − 9x + 27. The x² and x terms cancel: x³ + 27."
+            },
+            {
+              "id": "md4-q7",
+              "type": "choice",
+              "prompt": "Simplify (3x − 1)(x + 2) − (x − 4)².",
+              "choices": [
+                "2x² + 13x − 18",
+                "2x² − 3x + 14",
+                "2x² + 5x + 14",
+                "4x² − 3x + 14"
+              ],
+              "answer": 0,
+              "hint": "Multiply out each part first. Then subtract every term of (x − 4)².",
+              "solution": "(3x − 1)(x + 2) = 3x² + 5x − 2. (x − 4)² = x² − 8x + 16. Subtract: 3x² + 5x − 2 − x² + 8x − 16 = 2x² + 13x − 18."
+            },
+            {
+              "id": "md4-q8",
+              "type": "choice",
+              "prompt": "Multiply (x − 1)³.",
+              "choices": [
+                "x³ − 3x² + 3x − 1",
+                "x³ − 1",
+                "x³ − 3x² − 3x − 1",
+                "x³ + 3x² + 3x − 1"
+              ],
+              "answer": 0,
+              "hint": "Square (x − 1) first, then multiply by (x − 1) again.",
+              "solution": "(x − 1)² = x² − 2x + 1. Times (x − 1): x³ − x² − 2x² + 2x + x − 1 = x³ − 3x² + 3x − 1."
+            },
+            {
+              "id": "md4-q9",
+              "type": "input",
+              "prompt": "A rectangle has area 12x³ + 8x² and width 4x. Its length is 3x² + kx. What is k?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Length = area ÷ width. Divide each term by 4x.",
+              "solution": "12x³/4x = 3x² and 8x²/4x = 2x. The length is 3x² + 2x, so k = 2."
             }
           ]
         }
@@ -1502,6 +2708,321 @@
               "solution": "x³y² − 343y⁵ = y²(x³ − 343y³) = y²(x − 7y)(x² + 7xy + 49y²)."
             }
           ]
+        },
+        {
+          "id": "factor-special-3",
+          "teach": [
+            {
+              "title": "Taking out a negative GCF",
+              "text": [
+                "If the first term is negative, take out a negative GCF. Then every sign inside the parentheses changes.",
+                "Check by distributing back."
+              ],
+              "example": {
+                "problem": "Factor −6x³ + 9x² − 12x.",
+                "steps": [
+                  "The GCF of 6, 9, and 12 is 3, and the lowest power of x is x. The first term is negative, so use −3x.",
+                  "−6x³ ÷ (−3x) = 2x². 9x² ÷ (−3x) = −3x. −12x ÷ (−3x) = 4.",
+                  "Answer: −3x(2x² − 3x + 4)"
+                ]
+              }
+            },
+            {
+              "title": "Difference of squares, twice",
+              "text": [
+                "After you factor a² − b² into (a + b)(a − b), look at a − b again. If it is still a difference of squares, factor it again.",
+                "A sum of squares like a² + b² does not factor."
+              ],
+              "example": {
+                "problem": "Factor 16a⁴ − 81 completely.",
+                "steps": [
+                  "16a⁴ = (4a²)² and 81 = 9². So 16a⁴ − 81 = (4a² + 9)(4a² − 9).",
+                  "4a² − 9 = (2a)² − 3², so it factors again: (2a + 3)(2a − 3).",
+                  "4a² + 9 is a sum, so it stays.",
+                  "Answer: (4a² + 9)(2a + 3)(2a − 3)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "fs3-q1",
+              "type": "choice",
+              "prompt": "What is the GCF of 20x⁴y² − 15x³y⁵?",
+              "choices": [
+                "5x³y²",
+                "5x⁴y⁵",
+                "5xy",
+                "15x³y²"
+              ],
+              "answer": 0,
+              "hint": "Use the GCF of 20 and 15, and the lowest power of each variable.",
+              "solution": "The GCF of 20 and 15 is 5. The lowest powers are x³ and y². GCF: 5x³y². Then 20x⁴y² − 15x³y⁵ = 5x³y²(4x − 3y³)."
+            },
+            {
+              "id": "fs3-q2",
+              "type": "choice",
+              "prompt": "Factor 18x⁵ − 30x³ + 6x².",
+              "choices": [
+                "6x²(3x³ − 5x + 1)",
+                "6x²(3x³ − 5x)",
+                "6x²(3x² − 5x + 1)",
+                "6x²(3x³ + 5x + 1)"
+              ],
+              "answer": 0,
+              "hint": "The GCF is 6x². When a term is exactly the GCF, a 1 is left.",
+              "solution": "18x⁵ ÷ 6x² = 3x³. −30x³ ÷ 6x² = −5x. 6x² ÷ 6x² = 1. Answer: 6x²(3x³ − 5x + 1)."
+            },
+            {
+              "id": "fs3-q3",
+              "type": "choice",
+              "prompt": "Factor 4x² − 121.",
+              "choices": [
+                "(2x + 11)(2x − 11)",
+                "(2x − 11)²",
+                "(4x + 11)(4x − 11)",
+                "(2x + 11)²"
+              ],
+              "answer": 0,
+              "hint": "4x² = (2x)² and 121 = 11².",
+              "solution": "a = 2x and b = 11, so 4x² − 121 = (2x + 11)(2x − 11)."
+            },
+            {
+              "id": "fs3-q4",
+              "type": "choice",
+              "prompt": "Factor −4m³ + 10m² − 2m.",
+              "choices": [
+                "−2m(2m² − 5m + 1)",
+                "−2m(−2m² + 5m − 1)",
+                "−2m(2m² − 5m)",
+                "2m(2m² − 5m + 1)"
+              ],
+              "answer": 0,
+              "hint": "The first term is negative, so take out −2m. Every sign inside changes.",
+              "solution": "−4m³ ÷ (−2m) = 2m². 10m² ÷ (−2m) = −5m. −2m ÷ (−2m) = 1. Answer: −2m(2m² − 5m + 1)."
+            },
+            {
+              "id": "fs3-q5",
+              "type": "choice",
+              "prompt": "Factor 25a² − 64b².",
+              "choices": [
+                "(5a + 8b)(5a − 8b)",
+                "(5a − 8b)²",
+                "(25a + 64b)(25a − 64b)",
+                "(5a + 4b)(5a − 16b)"
+              ],
+              "answer": 0,
+              "hint": "Write each term as something squared.",
+              "solution": "25a² = (5a)² and 64b² = (8b)². Answer: (5a + 8b)(5a − 8b)."
+            },
+            {
+              "id": "fs3-q6",
+              "type": "choice",
+              "prompt": "Factor 81y⁴ − 1 completely.",
+              "choices": [
+                "(9y² + 1)(3y + 1)(3y − 1)",
+                "(9y² + 1)(3y − 1)²",
+                "(9y² − 1)²",
+                "(9y + 1)(9y − 1)"
+              ],
+              "answer": 0,
+              "hint": "81y⁴ = (9y²)². After the first step, one factor is another difference of squares.",
+              "solution": "81y⁴ − 1 = (9y² + 1)(9y² − 1). 9y² − 1 = (3y + 1)(3y − 1). 9y² + 1 is a sum, so it stays. Answer: (9y² + 1)(3y + 1)(3y − 1)."
+            },
+            {
+              "id": "fs3-q7",
+              "type": "choice",
+              "prompt": "Factor 12x³ − 75x completely.",
+              "choices": [
+                "3x(2x + 5)(2x − 5)",
+                "3x(2x − 5)²",
+                "3(2x + 5)(2x − 5)",
+                "3x(2x² + 5)(2x² − 5)"
+              ],
+              "answer": 0,
+              "hint": "Take out the GCF 3x first. What is left is a difference of squares.",
+              "solution": "12x³ − 75x = 3x(4x² − 25). 4x² = (2x)² and 25 = 5². Answer: 3x(2x + 5)(2x − 5)."
+            },
+            {
+              "id": "fs3-q8",
+              "type": "choice",
+              "prompt": "Factor 2x⁶ − 32x² completely.",
+              "choices": [
+                "2x²(x² + 4)(x + 2)(x − 2)",
+                "2x²(x² + 4)(x − 2)²",
+                "2x²(x² − 4)²",
+                "2x(x² + 4)(x + 2)(x − 2)"
+              ],
+              "answer": 0,
+              "hint": "GCF 2x² first. Then x⁴ − 16 is a difference of squares, twice.",
+              "solution": "2x²(x⁴ − 16) = 2x²(x² + 4)(x² − 4) = 2x²(x² + 4)(x + 2)(x − 2)."
+            }
+          ]
+        },
+        {
+          "id": "factor-special-4",
+          "teach": [
+            {
+              "title": "Which pattern?",
+              "text": [
+                "Always take out a GCF first.",
+                "Two terms with a minus sign: look for a difference of squares or a difference of cubes.",
+                "Two terms with a plus sign: look for a sum of cubes. A sum of squares does not factor."
+              ],
+              "example": {
+                "problem": "Factor 3x³ + 24.",
+                "steps": [
+                  "GCF 3: 3(x³ + 8).",
+                  "x³ = (x)³ and 8 = 2³, so x³ + 8 is a sum of cubes with a = x and b = 2.",
+                  "(a + b)(a² − ab + b²) = (x + 2)(x² − 2x + 4).",
+                  "Answer: 3(x + 2)(x² − 2x + 4)"
+                ]
+              }
+            },
+            {
+              "title": "Cubes with two variables",
+              "text": [
+                "Write each term as something cubed: 27a³ = (3a)³ and 8b³ = (2b)³.",
+                "Then use the pattern with 3a in place of a and 2b in place of b."
+              ],
+              "example": {
+                "problem": "Factor 27a³ − 8b³.",
+                "steps": [
+                  "27a³ = (3a)³ and 8b³ = (2b)³.",
+                  "Difference of cubes: (3a − 2b)((3a)² + (3a)(2b) + (2b)²).",
+                  "Answer: (3a − 2b)(9a² + 6ab + 4b²)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "fs4-q1",
+              "type": "choice",
+              "prompt": "Which binomial is a difference of cubes?",
+              "choices": [
+                "8x³ − 27",
+                "x² − 49",
+                "8x³ + 27",
+                "x³ − 12"
+              ],
+              "answer": 0,
+              "hint": "You need two perfect cubes with a minus sign between them.",
+              "solution": "8x³ = (2x)³ and 27 = 3³, with a minus sign. x² − 49 is a difference of squares, 8x³ + 27 is a sum, and 12 is not a perfect cube."
+            },
+            {
+              "id": "fs4-q2",
+              "type": "choice",
+              "prompt": "Factor y³ + 64.",
+              "choices": [
+                "(y + 4)(y² − 4y + 16)",
+                "(y + 4)(y² + 4y + 16)",
+                "(y − 4)(y² + 4y + 16)",
+                "(y + 4)(y² − 8y + 16)"
+              ],
+              "answer": 0,
+              "hint": "64 = 4³. Use the sum of cubes pattern. SOAP: Same, Opposite, Always Positive.",
+              "solution": "a = y and b = 4. (a + b)(a² − ab + b²) = (y + 4)(y² − 4y + 16)."
+            },
+            {
+              "id": "fs4-q3",
+              "type": "choice",
+              "prompt": "Factor 125x³ − 1.",
+              "choices": [
+                "(5x − 1)(25x² + 5x + 1)",
+                "(5x − 1)(25x² − 5x + 1)",
+                "(5x + 1)(25x² − 5x + 1)",
+                "(5x − 1)(25x² + 10x + 1)"
+              ],
+              "answer": 0,
+              "hint": "125x³ = (5x)³ and 1 = 1³. The middle term is ab, not 2ab.",
+              "solution": "a = 5x and b = 1. (a − b)(a² + ab + b²) = (5x − 1)(25x² + 5x + 1)."
+            },
+            {
+              "id": "fs4-q4",
+              "type": "choice",
+              "prompt": "Factor 8a³ + 27b³.",
+              "choices": [
+                "(2a + 3b)(4a² − 6ab + 9b²)",
+                "(2a + 3b)(4a² + 6ab + 9b²)",
+                "(2a − 3b)(4a² + 6ab + 9b²)",
+                "(2a + 3b)(4a² − 12ab + 9b²)"
+              ],
+              "answer": 0,
+              "hint": "8a³ = (2a)³ and 27b³ = (3b)³.",
+              "solution": "Use 2a and 3b: (2a + 3b)((2a)² − (2a)(3b) + (3b)²) = (2a + 3b)(4a² − 6ab + 9b²)."
+            },
+            {
+              "id": "fs4-q5",
+              "type": "choice",
+              "prompt": "Factor 3x³ − 81 completely.",
+              "choices": [
+                "3(x − 3)(x² + 3x + 9)",
+                "3(x − 3)(x² − 3x + 9)",
+                "3(x + 3)(x² − 3x + 9)",
+                "3(x − 3)(x² + 9)"
+              ],
+              "answer": 0,
+              "hint": "Take out 3 first. 81 ÷ 3 = 27 = 3³.",
+              "solution": "3x³ − 81 = 3(x³ − 27) = 3(x − 3)(x² + 3x + 9)."
+            },
+            {
+              "id": "fs4-q6",
+              "type": "choice",
+              "prompt": "Factor 16m⁴ + 54m completely.",
+              "choices": [
+                "2m(2m + 3)(4m² − 6m + 9)",
+                "2m(2m + 3)(4m² + 6m + 9)",
+                "2m(2m − 3)(4m² + 6m + 9)",
+                "2(2m + 3)(4m² − 6m + 9)"
+              ],
+              "answer": 0,
+              "hint": "The GCF is 2m. What is left is a sum of cubes.",
+              "solution": "16m⁴ + 54m = 2m(8m³ + 27). 8m³ = (2m)³ and 27 = 3³. Answer: 2m(2m + 3)(4m² − 6m + 9)."
+            },
+            {
+              "id": "fs4-q7",
+              "type": "choice",
+              "prompt": "Factor 2x⁴ − 2x completely.",
+              "choices": [
+                "2x(x − 1)(x² + x + 1)",
+                "2x(x − 1)(x² − x + 1)",
+                "2x(x + 1)(x² − x + 1)",
+                "2x(x − 1)(x² + 1)"
+              ],
+              "answer": 0,
+              "hint": "GCF 2x first. Then x³ − 1 is a difference of cubes.",
+              "solution": "2x⁴ − 2x = 2x(x³ − 1) = 2x(x − 1)(x² + x + 1)."
+            },
+            {
+              "id": "fs4-q8",
+              "type": "choice",
+              "prompt": "Factor 5x²y − 45y³ completely.",
+              "choices": [
+                "5y(x + 3y)(x − 3y)",
+                "5y(x − 3y)²",
+                "5(x + 3y)(x − 3y)",
+                "5y(x − 3y)(x² + 3xy + 9y²)"
+              ],
+              "answer": 0,
+              "hint": "GCF 5y first. Then decide: squares or cubes?",
+              "solution": "5x²y − 45y³ = 5y(x² − 9y²). The exponents are 2, so it is a difference of squares: 5y(x + 3y)(x − 3y)."
+            },
+            {
+              "id": "fs4-q9",
+              "type": "choice",
+              "prompt": "Factor 1000 − 27k³.",
+              "choices": [
+                "(10 − 3k)(100 + 30k + 9k²)",
+                "(10 − 3k)(100 − 30k + 9k²)",
+                "(3k − 10)(9k² + 30k + 100)",
+                "(10 + 3k)(100 − 30k + 9k²)"
+              ],
+              "answer": 0,
+              "hint": "1000 = 10³ and 27k³ = (3k)³. Keep the order: 1000 comes first.",
+              "solution": "a = 10 and b = 3k. (a − b)(a² + ab + b²) = (10 − 3k)(100 + 30k + 9k²)."
+            }
+          ]
         }
       ]
     },
@@ -1836,6 +3357,311 @@
               "answer": 0,
               "hint": "The second group is x − 7, so its GCF is 1.",
               "solution": "x²(x − 7) + 1(x − 7) = (x² + 1)(x − 7)."
+            }
+          ]
+        },
+        {
+          "id": "factor-trinomials-3",
+          "teach": [
+            {
+              "title": "Sign patterns",
+              "text": [
+                "For x² + bx + c, look at the sign of c first.",
+                "If c is positive, both numbers have the same sign as b. If c is negative, the numbers have opposite signs, and the one farther from 0 has the sign of b."
+              ],
+              "example": {
+                "problem": "Factor x² − 3x − 40.",
+                "steps": [
+                  "c = −40 is negative, so the signs are opposite. b = −3, so the bigger number is negative.",
+                  "Pairs for 40: 1 and 40, 2 and 20, 4 and 10, 5 and 8. −8 + 5 = −3.",
+                  "Answer: (x − 8)(x + 5)"
+                ]
+              }
+            },
+            {
+              "title": "Check by multiplying back",
+              "text": [
+                "After you factor, multiply the factors back out (FOIL). You should get the trinomial you started with.",
+                "This catches sign mistakes."
+              ],
+              "example": {
+                "problem": "Factor 2x² + 7x + 3 and check.",
+                "steps": [
+                  "a · c = 6. Two numbers that multiply to 6 and add to 7: 6 and 1.",
+                  "Split: 2x² + 6x + x + 3 = 2x(x + 3) + 1(x + 3) = (2x + 1)(x + 3).",
+                  "Check: (2x + 1)(x + 3) = 2x² + 6x + x + 3 = 2x² + 7x + 3. It matches."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "ft3-q1",
+              "type": "input",
+              "prompt": "Two numbers multiply to −24 and add to 5. What are they? Type them separated by a comma.",
+              "answers": [
+                "8, -3"
+              ],
+              "hint": "The product is negative, so one number is negative. The sum is positive, so the bigger one is positive.",
+              "solution": "8 · (−3) = −24 and 8 + (−3) = 5. The numbers are 8 and −3."
+            },
+            {
+              "id": "ft3-q2",
+              "type": "choice",
+              "prompt": "Factor x² + 9x + 20.",
+              "choices": [
+                "(x + 4)(x + 5)",
+                "(x + 2)(x + 10)",
+                "(x − 4)(x − 5)",
+                "(x + 1)(x + 20)"
+              ],
+              "answer": 0,
+              "hint": "Two numbers that multiply to 20 and add to 9.",
+              "solution": "4 · 5 = 20 and 4 + 5 = 9. Answer: (x + 4)(x + 5)."
+            },
+            {
+              "id": "ft3-q3",
+              "type": "choice",
+              "prompt": "Factor y² − 2y − 35.",
+              "choices": [
+                "(y − 7)(y + 5)",
+                "(y + 7)(y − 5)",
+                "(y − 7)(y − 5)",
+                "(y − 35)(y + 1)"
+              ],
+              "answer": 0,
+              "hint": "c is negative, so the signs are opposite. The bigger number is negative because b is negative.",
+              "solution": "−7 · 5 = −35 and −7 + 5 = −2. Answer: (y − 7)(y + 5)."
+            },
+            {
+              "id": "ft3-q4",
+              "type": "choice",
+              "prompt": "Factor m² − 14m + 45.",
+              "choices": [
+                "(m − 5)(m − 9)",
+                "(m + 5)(m + 9)",
+                "(m − 3)(m − 15)",
+                "(m + 5)(m − 9)"
+              ],
+              "answer": 0,
+              "hint": "c is positive and b is negative, so both numbers are negative.",
+              "solution": "(−5)(−9) = 45 and −5 + (−9) = −14. Answer: (m − 5)(m − 9)."
+            },
+            {
+              "id": "ft3-q5",
+              "type": "choice",
+              "prompt": "Factor 2x² + 11x + 12.",
+              "choices": [
+                "(2x + 3)(x + 4)",
+                "(2x + 4)(x + 3)",
+                "(2x + 1)(x + 12)",
+                "(2x − 3)(x − 4)"
+              ],
+              "answer": 0,
+              "hint": "a · c = 24. Find two numbers that multiply to 24 and add to 11.",
+              "solution": "8 and 3. Split: 2x² + 8x + 3x + 12 = 2x(x + 4) + 3(x + 4) = (2x + 3)(x + 4)."
+            },
+            {
+              "id": "ft3-q6",
+              "type": "choice",
+              "prompt": "Factor 3x² − 7x − 6.",
+              "choices": [
+                "(3x + 2)(x − 3)",
+                "(3x − 2)(x + 3)",
+                "(3x − 3)(x + 2)",
+                "(3x + 1)(x − 6)"
+              ],
+              "answer": 0,
+              "hint": "a · c = −18. Find two numbers that multiply to −18 and add to −7.",
+              "solution": "−9 and 2. Split: 3x² − 9x + 2x − 6 = 3x(x − 3) + 2(x − 3) = (3x + 2)(x − 3)."
+            },
+            {
+              "id": "ft3-q7",
+              "type": "choice",
+              "prompt": "Factor 5x³ − 15x² − 50x completely.",
+              "choices": [
+                "5x(x − 5)(x + 2)",
+                "5x(x + 5)(x − 2)",
+                "5(x − 5)(x + 2)",
+                "5x(x − 10)(x + 1)"
+              ],
+              "answer": 0,
+              "hint": "Take out the GCF 5x first.",
+              "solution": "5x(x² − 3x − 10). −5 · 2 = −10 and −5 + 2 = −3. Answer: 5x(x − 5)(x + 2)."
+            },
+            {
+              "id": "ft3-q8",
+              "type": "choice",
+              "prompt": "Factor 6x² + x − 15.",
+              "choices": [
+                "(2x − 3)(3x + 5)",
+                "(2x + 3)(3x − 5)",
+                "(6x − 5)(x + 3)",
+                "(3x − 3)(2x + 5)"
+              ],
+              "answer": 0,
+              "hint": "a · c = −90. Find two numbers that multiply to −90 and add to 1.",
+              "solution": "10 and −9. Split: 6x² + 10x − 9x − 15 = 2x(3x + 5) − 3(3x + 5) = (2x − 3)(3x + 5)."
+            }
+          ]
+        },
+        {
+          "id": "factor-trinomials-4",
+          "teach": [
+            {
+              "title": "Grouping with a negative",
+              "text": [
+                "When the third term is negative, take a negative GCF out of the second group. Then both groups share the same binomial."
+              ],
+              "example": {
+                "problem": "Factor 2x³ − 3x² − 8x + 12 completely.",
+                "steps": [
+                  "Group: (2x³ − 3x²) + (−8x + 12).",
+                  "GCF of each: x²(2x − 3) − 4(2x − 3).",
+                  "Common binomial: (x² − 4)(2x − 3).",
+                  "x² − 4 is a difference of squares. Answer: (x + 2)(x − 2)(2x − 3)"
+                ]
+              }
+            },
+            {
+              "title": "Quadratic form with a > 1",
+              "text": [
+                "Treat x² as one variable and use the a · c method.",
+                "Then check each factor for a difference of squares."
+              ],
+              "example": {
+                "problem": "Factor 2x⁴ − 7x² − 4 completely.",
+                "steps": [
+                  "a · c = −8. Two numbers that multiply to −8 and add to −7: −8 and 1.",
+                  "Split: 2x⁴ − 8x² + x² − 4 = 2x²(x² − 4) + 1(x² − 4) = (2x² + 1)(x² − 4).",
+                  "x² − 4 = (x + 2)(x − 2).",
+                  "Answer: (2x² + 1)(x + 2)(x − 2)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "ft4-q1",
+              "type": "input",
+              "prompt": "2x⁴ + 5x² − 3 = (2x² − 1)(x² + k). What is k?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Multiply out (2x² − 1)(x² + k). The last term is −k.",
+              "solution": "The constant term of (2x² − 1)(x² + k) is −k. It must be −3, so k = 3. Check: (2x² − 1)(x² + 3) = 2x⁴ + 6x² − x² − 3 = 2x⁴ + 5x² − 3."
+            },
+            {
+              "id": "ft4-q2",
+              "type": "choice",
+              "prompt": "Factor 9x² − 30x + 25.",
+              "choices": [
+                "(3x − 5)²",
+                "(3x + 5)(3x − 5)",
+                "(3x + 5)²",
+                "(9x − 5)(x − 5)"
+              ],
+              "answer": 0,
+              "hint": "9x² = (3x)² and 25 = 5². Is the middle term 2 · 3x · 5?",
+              "solution": "2 · 3x · 5 = 30x, and the middle term is −30x. So it is a perfect square: (3x − 5)²."
+            },
+            {
+              "id": "ft4-q3",
+              "type": "choice",
+              "prompt": "Factor x⁴ − 5x² + 4 completely.",
+              "choices": [
+                "(x + 1)(x − 1)(x + 2)(x − 2)",
+                "(x² + 1)(x + 2)(x − 2)",
+                "(x + 1)(x − 1)(x² + 4)",
+                "(x − 1)²(x − 2)²"
+              ],
+              "answer": 0,
+              "hint": "Treat x² as one variable: u² − 5u + 4. Then check both factors for a difference of squares.",
+              "solution": "(x² − 1)(x² − 4). Both are differences of squares: (x + 1)(x − 1)(x + 2)(x − 2)."
+            },
+            {
+              "id": "ft4-q4",
+              "type": "choice",
+              "prompt": "Factor y⁴ + 3y² − 28 completely.",
+              "choices": [
+                "(y² + 7)(y + 2)(y − 2)",
+                "(y² − 7)(y + 2)(y − 2)",
+                "(y² + 7)(y² + 4)",
+                "(y² + 4)(y² − 7)"
+              ],
+              "answer": 0,
+              "hint": "Two numbers that multiply to −28 and add to 3.",
+              "solution": "7 and −4: (y² + 7)(y² − 4). y² − 4 = (y + 2)(y − 2). Answer: (y² + 7)(y + 2)(y − 2)."
+            },
+            {
+              "id": "ft4-q5",
+              "type": "choice",
+              "prompt": "Factor x³ + 4x² − 9x − 36 completely.",
+              "choices": [
+                "(x + 3)(x − 3)(x + 4)",
+                "(x² + 9)(x + 4)",
+                "(x + 3)(x − 3)(x − 4)",
+                "(x − 3)²(x + 4)"
+              ],
+              "answer": 0,
+              "hint": "Group, and take −9 out of the second group.",
+              "solution": "x²(x + 4) − 9(x + 4) = (x² − 9)(x + 4) = (x + 3)(x − 3)(x + 4)."
+            },
+            {
+              "id": "ft4-q6",
+              "type": "choice",
+              "prompt": "Factor 5x³ + 2x² + 15x + 6.",
+              "choices": [
+                "(x² + 3)(5x + 2)",
+                "(x² + 3)(5x − 2)",
+                "(x² − 3)(5x + 2)",
+                "(x² + 2)(5x + 3)"
+              ],
+              "answer": 0,
+              "hint": "Group the first two terms and the last two terms.",
+              "solution": "x²(5x + 2) + 3(5x + 2) = (x² + 3)(5x + 2). x² + 3 does not factor."
+            },
+            {
+              "id": "ft4-q7",
+              "type": "choice",
+              "prompt": "Factor 2x³ − 6x² − x + 3.",
+              "choices": [
+                "(2x² − 1)(x − 3)",
+                "(2x² + 1)(x − 3)",
+                "(2x² − 1)(x + 3)",
+                "(2x − 1)(x² − 3)"
+              ],
+              "answer": 0,
+              "hint": "Take −1 out of the second group so it matches the first: −x + 3 = −1(x − 3).",
+              "solution": "2x²(x − 3) − 1(x − 3) = (2x² − 1)(x − 3). 2 is not a perfect square, so 2x² − 1 stays."
+            },
+            {
+              "id": "ft4-q8",
+              "type": "choice",
+              "prompt": "Factor 4x⁴ − 13x² + 9 completely.",
+              "choices": [
+                "(2x + 3)(2x − 3)(x + 1)(x − 1)",
+                "(2x + 3)(2x − 3)(x² + 1)",
+                "(4x² + 9)(x + 1)(x − 1)",
+                "(2x − 3)²(x − 1)²"
+              ],
+              "answer": 0,
+              "hint": "a · c = 36. Two numbers that multiply to 36 and add to −13. Then look for differences of squares.",
+              "solution": "−9 and −4: 4x⁴ − 9x² − 4x² + 9 = x²(4x² − 9) − 1(4x² − 9) = (x² − 1)(4x² − 9). Both factor: (2x + 3)(2x − 3)(x + 1)(x − 1)."
+            },
+            {
+              "id": "ft4-q9",
+              "type": "choice",
+              "prompt": "Factor −2x³ − 4x² + 30x completely.",
+              "choices": [
+                "−2x(x + 5)(x − 3)",
+                "−2x(x − 5)(x + 3)",
+                "2x(x + 5)(x − 3)",
+                "−2x(x + 15)(x − 1)"
+              ],
+              "answer": 0,
+              "hint": "The first term is negative, so take out −2x. Every sign inside changes.",
+              "solution": "−2x(x² + 2x − 15). 5 · (−3) = −15 and 5 + (−3) = 2. Answer: −2x(x + 5)(x − 3)."
             }
           ]
         }
@@ -2244,6 +4070,387 @@
               "calculator": false
             }
           ]
+        },
+        {
+          "id": "end-behavior-3",
+          "teach": [
+            {
+              "title": "Find the leading term first",
+              "text": [
+                "The terms are not always in order. Find the term with the greatest exponent: that is the leading term.",
+                "Its exponent is the degree, and its number is the leading coefficient. Only the leading term decides the end behavior."
+              ],
+              "example": {
+                "problem": "Describe the end behavior of f(x) = 3x² − 2x⁵ + 7.",
+                "steps": [
+                  "The greatest exponent is 5, in −2x⁵. So the degree is 5 (odd) and the leading coefficient is −2 (negative).",
+                  "Odd and negative: up on the left, down on the right.",
+                  "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞."
+                ]
+              },
+              "graph": {
+                "fn": "3x^2-2x^5+7",
+                "x": [
+                  -2,
+                  2
+                ],
+                "y": [
+                  -10,
+                  20
+                ]
+              }
+            },
+            {
+              "title": "End behavior from factored form",
+              "text": [
+                "You do not have to multiply everything out. Multiply only the x part of each factor: that gives the leading term.",
+                "Add the exponents to get the degree."
+              ],
+              "example": {
+                "problem": "Describe the end behavior of f(x) = −2x(x − 1)²(x + 3).",
+                "steps": [
+                  "Leading parts: −2x · x² · x = −2x⁴.",
+                  "Degree 4 (even) and leading coefficient −2 (negative).",
+                  "Even and negative: both ends go down. As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞."
+                ]
+              },
+              "graph": {
+                "fn": "-2x(x-1)^2(x+3)",
+                "x": [
+                  -4,
+                  2.5
+                ],
+                "y": [
+                  -20,
+                  40
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "eb3-q1",
+              "type": "input",
+              "prompt": "f(x) = 4x − 7x³ + x² − 2. What is the leading coefficient?",
+              "answers": [
+                "-7"
+              ],
+              "hint": "Find the term with the greatest exponent.",
+              "solution": "The greatest exponent is 3, in −7x³. The leading coefficient is −7."
+            },
+            {
+              "id": "eb3-q2",
+              "type": "input",
+              "prompt": "f(x) = 6 + x² − 2x⁶ + 5x³. What is the degree?",
+              "answers": [
+                "6"
+              ],
+              "hint": "The degree is the greatest exponent, wherever that term is.",
+              "solution": "The exponents are 0, 2, 6, and 3. The greatest is 6."
+            },
+            {
+              "id": "eb3-q3",
+              "type": "choice",
+              "prompt": "f(x) = 8x − 3x³ + 1. What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞"
+              ],
+              "answer": 0,
+              "hint": "The leading term is −3x³. Odd or even? Positive or negative?",
+              "solution": "The leading term −3x³ has odd degree and a negative coefficient: up on the left, down on the right. As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞."
+            },
+            {
+              "id": "eb3-q4",
+              "type": "choice",
+              "prompt": "f(x) = 2x² + 5x⁴ − x. What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "The leading term is 5x⁴, not 2x².",
+              "solution": "The leading term 5x⁴ has even degree and a positive coefficient: both ends go up. As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞."
+            },
+            {
+              "id": "eb3-q5",
+              "type": "choice",
+              "prompt": "f(x) = −x⁶ + 4x⁵ + 9. What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Degree 6 is even. The leading coefficient is −1.",
+              "solution": "Even degree with a negative leading coefficient: both ends go down. As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞."
+            },
+            {
+              "id": "eb3-q6",
+              "type": "choice",
+              "prompt": "f(x) = (x + 2)(x − 3)(x − 5). What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Multiply the x parts of the factors: x · x · x.",
+              "solution": "The leading term is x³: odd degree and a positive leading coefficient. As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞."
+            },
+            {
+              "id": "eb3-q7",
+              "type": "choice",
+              "prompt": "f(x) = −x²(x − 4)(x + 1). What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Multiply the leading parts: −x² · x · x.",
+              "solution": "The leading term is −x⁴: even degree and a negative leading coefficient. Both ends go down. As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞."
+            },
+            {
+              "id": "eb3-q8",
+              "type": "choice",
+              "prompt": "Without graphing, find the function with this end behavior: As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞.",
+              "choices": [
+                "f(x) = 7 − x + 3x⁴",
+                "f(x) = 3x³ − x + 7",
+                "f(x) = −3x⁴ + x + 7",
+                "f(x) = 7 + x − x⁵"
+              ],
+              "answer": 0,
+              "hint": "Both ends go up: even degree and a positive leading coefficient. Find each leading term first.",
+              "solution": "In 7 − x + 3x⁴ the leading term is 3x⁴: degree 4 (even) and a positive coefficient. The others have leading terms 3x³, −3x⁴, and −x⁵.",
+              "calculator": false
+            }
+          ]
+        },
+        {
+          "id": "end-behavior-4",
+          "teach": [
+            {
+              "title": "Match a graph to its equation",
+              "text": [
+                "Read the ends of the graph first. Then find the equation whose degree and leading coefficient give those ends.",
+                "Find the leading term of each equation before you decide: put it in standard form, or multiply the leading parts of the factors."
+              ],
+              "example": {
+                "problem": "The graph shows one of these: f(x) = x³ − 4x or g(x) = −x³ + 4x. Which one?",
+                "steps": [
+                  "The left end goes up and the right end goes down: odd degree, negative leading coefficient.",
+                  "x³ − 4x has leading coefficient 1. −x³ + 4x has leading coefficient −1.",
+                  "The graph is g(x) = −x³ + 4x."
+                ]
+              },
+              "graph": {
+                "fn": "-x^3+4x",
+                "x": [
+                  -3,
+                  3
+                ],
+                "y": [
+                  -8,
+                  8
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "eb4-q1",
+              "type": "choice",
+              "prompt": "The graph shows g(x). Is the degree even or odd, and is the leading coefficient positive or negative?",
+              "choices": [
+                "Odd degree, negative leading coefficient",
+                "Odd degree, positive leading coefficient",
+                "Even degree, positive leading coefficient",
+                "Even degree, negative leading coefficient"
+              ],
+              "answer": 0,
+              "hint": "Compare the two ends. Then look at the right end.",
+              "solution": "The left end goes up and the right end goes down. Opposite ways means odd degree. The right end goes down, so the leading coefficient is negative.",
+              "graph": {
+                "fn": "-x^5+5x^3-4x",
+                "x": [
+                  -2.5,
+                  2.5
+                ],
+                "y": [
+                  -6,
+                  6
+                ]
+              }
+            },
+            {
+              "id": "eb4-q2",
+              "type": "choice",
+              "prompt": "The graph shows h(x). Is the degree even or odd, and is the leading coefficient positive or negative?",
+              "choices": [
+                "Even degree, positive leading coefficient",
+                "Odd degree, positive leading coefficient",
+                "Odd degree, negative leading coefficient",
+                "Even degree, negative leading coefficient"
+              ],
+              "answer": 0,
+              "hint": "Compare the two ends. The wiggles in the middle do not matter.",
+              "solution": "Both ends go up. Same way means even degree. The right end goes up, so the leading coefficient is positive.",
+              "graph": {
+                "fn": "(x^4-4x^3+8x)/2",
+                "x": [
+                  -2,
+                  4
+                ],
+                "y": [
+                  -5,
+                  8
+                ]
+              }
+            },
+            {
+              "id": "eb4-q3",
+              "type": "choice",
+              "prompt": "The graph shows p(x). What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Follow each end of the graph off the edge of the picture.",
+              "solution": "Both ends go down. As x → −∞, p(x) → −∞; as x → ∞, p(x) → −∞.",
+              "graph": {
+                "fn": "-(x+2)(x-1)^2(x-3)/2",
+                "x": [
+                  -3,
+                  4
+                ],
+                "y": [
+                  -10,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "eb4-q4",
+              "type": "choice",
+              "prompt": "The graph shows k(x). What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Follow each end of the graph off the edge of the picture.",
+              "solution": "The left end goes down and the right end goes up. As x → −∞, k(x) → −∞; as x → ∞, k(x) → ∞.",
+              "graph": {
+                "fn": "x^3-2x^2-5x+6",
+                "x": [
+                  -4,
+                  5
+                ],
+                "y": [
+                  -10,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "eb4-q5",
+              "type": "choice",
+              "prompt": "The graph shows y = f(x). Which equation could it be?",
+              "choices": [
+                "f(x) = −x³ + x² + 6x",
+                "f(x) = x³ − x² − 6x",
+                "f(x) = −x⁴ + x² + 6x",
+                "f(x) = x⁴ + x² + 6x"
+              ],
+              "answer": 0,
+              "hint": "Read the ends of the graph. Then check the degree and leading coefficient of each choice.",
+              "solution": "Up on the left and down on the right means odd degree and a negative leading coefficient. Only −x³ + x² + 6x has both.",
+              "graph": {
+                "fn": "-x^3+x^2+6x",
+                "x": [
+                  -3.5,
+                  4.5
+                ],
+                "y": [
+                  -10,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "eb4-q6",
+              "type": "choice",
+              "prompt": "Describe the end behavior of an 11th-degree polynomial with a positive leading coefficient.",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "11 is odd.",
+              "solution": "Odd degree, positive leading coefficient: down on the left, up on the right. As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞."
+            },
+            {
+              "id": "eb4-q7",
+              "type": "choice",
+              "prompt": "Without graphing: f(x) = −3x(x − 2)³. What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞"
+              ],
+              "answer": 0,
+              "hint": "Multiply the leading parts: −3x · x³.",
+              "solution": "The leading term is −3x⁴: even degree and a negative leading coefficient. As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞.",
+              "calculator": false
+            },
+            {
+              "id": "eb4-q8",
+              "type": "choice",
+              "prompt": "Without graphing, find the function with this end behavior: As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞.",
+              "choices": [
+                "f(x) = 2x² − x⁵ + 3",
+                "f(x) = x⁵ − 2x² + 3",
+                "f(x) = −x⁴ + 2x² + 3",
+                "f(x) = (x − 1)²(x + 4)²"
+              ],
+              "answer": 0,
+              "hint": "Up on the left and down on the right means odd degree and a negative leading coefficient.",
+              "solution": "In 2x² − x⁵ + 3 the leading term is −x⁵: odd degree, negative coefficient. x⁵ − 2x² + 3 is odd but positive, −x⁴ + 2x² + 3 is even, and (x − 1)²(x + 4)² has leading term x⁴.",
+              "calculator": false
+            },
+            {
+              "id": "eb4-q9",
+              "type": "choice",
+              "prompt": "Without graphing: f(x) = (2 − x)(x + 1)². What is its end behavior?",
+              "choices": [
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → ∞; as x → ∞, f(x) → ∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → −∞",
+                "As x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞"
+              ],
+              "answer": 0,
+              "hint": "In (2 − x), the x part is −x. Multiply the leading parts: −x · x².",
+              "solution": "The leading term is −x³: odd degree and a negative leading coefficient. As x → −∞, f(x) → ∞; as x → ∞, f(x) → −∞.",
+              "calculator": false
+            }
+          ]
         }
       ]
     },
@@ -2645,6 +4852,435 @@
               }
             }
           ]
+        },
+        {
+          "id": "turning-points-3",
+          "teach": [
+            {
+              "title": "Reading extrema from the calculator",
+              "text": [
+                "Graph the function. The calculator lists each turning point as max or min, with its coordinates.",
+                "A relative maximum or minimum is the whole point (x, y). The y-value tells how high or low the graph gets there."
+              ],
+              "example": {
+                "problem": "Find the relative maximum and minimum of f(x) = −x³ + 3x² + 9x − 2.",
+                "steps": [
+                  "Graph it. The calculator shows min (−1, −7) and max (3, 25).",
+                  "Relative minimum: (−1, −7). Near x = −1, the graph is lowest there.",
+                  "Relative maximum: (3, 25). Near x = 3, the graph is highest there."
+                ]
+              },
+              "graph": {
+                "fn": "-x^3+3x^2+9x-2",
+                "x": [
+                  -4,
+                  6
+                ],
+                "y": [
+                  -15,
+                  30
+                ]
+              }
+            },
+            {
+              "title": "Fewer turning points than the most",
+              "text": [
+                "A polynomial of degree n has at most n − 1 turning points, but it can have fewer.",
+                "Count the hills and valleys on the graph. Each one is a turning point."
+              ],
+              "example": {
+                "problem": "How many turning points does f(x) = x⁴ + 4x have?",
+                "steps": [
+                  "The degree is 4, so it can have at most 3.",
+                  "The graph comes down, turns once at (−1, −3), and goes back up.",
+                  "It has exactly 1 turning point."
+                ]
+              },
+              "graph": {
+                "fn": "x^4+4x",
+                "x": [
+                  -3,
+                  2
+                ],
+                "y": [
+                  -5,
+                  10
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "tp3-q1",
+              "type": "input",
+              "prompt": "What is the most turning points a polynomial of degree 6 can have?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Use n − 1.",
+              "solution": "A polynomial of degree n has at most n − 1 turning points. 6 − 1 = 5."
+            },
+            {
+              "id": "tp3-q2",
+              "type": "input",
+              "prompt": "f(x) = 4x³ − x⁶ + 2x − 9. What is the most turning points it can have?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Find the degree first. The first term is not the one with the greatest exponent.",
+              "solution": "The greatest exponent is 6, so the degree is 6 and there are at most 6 − 1 = 5 turning points."
+            },
+            {
+              "id": "tp3-q3",
+              "type": "choice",
+              "prompt": "A polynomial has degree 4. Which number of turning points is impossible for it?",
+              "choices": [
+                "4",
+                "3",
+                "1"
+              ],
+              "answer": 0,
+              "hint": "What is the most a degree-4 polynomial can have?",
+              "solution": "Degree 4 allows at most 4 − 1 = 3 turning points, so 4 is impossible. f(x) = x⁴ − 5x² + 4 has 3, and f(x) = x⁴ + 4x has 1."
+            },
+            {
+              "id": "tp3-q4",
+              "type": "input",
+              "prompt": "The graph shows f(x) = x³ + 3x. How many turning points does it have?",
+              "answers": [
+                "0"
+              ],
+              "hint": "Does the graph ever switch from going up to going down?",
+              "solution": "The graph goes up the whole way and never turns. It has 0 turning points, even though a cubic can have up to 2.",
+              "graph": {
+                "fn": "x^3+3x",
+                "x": [
+                  -3,
+                  3
+                ],
+                "y": [
+                  -10,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "tp3-q5",
+              "type": "input",
+              "prompt": "The graph shows f(x) = x⁵ + x³ − 2x. How many turning points does it have?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Count the hills and the valleys.",
+              "solution": "The graph rises to a hill near x = −0.63, falls to a valley near x = 0.63, then rises again. That is 2 turning points. The most for degree 5 is 4, but this one has fewer.",
+              "graph": {
+                "fn": "x^5+x^3-2x",
+                "x": [
+                  -1.6,
+                  1.6
+                ],
+                "y": [
+                  -2,
+                  2
+                ]
+              }
+            },
+            {
+              "id": "tp3-q6",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = −x³ + 3x + 4. What is the relative maximum?",
+              "choices": [
+                "(1, 6)",
+                "(−1, 2)",
+                "(6, 1)",
+                "(0, 4)"
+              ],
+              "answer": 0,
+              "hint": "Find the top of the hill. Write it as (x, y).",
+              "solution": "The graph rises to a peak at x = 1, where f(1) = −1 + 3 + 4 = 6. The relative maximum is (1, 6).",
+              "graph": {
+                "fn": "-x^3+3x+4",
+                "x": [
+                  -3,
+                  3
+                ],
+                "y": [
+                  -4,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "tp3-q7",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = −x³ + 3x + 4. What is the relative minimum?",
+              "choices": [
+                "(−1, 2)",
+                "(1, 6)",
+                "(2, −1)",
+                "(−1, 0)"
+              ],
+              "answer": 0,
+              "hint": "Find the bottom of the valley. Write it as (x, y).",
+              "solution": "The graph falls to its lowest nearby point at x = −1, where f(−1) = 1 − 3 + 4 = 2. The relative minimum is (−1, 2).",
+              "graph": {
+                "fn": "-x^3+3x+4",
+                "x": [
+                  -3,
+                  3
+                ],
+                "y": [
+                  -4,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "tp3-q8",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = x³ − 4x² + 2x + 1. What is the relative minimum, to two decimal places?",
+              "choices": [
+                "(2.39, −3.42)",
+                "(0.28, 1.27)",
+                "(−3.42, 2.39)",
+                "(3.30, 0)"
+              ],
+              "answer": 0,
+              "hint": "Graph it in the calculator. It lists the turning points under the graph.",
+              "solution": "The valley is at about (2.39, −3.42). (0.28, 1.27) is the relative maximum, and (3.30, 0) is a zero, not a turning point.",
+              "graph": {
+                "fn": "x^3-4x^2+2x+1",
+                "x": [
+                  -1.5,
+                  4.5
+                ],
+                "y": [
+                  -6,
+                  4
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "turning-points-4",
+          "teach": [
+            {
+              "title": "Describing a graph completely",
+              "text": [
+                "Domain: always (−∞, ∞) for a polynomial.",
+                "Increasing and decreasing: the x-values of the turning points split the x-axis into intervals.",
+                "Range: (−∞, ∞) for odd degree. For even degree, it stops at the highest or lowest y-value."
+              ],
+              "example": {
+                "problem": "Describe f(x) = x³ − 3x².",
+                "steps": [
+                  "Turning points: relative maximum (0, 0) and relative minimum (2, −4).",
+                  "Increasing on (−∞, 0) ∪ (2, ∞). Decreasing on (0, 2).",
+                  "Odd degree, so the domain and the range are both (−∞, ∞).",
+                  "End behavior: as x → −∞, f(x) → −∞; as x → ∞, f(x) → ∞."
+                ]
+              },
+              "graph": {
+                "fn": "x^3-3x^2",
+                "x": [
+                  -2,
+                  4
+                ],
+                "y": [
+                  -6,
+                  4
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "tp4-q1",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = x³ + 3x² − 9x − 5. Its turning points are (−3, 22) and (1, −10). Where is f decreasing?",
+              "choices": [
+                "(−3, 1)",
+                "(−∞, −3) ∪ (1, ∞)",
+                "(−10, 22)",
+                "(1, ∞)"
+              ],
+              "answer": 0,
+              "hint": "Use x-values only. Where does the graph go down as you move right?",
+              "solution": "The graph goes down between the two turning points, from x = −3 to x = 1. Decreasing: (−3, 1).",
+              "graph": {
+                "fn": "x^3+3x^2-9x-5",
+                "x": [
+                  -6,
+                  4
+                ],
+                "y": [
+                  -15,
+                  25
+                ]
+              }
+            },
+            {
+              "id": "tp4-q2",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = x³ + 3x² − 9x − 5. Its turning points are (−3, 22) and (1, −10). Where is f increasing?",
+              "choices": [
+                "(−∞, −3) ∪ (1, ∞)",
+                "(−3, 1)",
+                "(−∞, −10) ∪ (22, ∞)",
+                "(−3, ∞)"
+              ],
+              "answer": 0,
+              "hint": "Use x-values only. Where does the graph go up as you move right?",
+              "solution": "It goes up until x = −3, down until x = 1, then up again. Increasing: (−∞, −3) ∪ (1, ∞).",
+              "graph": {
+                "fn": "x^3+3x^2-9x-5",
+                "x": [
+                  -6,
+                  4
+                ],
+                "y": [
+                  -15,
+                  25
+                ]
+              }
+            },
+            {
+              "id": "tp4-q3",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = −x⁴ + 2x² + 3. Its turning points are (−1, 4), (0, 3), and (1, 4). Where is f increasing?",
+              "choices": [
+                "(−∞, −1) ∪ (0, 1)",
+                "(−1, 0) ∪ (1, ∞)",
+                "(−∞, 0)",
+                "(3, 4)"
+              ],
+              "answer": 0,
+              "hint": "Read from left to right. The graph changes direction at x = −1, 0, and 1.",
+              "solution": "It rises to (−1, 4), falls to (0, 3), rises to (1, 4), then falls. Increasing: (−∞, −1) ∪ (0, 1).",
+              "graph": {
+                "fn": "-x^4+2x^2+3",
+                "x": [
+                  -2.5,
+                  2.5
+                ],
+                "y": [
+                  -5,
+                  6
+                ]
+              }
+            },
+            {
+              "id": "tp4-q4",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = −x⁴ + 2x² + 3. What is its range?",
+              "choices": [
+                "(−∞, 4]",
+                "(−∞, ∞)",
+                "[3, 4]",
+                "[4, ∞)"
+              ],
+              "answer": 0,
+              "hint": "Both ends go down. What is the highest y-value the graph reaches?",
+              "solution": "The ends go down forever, and the highest points are (−1, 4) and (1, 4). Range: (−∞, 4].",
+              "graph": {
+                "fn": "-x^4+2x^2+3",
+                "x": [
+                  -2.5,
+                  2.5
+                ],
+                "y": [
+                  -5,
+                  6
+                ]
+              }
+            },
+            {
+              "id": "tp4-q5",
+              "type": "input",
+              "prompt": "The graph shows f(x) = x⁴ − 2x³ − 3x² + 4x + 1. What is the x-coordinate of its relative maximum?",
+              "answers": [
+                "1/2"
+              ],
+              "hint": "The relative maximum is the top of the hill between the two valleys. The calculator lists it.",
+              "solution": "The turning points are min (−1, −3), max (0.5, 2.06), and min (2, −3). The relative maximum is at x = 0.5 = 1/2.",
+              "graph": {
+                "fn": "x^4-2x^3-3x^2+4x+1",
+                "x": [
+                  -2.5,
+                  3.5
+                ],
+                "y": [
+                  -5,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "tp4-q6",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = x⁴ − 2x³ − 3x² + 4x + 1. What is its range?",
+              "choices": [
+                "[−3, ∞)",
+                "(−∞, ∞)",
+                "[1, ∞)",
+                "[−3, 2.06]"
+              ],
+              "answer": 0,
+              "hint": "Both ends go up. What is the lowest y-value the graph reaches?",
+              "solution": "Both valleys reach y = −3, and the ends go up forever. Range: [−3, ∞).",
+              "graph": {
+                "fn": "x^4-2x^3-3x^2+4x+1",
+                "x": [
+                  -2.5,
+                  3.5
+                ],
+                "y": [
+                  -5,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "tp4-q7",
+              "type": "choice",
+              "prompt": "The graph shows f(x) = x³ − 6x² + 9x + 1. Which describes its turning points?",
+              "choices": [
+                "relative maximum (1, 5), relative minimum (3, 1)",
+                "relative maximum (3, 1), relative minimum (1, 5)",
+                "relative maximum (5, 1), relative minimum (1, 3)",
+                "relative maximum (1, 5), no relative minimum"
+              ],
+              "answer": 0,
+              "hint": "The hill is the maximum and the valley is the minimum. Write each point as (x, y).",
+              "solution": "The graph peaks at (1, 5) and bottoms out at (3, 1). Check: f(1) = 1 − 6 + 9 + 1 = 5 and f(3) = 27 − 54 + 27 + 1 = 1.",
+              "graph": {
+                "fn": "x^3-6x^2+9x+1",
+                "x": [
+                  -1,
+                  5
+                ],
+                "y": [
+                  -4,
+                  8
+                ]
+              }
+            },
+            {
+              "id": "tp4-q8",
+              "type": "choice",
+              "prompt": "Use the calculator to graph f(x) = x³ − 5x + 3. What is its relative maximum, to two decimal places?",
+              "choices": [
+                "(−1.29, 7.3)",
+                "(1.29, −1.3)",
+                "(7.3, −1.29)",
+                "(0, 3)"
+              ],
+              "answer": 0,
+              "hint": "Type the function into the calculator. Look for the max in the list of turning points.",
+              "solution": "The calculator shows max (−1.29, 7.3) and min (1.29, −1.3). The relative maximum is (−1.29, 7.3). (0, 3) is the y-intercept, not a turning point."
+            }
+          ]
         }
       ]
     },
@@ -2955,6 +5591,316 @@
               "solution": "(x + 6)² = x² + 12x + 36. Times (x − 2): x³ − 2x² + 12x² − 24x + 36x − 72 = x³ + 10x² + 12x − 72."
             }
           ]
+        },
+        {
+          "id": "zeros-3",
+          "teach": [
+            {
+              "title": "Zeros from factors like (ax + b)",
+              "text": [
+                "Set each factor equal to 0 and solve. The factor (2x − 3) gives 2x = 3, so x = 3/2, not 3.",
+                "A factor of x by itself gives the zero 0."
+              ],
+              "example": {
+                "problem": "Find the zeros of f(x) = x(2x − 3)(x + 4).",
+                "steps": [
+                  "x = 0.",
+                  "2x − 3 = 0 gives x = 3/2.",
+                  "x + 4 = 0 gives x = −4.",
+                  "Zeros: 0, 3/2, −4."
+                ]
+              }
+            },
+            {
+              "title": "Write a polynomial from its zeros",
+              "text": [
+                "Each zero a gives a factor (x − a). Multiply the factors and write the answer in standard form."
+              ],
+              "example": {
+                "problem": "Write a polynomial in standard form with zeros −2, 1, and 3.",
+                "steps": [
+                  "Factors: (x + 2), (x − 1), and (x − 3).",
+                  "(x + 2)(x − 1) = x² + x − 2.",
+                  "(x² + x − 2)(x − 3) = x³ − 3x² + x² − 3x − 2x + 6.",
+                  "Answer: f(x) = x³ − 2x² − 5x + 6"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "ze3-q1",
+              "type": "input",
+              "prompt": "f(x) = (x − 9)(x + 2). What are its zeros? Type them separated by commas.",
+              "answers": [
+                "9, -2"
+              ],
+              "hint": "Set each factor equal to 0.",
+              "solution": "x − 9 = 0 gives x = 9. x + 2 = 0 gives x = −2. Zeros: 9, −2."
+            },
+            {
+              "id": "ze3-q2",
+              "type": "input",
+              "prompt": "f(x) = x(3x − 4)(x + 5). What are its zeros? Type them separated by commas.",
+              "answers": [
+                "0, 4/3, -5"
+              ],
+              "hint": "Solve 3x − 4 = 0 for x. The answer is a fraction.",
+              "solution": "x = 0. 3x − 4 = 0 gives x = 4/3. x + 5 = 0 gives x = −5. Zeros: 0, 4/3, −5."
+            },
+            {
+              "id": "ze3-q3",
+              "type": "input",
+              "prompt": "Factor f(x) = x³ + 3x² − 10x and find its zeros. Type them separated by commas.",
+              "answers": [
+                "0, -5, 2"
+              ],
+              "hint": "Take out the GCF x first.",
+              "solution": "x(x² + 3x − 10) = x(x + 5)(x − 2). Zeros: 0, −5, 2."
+            },
+            {
+              "id": "ze3-q4",
+              "type": "input",
+              "prompt": "The graph shows f(x) = x³ − 7x − 6. List all its zeros, separated by commas.",
+              "answers": [
+                "-1, -2, 3"
+              ],
+              "hint": "Find every place where the graph crosses the x-axis.",
+              "solution": "The graph crosses at x = −2, −1, and 3. Check: (x + 1)(x + 2)(x − 3) = x³ − 7x − 6.",
+              "graph": {
+                "fn": "x^3-7x-6",
+                "x": [
+                  -4,
+                  5
+                ],
+                "y": [
+                  -15,
+                  10
+                ]
+              }
+            },
+            {
+              "id": "ze3-q5",
+              "type": "input",
+              "prompt": "Factor f(x) = 2x³ − 8x and find its zeros. Type them separated by commas.",
+              "answers": [
+                "0, 2, -2"
+              ],
+              "hint": "Take out 2x. What is left is a difference of squares.",
+              "solution": "2x(x² − 4) = 2x(x + 2)(x − 2). Zeros: 0, 2, −2."
+            },
+            {
+              "id": "ze3-q6",
+              "type": "input",
+              "prompt": "Factor f(x) = x⁴ − 13x² + 36 and find its zeros. Type them separated by commas.",
+              "answers": [
+                "2, -2, 3, -3"
+              ],
+              "hint": "Treat x² as one variable: two numbers that multiply to 36 and add to −13.",
+              "solution": "(x² − 4)(x² − 9) = (x + 2)(x − 2)(x + 3)(x − 3). Zeros: ±2, ±3."
+            },
+            {
+              "id": "ze3-q7",
+              "type": "choice",
+              "prompt": "A polynomial function has zeros at 3, −3, and 1, each with multiplicity 1. Which function in standard form could it be?",
+              "choices": [
+                "f(x) = x³ − x² − 9x + 9",
+                "f(x) = x³ + x² − 9x − 9",
+                "f(x) = x³ − x² + 9x − 9",
+                "f(x) = x³ − 9x² − x + 9"
+              ],
+              "answer": 0,
+              "hint": "Each zero a gives a factor (x − a). Multiply (x − 3)(x + 3)(x − 1).",
+              "solution": "(x − 3)(x + 3) = x² − 9. Times (x − 1): x³ − x² − 9x + 9."
+            },
+            {
+              "id": "ze3-q8",
+              "type": "choice",
+              "prompt": "Which function has zeros at 0, 4, and −1/2?",
+              "choices": [
+                "f(x) = x(x − 4)(2x + 1)",
+                "f(x) = x(x + 4)(2x − 1)",
+                "f(x) = (x − 4)(2x + 1)",
+                "f(x) = x(x − 4)(x + 2)"
+              ],
+              "answer": 0,
+              "hint": "Set each factor equal to 0. Which choice gives 0, 4, and −1/2?",
+              "solution": "x = 0 gives 0. x − 4 = 0 gives 4. 2x + 1 = 0 gives −1/2. So f(x) = x(x − 4)(2x + 1)."
+            }
+          ]
+        },
+        {
+          "id": "zeros-4",
+          "teach": [
+            {
+              "title": "Multiplicity and the degree",
+              "text": [
+                "The exponent on a factor is the multiplicity of its zero. Odd multiplicity: the graph crosses. Even multiplicity: it touches and turns around.",
+                "The multiplicities add up to the degree."
+              ],
+              "example": {
+                "problem": "f(x) = (x − 2)³(x + 1)². Describe each zero.",
+                "steps": [
+                  "2 has multiplicity 3 (odd): the graph crosses there, flattening out as it goes through.",
+                  "−1 has multiplicity 2 (even): the graph touches the x-axis and turns around.",
+                  "Degree: 3 + 2 = 5."
+                ]
+              },
+              "graph": {
+                "fn": "(x-2)^3(x+1)^2",
+                "x": [
+                  -2,
+                  3
+                ],
+                "y": [
+                  -15,
+                  10
+                ]
+              }
+            },
+            {
+              "title": "Write a polynomial from zeros with multiplicity",
+              "text": [
+                "Write each factor as many times as its multiplicity, then multiply."
+              ],
+              "example": {
+                "problem": "Write a polynomial in standard form with a zero at 1 of multiplicity 2 and a zero at −3 of multiplicity 1.",
+                "steps": [
+                  "Factors: (x − 1)² and (x + 3).",
+                  "(x − 1)² = x² − 2x + 1.",
+                  "(x² − 2x + 1)(x + 3) = x³ + 3x² − 2x² − 6x + x + 3.",
+                  "Answer: f(x) = x³ + x² − 5x + 3"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "ze4-q1",
+              "type": "input",
+              "prompt": "f(x) = (x + 3)²(x − 6)⁵. What is the multiplicity of the zero 6?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Look at the exponent on the factor (x − 6).",
+              "solution": "(x − 6) appears 5 times, so the zero 6 has multiplicity 5."
+            },
+            {
+              "id": "ze4-q2",
+              "type": "choice",
+              "prompt": "f(x) = (x + 3)²(x − 6)⁵. What does the graph do at x = −3?",
+              "choices": [
+                "It touches the x-axis and turns around.",
+                "It crosses the x-axis.",
+                "It does not reach the x-axis there.",
+                "It crosses the x-axis and flattens out."
+              ],
+              "answer": 0,
+              "hint": "Find the multiplicity of the zero −3. Is it even or odd?",
+              "solution": "(x + 3)² gives the zero −3 with multiplicity 2. Even multiplicity means the graph touches the x-axis and turns around."
+            },
+            {
+              "id": "ze4-q3",
+              "type": "input",
+              "prompt": "f(x) = x³(x − 2)(x + 4)². What is the degree of f?",
+              "answers": [
+                "6"
+              ],
+              "hint": "Add up the multiplicities. (x − 2) has an exponent of 1.",
+              "solution": "3 + 1 + 2 = 6. The degree is 6."
+            },
+            {
+              "id": "ze4-q4",
+              "type": "choice",
+              "prompt": "Factor f(x) = x³ + 8x² + 16x. What are the zeros and their multiplicities?",
+              "choices": [
+                "0 (multiplicity 1) and −4 (multiplicity 2)",
+                "0 (multiplicity 1) and 4 (multiplicity 2)",
+                "0 (multiplicity 2) and −4 (multiplicity 1)",
+                "0, −4, and 4 (multiplicity 1 each)"
+              ],
+              "answer": 0,
+              "hint": "Take out x first. Then the trinomial is a perfect square.",
+              "solution": "x(x² + 8x + 16) = x(x + 4)². The zero 0 has multiplicity 1 and the zero −4 has multiplicity 2."
+            },
+            {
+              "id": "ze4-q5",
+              "type": "choice",
+              "prompt": "f(x) = 3x⁴ − 12x³ + 12x². Where does the graph touch the x-axis without crossing?",
+              "choices": [
+                "At x = 0 and at x = 2",
+                "Only at x = 0",
+                "Only at x = 2",
+                "Nowhere. It crosses at every zero."
+              ],
+              "answer": 0,
+              "hint": "Factor out 3x². Which zeros have an even multiplicity?",
+              "solution": "3x²(x² − 4x + 4) = 3x²(x − 2)². Both zeros, 0 and 2, have multiplicity 2, so the graph touches at both."
+            },
+            {
+              "id": "ze4-q6",
+              "type": "choice",
+              "prompt": "f(x) = (2x − 1)³(x + 4). Which describes the zero that comes from (2x − 1)³?",
+              "choices": [
+                "Zero 1/2, multiplicity 3, crosses",
+                "Zero 1/2, multiplicity 3, touches",
+                "Zero 2, multiplicity 3, crosses",
+                "Zero −1/2, multiplicity 3, crosses"
+              ],
+              "answer": 0,
+              "hint": "Solve 2x − 1 = 0. The exponent is the multiplicity.",
+              "solution": "2x − 1 = 0 gives x = 1/2. The exponent 3 is the multiplicity. 3 is odd, so the graph crosses."
+            },
+            {
+              "id": "ze4-q7",
+              "type": "choice",
+              "prompt": "The graph of a cubic touches the x-axis at x = 2 and crosses it at x = −1. Which function could it be?",
+              "choices": [
+                "f(x) = (x − 2)²(x + 1)",
+                "f(x) = (x + 2)²(x − 1)",
+                "f(x) = (x − 2)(x + 1)²",
+                "f(x) = (x − 2)(x + 1)"
+              ],
+              "answer": 0,
+              "hint": "Touching means even multiplicity. Crossing means odd multiplicity. A cubic has degree 3 in all.",
+              "solution": "The zero 2 needs multiplicity 2: (x − 2)². The zero −1 needs multiplicity 1: (x + 1). Degree 2 + 1 = 3. f(x) = (x − 2)²(x + 1).",
+              "graph": {
+                "fn": "x^3-3x^2+4",
+                "x": [
+                  -2,
+                  4
+                ],
+                "y": [
+                  -6,
+                  8
+                ]
+              }
+            },
+            {
+              "id": "ze4-q8",
+              "type": "choice",
+              "prompt": "A polynomial has a zero at 3 with multiplicity 2 and a zero at −1 with multiplicity 2. Which function in standard form could it be?",
+              "choices": [
+                "f(x) = x⁴ − 4x³ − 2x² + 12x + 9",
+                "f(x) = x⁴ + 4x³ − 2x² − 12x + 9",
+                "f(x) = x² − 2x − 3",
+                "f(x) = x⁴ − 4x³ − 10x² + 12x + 9"
+              ],
+              "answer": 0,
+              "hint": "The factors are (x − 3)² and (x + 1)². Multiply (x − 3)(x + 1) first, then square it.",
+              "solution": "(x − 3)(x + 1) = x² − 2x − 3. (x² − 2x − 3)² = x⁴ − 4x³ + 4x² − 6x² + 12x + 9 = x⁴ − 4x³ − 2x² + 12x + 9."
+            },
+            {
+              "id": "ze4-q9",
+              "type": "input",
+              "prompt": "f(x) = −x²(x − 5)(x + 1)³. List the zeros where the graph crosses the x-axis, separated by commas.",
+              "answers": [
+                "5, -1"
+              ],
+              "hint": "The graph crosses at zeros with odd multiplicity.",
+              "solution": "0 has multiplicity 2 (even), so the graph touches there. 5 has multiplicity 1 and −1 has multiplicity 3, both odd, so the graph crosses at 5 and −1."
+            }
+          ]
         }
       ]
     },
@@ -3226,6 +6172,295 @@
               ],
               "hint": "Set ½(base₁ + base₂)(height) = 30x + 20, solve for x, then find the area.",
               "solution": "½(6x + 4)(x² + 1) = (3x + 2)(x² + 1) = 3x³ + 2x² + 3x + 2. Set equal to 30x + 20: 3x³ + 2x² − 27x − 18 = 0, so (x² − 9)(3x + 2) = 0 and x = 3. Area = 30(3) + 20 = 110 square feet."
+            }
+          ]
+        },
+        {
+          "id": "solving-3",
+          "teach": [
+            {
+              "title": "Do not divide by x",
+              "text": [
+                "Dividing both sides by x throws away the solution x = 0.",
+                "Instead, move every term to one side and factor out the x."
+              ],
+              "example": {
+                "problem": "Solve 3x³ = 12x.",
+                "steps": [
+                  "Move 12x over: 3x³ − 12x = 0.",
+                  "Factor: 3x(x² − 4) = 3x(x + 2)(x − 2) = 0.",
+                  "Solutions: x = 0, x = −2, and x = 2.",
+                  "Dividing by x first would give only ±2 and miss 0."
+                ]
+              }
+            },
+            {
+              "title": "Equations in quadratic form",
+              "text": [
+                "If the exponents are 4 and 2, treat x² as one variable and factor like a trinomial.",
+                "Then solve each x² = k. If k is positive, x = ±√k."
+              ],
+              "example": {
+                "problem": "Solve x⁴ − 10x² + 9 = 0.",
+                "steps": [
+                  "Two numbers that multiply to 9 and add to −10: −1 and −9. So (x² − 1)(x² − 9) = 0.",
+                  "x² = 1 gives x = ±1. x² = 9 gives x = ±3.",
+                  "Solutions: ±1, ±3."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "so3-q1",
+              "type": "input",
+              "prompt": "Solve x(x − 6)(2x + 3) = 0. Type every solution, separated by commas.",
+              "answers": [
+                "0, 6, -3/2"
+              ],
+              "hint": "The equation is already factored. Set each factor equal to 0.",
+              "solution": "x = 0. x − 6 = 0 gives x = 6. 2x + 3 = 0 gives x = −3/2. Solutions: 0, 6, −3/2."
+            },
+            {
+              "id": "so3-q2",
+              "type": "input",
+              "prompt": "Solve 5x³ − 20x² = 0. Type every different solution, separated by commas.",
+              "answers": [
+                "0, 4"
+              ],
+              "hint": "Take out the GCF 5x².",
+              "solution": "5x²(x − 4) = 0. 5x² = 0 gives x = 0. x − 4 = 0 gives x = 4. Solutions: 0, 4."
+            },
+            {
+              "id": "so3-q3",
+              "type": "input",
+              "prompt": "Solve x³ + 2x² − 15x = 0. Type every solution, separated by commas.",
+              "answers": [
+                "0, -5, 3"
+              ],
+              "hint": "Take out x, then factor the trinomial.",
+              "solution": "x(x² + 2x − 15) = x(x + 5)(x − 3) = 0. Solutions: 0, −5, 3."
+            },
+            {
+              "id": "so3-q4",
+              "type": "input",
+              "prompt": "Solve x³ = 9x. Type every solution, separated by commas.",
+              "answers": [
+                "0, 3, -3"
+              ],
+              "hint": "Do not divide by x. Move 9x to the left side first.",
+              "solution": "x³ − 9x = 0, so x(x² − 9) = x(x + 3)(x − 3) = 0. Solutions: 0, 3, −3."
+            },
+            {
+              "id": "so3-q5",
+              "type": "input",
+              "prompt": "Solve x⁴ − 17x² + 16 = 0. Type every solution, separated by commas.",
+              "answers": [
+                "1, -1, 4, -4"
+              ],
+              "hint": "Treat x² as one variable: two numbers that multiply to 16 and add to −17.",
+              "solution": "(x² − 1)(x² − 16) = 0. x² = 1 gives ±1. x² = 16 gives ±4. Solutions: 1, −1, 4, −4."
+            },
+            {
+              "id": "so3-q6",
+              "type": "input",
+              "prompt": "Solve x³ − 5x² − 4x + 20 = 0. Type every solution, separated by commas.",
+              "answers": [
+                "2, -2, 5"
+              ],
+              "hint": "Four terms: group them.",
+              "solution": "x²(x − 5) − 4(x − 5) = (x² − 4)(x − 5) = (x + 2)(x − 2)(x − 5) = 0. Solutions: 2, −2, 5."
+            },
+            {
+              "id": "so3-q7",
+              "type": "input",
+              "prompt": "Solve 2x³ + 3x² = 8x + 12. Type every solution, separated by commas.",
+              "answers": [
+                "2, -2, -3/2"
+              ],
+              "hint": "Move everything to the left side, then group.",
+              "solution": "2x³ + 3x² − 8x − 12 = 0. x²(2x + 3) − 4(2x + 3) = (x² − 4)(2x + 3) = 0. Solutions: 2, −2, −3/2."
+            },
+            {
+              "id": "so3-q8",
+              "type": "input",
+              "prompt": "Solve x³ + 4x² + 4x = 0. Type every different solution, separated by commas.",
+              "answers": [
+                "0, -2"
+              ],
+              "hint": "Take out x. The trinomial left over is a perfect square.",
+              "solution": "x(x² + 4x + 4) = x(x + 2)² = 0. Solutions: 0 and −2 (−2 has multiplicity 2, but you list it once)."
+            },
+            {
+              "id": "so3-q9",
+              "type": "choice",
+              "prompt": "Solve x³ − 3x² − 2x + 6 = 0.",
+              "choices": [
+                "x = 3, ±√2",
+                "x = −3, ±√2",
+                "x = 3, ±2",
+                "x = 3, ±i√2"
+              ],
+              "answer": 0,
+              "hint": "Group: x²(x − 3) − 2(x − 3).",
+              "solution": "(x² − 2)(x − 3) = 0. x − 3 = 0 gives x = 3. x² = 2 gives x = ±√2."
+            }
+          ]
+        },
+        {
+          "id": "solving-4",
+          "teach": [
+            {
+              "title": "When x² is negative",
+              "text": [
+                "If a factor gives x² = −k with k positive, the solutions are imaginary: x = ±i√k.",
+                "Simplify the radical: √−36 = 6i and √−8 = 2i√2."
+              ],
+              "example": {
+                "problem": "Solve x⁴ + 5x² − 36 = 0.",
+                "steps": [
+                  "Treat x² as one variable: (x² + 9)(x² − 4) = 0.",
+                  "x² = 4 gives x = ±2.",
+                  "x² = −9 gives x = ±3i.",
+                  "Solutions: ±2, ±3i."
+                ]
+              }
+            },
+            {
+              "title": "Word problems with grouping",
+              "text": [
+                "Set the model equal to the value you are given. Move everything to one side and factor by grouping.",
+                "Keep only answers that make sense, like a positive number of years."
+              ],
+              "example": {
+                "problem": "A company's profit, in thousands of dollars, is P(t) = t³ − 4t² + 2t + 10, where t is years after 2015. In what year was the profit $18,000?",
+                "steps": [
+                  "Set P(t) = 18: t³ − 4t² + 2t + 10 = 18, so t³ − 4t² + 2t − 8 = 0.",
+                  "Group: t²(t − 4) + 2(t − 4) = (t² + 2)(t − 4) = 0.",
+                  "t = 4. t² = −2 has no real solution.",
+                  "2015 + 4 = 2019."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "so4-q1",
+              "type": "choice",
+              "prompt": "Solve x³ + 49x = 0.",
+              "choices": [
+                "x = 0, ±7i",
+                "x = 0, ±7",
+                "x = ±7i only",
+                "x = 0, ±49i"
+              ],
+              "answer": 0,
+              "hint": "Take out x. Then x² + 49 = 0 means x² = −49.",
+              "solution": "x(x² + 49) = 0. x = 0, or x² = −49, so x = ±7i."
+            },
+            {
+              "id": "so4-q2",
+              "type": "choice",
+              "prompt": "Solve x⁴ − 81 = 0.",
+              "choices": [
+                "x = ±3, ±3i",
+                "x = ±3 only",
+                "x = ±9, ±9i",
+                "x = ±3i only"
+              ],
+              "answer": 0,
+              "hint": "x⁴ − 81 = (x² + 9)(x² − 9).",
+              "solution": "x² − 9 = 0 gives x = ±3. x² + 9 = 0 gives x² = −9, so x = ±3i."
+            },
+            {
+              "id": "so4-q3",
+              "type": "choice",
+              "prompt": "Solve x⁴ − 3x² − 10 = 0.",
+              "choices": [
+                "x = ±√5, ±i√2",
+                "x = ±√2, ±i√5",
+                "x = ±5, ±2i",
+                "x = ±√5, ±√2"
+              ],
+              "answer": 0,
+              "hint": "Treat x² as one variable: two numbers that multiply to −10 and add to −3.",
+              "solution": "(x² − 5)(x² + 2) = 0. x² = 5 gives ±√5. x² = −2 gives ±i√2."
+            },
+            {
+              "id": "so4-q4",
+              "type": "choice",
+              "prompt": "Solve x³ − 27 = 0.",
+              "choices": [
+                "x = 3, (−3 ± 3i√3)/2",
+                "x = 3, (3 ± 3i√3)/2",
+                "x = −3, (3 ± 3i√3)/2",
+                "x = 3 only"
+              ],
+              "answer": 0,
+              "hint": "Difference of cubes: (x − 3)(x² + 3x + 9). Use the quadratic formula on the second factor.",
+              "solution": "x − 3 = 0 gives x = 3. For x² + 3x + 9: x = (−3 ± √(9 − 36)) / 2 = (−3 ± √−27) / 2 = (−3 ± 3i√3)/2."
+            },
+            {
+              "id": "so4-q5",
+              "type": "choice",
+              "prompt": "Solve 8x³ + 1 = 0.",
+              "choices": [
+                "x = −1/2, (1 ± i√3)/4",
+                "x = 1/2, (−1 ± i√3)/4",
+                "x = −1/2, (1 ± i√3)/2",
+                "x = −1/2 only"
+              ],
+              "answer": 0,
+              "hint": "Sum of cubes: (2x + 1)(4x² − 2x + 1). Use the quadratic formula on the second factor.",
+              "solution": "2x + 1 = 0 gives x = −1/2. For 4x² − 2x + 1: x = (2 ± √(4 − 16)) / 8 = (2 ± 2i√3) / 8 = (1 ± i√3)/4."
+            },
+            {
+              "id": "so4-q6",
+              "type": "choice",
+              "prompt": "Solve x³ − 2x² + 9x − 18 = 0.",
+              "choices": [
+                "x = 2, ±3i",
+                "x = 2, ±3",
+                "x = −2, ±3i",
+                "x = 2, ±9i"
+              ],
+              "answer": 0,
+              "hint": "Group: x²(x − 2) + 9(x − 2).",
+              "solution": "(x² + 9)(x − 2) = 0. x = 2, or x² = −9 so x = ±3i."
+            },
+            {
+              "id": "so4-q7",
+              "type": "choice",
+              "prompt": "Solve x⁴ = 4x² + 45.",
+              "choices": [
+                "x = ±3, ±i√5",
+                "x = ±3, ±√5",
+                "x = ±9, ±5i",
+                "x = ±√5, ±3i"
+              ],
+              "answer": 0,
+              "hint": "Move everything to one side: x⁴ − 4x² − 45 = 0. Then treat x² as one variable.",
+              "solution": "(x² − 9)(x² + 5) = 0. x² = 9 gives ±3. x² = −5 gives ±i√5."
+            },
+            {
+              "id": "so4-q8",
+              "type": "input",
+              "prompt": "A company's profit, in thousands of dollars, is P(t) = t³ − 5t² + 3t + 20, where t is years after 2018. In what year was the profit $35,000?",
+              "answers": [
+                "2023"
+              ],
+              "hint": "Set P(t) = 35 (it is in thousands). Move everything to one side, then group.",
+              "solution": "t³ − 5t² + 3t + 20 = 35 gives t³ − 5t² + 3t − 15 = 0. Group: t²(t − 5) + 3(t − 5) = (t² + 3)(t − 5) = 0. t = 5, so 2018 + 5 = 2023."
+            },
+            {
+              "id": "so4-q9",
+              "type": "input",
+              "prompt": "A box has length x − 1, width x − 2, and height x − 3, in inches. Its volume is 10x cubic inches. What is the volume in cubic inches?",
+              "answers": [
+                "60"
+              ],
+              "hint": "Set (x − 1)(x − 2)(x − 3) = 10x. Expand, move 10x over, then group.",
+              "solution": "(x − 1)(x − 2)(x − 3) = x³ − 6x² + 11x − 6. Set equal to 10x: x³ − 6x² + x − 6 = 0. Group: x²(x − 6) + 1(x − 6) = (x² + 1)(x − 6) = 0, so x = 6. Volume = 10 · 6 = 60 cubic inches (sides 5, 4, and 3)."
             }
           ]
         }
