@@ -20,7 +20,14 @@
     GOAL_CHOICES: [50, 100, 200, 300],
     DEFAULT_GOAL: 100,
     DAYS_KEPT: 14,
-    TWO_STAR_PERCENT: 70
+    TWO_STAR_PERCENT: 70,
+    XP_REWIND_BONUS: 20,
+    REWIND_SIZE: 10,
+    SPEED_SECONDS: 60,
+    SPEED_MAX: 40,
+    COMBO_BONUS_EVERY: 5,
+    COMBO_BONUS_XP: 5,
+    MAX_FREEZES: 2
   };
   var MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -71,11 +78,20 @@
   }
 
   // One state per level: the first level is open, and each level opens when the one before it is complete.
+  // One state per level. A level is open when the one before it is complete, or when it or any
+  // later level has a finished lesson (so adding lessons to a unit never locks a level again).
   function levelStates(unit, progress) {
+    var lastTouched = -1;
+    unit.levels.forEach(function (level, index) {
+      var touched = level.lessons.some(function (lesson) {
+        return progress.completedLessons.indexOf(lesson.id) !== -1;
+      });
+      if (touched) lastTouched = index;
+    });
     var previousComplete = true;
-    return unit.levels.map(function (level) {
+    return unit.levels.map(function (level, index) {
       var complete = isLevelComplete(level, progress);
-      var state = complete ? 'complete' : (previousComplete ? 'open' : 'locked');
+      var state = complete ? 'complete' : (previousComplete || index <= lastTouched ? 'open' : 'locked');
       previousComplete = complete;
       return state;
     });
@@ -137,6 +153,7 @@
     for (var back = 6; back >= 0; back--) {
       var date = addDays(today, -back);
       var logged = hasDay(save, date) && save.days[date].studied;
+      var frozen = hasDay(save, date) && save.days[date].frozen === true && !logged;
       var inStreak = false;
       if (save.lastStudyDate !== null && save.streak > 0) {
         var before = dayDiff(date, save.lastStudyDate);
@@ -145,7 +162,8 @@
       week.push({
         date: date,
         letter: WEEKDAY_LETTERS.charAt(new Date(utcMidnight(date)).getUTCDay()),
-        studied: Boolean(logged || inStreak),
+        studied: Boolean(logged || (inStreak && !frozen)),
+        frozen: Boolean(frozen),
         today: back === 0
       });
     }
@@ -164,10 +182,41 @@
   }
 
   // Called when the app opens. The streak is lost once a whole day has been missed.
+  // When whole days were missed and the saved streak freezes cover all of them, the freezes are
+  // used: the missed days are logged as frozen and the streak goes on. Otherwise it is lost.
+  // Returns the number of freezes used.
   function refreshStreak(save, today) {
-    if (save.lastStudyDate === null || dayDiff(save.lastStudyDate, today) > 1) {
+    if (save.lastStudyDate === null) {
       save.streak = 0;
+      return 0;
     }
+    var gap = dayDiff(save.lastStudyDate, today);
+    if (gap <= 1) return 0;
+    var missed = gap - 1;
+    var freezes = save.freezes || 0;
+    if (save.streak > 0 && missed <= freezes) {
+      for (var day = 1; day <= missed; day++) {
+        var date = addDays(save.lastStudyDate, day);
+        if (!save.days) save.days = {};
+        if (!hasDay(save, date)) save.days[date] = { xp: 0, studied: false };
+        save.days[date].frozen = true;
+      }
+      dayEntry(save, today);
+      save.freezes = freezes - missed;
+      save.lastStudyDate = addDays(today, -1);
+      return missed;
+    }
+    save.streak = 0;
+    return 0;
+  }
+
+  // ----- Today's counters, for the daily quests -----
+
+  function dailyFor(save, today) {
+    if (!save.daily || save.daily.date !== today) {
+      save.daily = { date: today, lessons: 0, perfect: 0, correct: 0, bestCombo: 0, practice: 0, claimed: [] };
+    }
+    return save.daily;
   }
 
   // ----- Shuffle -----
@@ -204,7 +253,9 @@
       xpEarned: 0,
       perfect: false,
       status: 'active',
-      awaitingContinue: false
+      awaitingContinue: false,
+      combo: 0,
+      bestCombo: 0
     };
   }
 
@@ -230,6 +281,39 @@
     if (questions.length === 0) return null;
     var ids = shuffledOrder(questions.length, rng).map(function (index) { return questions[index].id; });
     return newSession(unit, 'test', null, ids);
+  }
+
+  // The ids of every question in the unit's finished lessons.
+  function finishedQuestionIds(unit, progress) {
+    var ids = [];
+    unit.levels.forEach(function (level) {
+      level.lessons.forEach(function (lesson) {
+        if (progress.completedLessons.indexOf(lesson.id) === -1) return;
+        lesson.questions.forEach(function (question) { ids.push(question.id); });
+      });
+    });
+    return ids;
+  }
+
+  function pickRandom(ids, count, rng) {
+    return shuffledOrder(ids.length, rng).slice(0, count).map(function (index) { return ids[index]; });
+  }
+
+  // Unit Rewind: random questions from finished lessons, played like a lesson. Null with none finished.
+  function startRewind(unit, progress, rng) {
+    var ids = finishedQuestionIds(unit, progress);
+    if (ids.length === 0) return null;
+    return newSession(unit, 'rewind', null, pickRandom(ids, CONSTANTS.REWIND_SIZE, rng));
+  }
+
+  // Speed Round: as many questions from finished lessons as can be answered before endsAt.
+  function startSpeed(unit, progress, rng, now) {
+    var ids = finishedQuestionIds(unit, progress);
+    if (ids.length === 0) return null;
+    var session = newSession(unit, 'speed', null, pickRandom(ids, CONSTANTS.SPEED_MAX, rng));
+    session.endsAt = now + CONSTANTS.SPEED_SECONDS * 1000;
+    session.newBest = false;
+    return session;
   }
 
   function currentQuestion(unit, session) {
@@ -282,12 +366,48 @@
       awardXp(save, session, CONSTANTS.XP_PERFECT_BONUS, today);
       session.perfect = true;
     }
+    if (session.kind === 'rewind') awardXp(save, session, CONSTANTS.XP_REWIND_BONUS, today);
+    var daily = dailyFor(save, today);
     if (session.kind === 'lesson') {
       var progress = save.progress[session.unitId];
       addOnce(progress.completedLessons, session.lessonId);
       recordStars(progress, session.lessonId, lessonStars(session));
+      daily.lessons += 1;
+      if (session.perfect) daily.perfect += 1;
+    } else {
+      daily.practice += 1;
     }
     applyStreak(save, today);
+  }
+
+  // Ends a Speed Round, when time is up or the questions run out. Keeps the best score.
+  function finishSpeed(save, session, today) {
+    if (session.kind !== 'speed' || session.status !== 'active') return false;
+    var progress = save.progress[session.unitId];
+    session.status = 'complete';
+    if (!(progress.speedBest >= session.firstTryCorrect)) {
+      session.newBest = session.firstTryCorrect > 0;
+      progress.speedBest = session.firstTryCorrect;
+    }
+    dailyFor(save, today).practice += 1;
+    applyStreak(save, today);
+    return true;
+  }
+
+  // A Speed Round answer: like a test answer, it is graded once and the round moves on.
+  function recordSpeedAnswer(save, session, progress, question, correct, today) {
+    session.queue.shift();
+    if (correct) {
+      awardXp(save, session, CONSTANTS.XP_CORRECT, today);
+      session.firstTryCorrect += 1;
+      dailyFor(save, today).correct += 1;
+    } else {
+      session.wrongCount += 1;
+      addOnce(session.missed, question.id);
+      addOnce(progress.review, question.id);
+    }
+    addOnce(session.seen, question.id);
+    if (session.queue.length === 0) finishSpeed(save, session, today);
   }
 
   function testScore(session) {
@@ -326,25 +446,50 @@
   // Grades the question at the head of the queue and updates the save and the session.
   // Returns null, changing nothing, when the session is not waiting for an answer or the response is empty.
   // Only a review session removes ids from the review pile; a normal lesson never does.
-  function submitAnswer(save, unit, session, response, today) {
+  // now (milliseconds) is needed only for a Speed Round: an answer after its time is up ends the
+  // round without being graded, and the result has timeUp: true.
+  function submitAnswer(save, unit, session, response, today, now) {
     if (session.status !== 'active' || session.awaitingContinue) return null;
     var question = currentQuestion(unit, session);
-    if (!question || !isUsableResponse(question, response)) return null;
+    if (!question) return null;
+    if (session.kind === 'speed' && typeof now === 'number' && now >= session.endsAt) {
+      finishSpeed(save, session, today);
+      return { correct: false, question: question, timeUp: true };
+    }
+    if (!isUsableResponse(question, response)) return null;
 
     var progress = save.progress[session.unitId];
     var correct = isRightAnswer(question, response);
 
     if (session.kind === 'test') {
+      if (correct) dailyFor(save, today).correct += 1;
       recordTestAnswer(save, session, progress, question, correct, today);
+      return { correct: correct, question: question };
+    }
+    if (session.kind === 'speed') {
+      recordSpeedAnswer(save, session, progress, question, correct, today);
       return { correct: correct, question: question };
     }
     session.queue.shift();
 
+    var xp = 0;
     if (correct) {
       awardXp(save, session, CONSTANTS.XP_CORRECT, today);
+      xp = CONSTANTS.XP_CORRECT;
       if (session.seen.indexOf(question.id) === -1) session.firstTryCorrect += 1;
       if (session.kind === 'review') removeItem(progress.review, question.id);
+      session.combo += 1;
+      session.bestCombo = Math.max(session.bestCombo, session.combo);
+      if (session.combo % CONSTANTS.COMBO_BONUS_EVERY === 0) {
+        awardXp(save, session, CONSTANTS.COMBO_BONUS_XP, today);
+        xp += CONSTANTS.COMBO_BONUS_XP;
+      }
+      var daily = dailyFor(save, today);
+      daily.correct += 1;
+      daily.bestCombo = Math.max(daily.bestCombo, session.combo);
+      save.bestCombo = Math.max(save.bestCombo || 0, session.combo);
     } else {
+      session.combo = 0;
       session.hearts -= 1;
       session.wrongCount += 1;
       session.queue.push(question.id);
@@ -359,7 +504,7 @@
     } else if (session.queue.length === 0) {
       completeSession(save, session, today);
     }
-    return { correct: correct, question: question };
+    return { correct: correct, question: question, xp: xp, combo: session.combo };
   }
 
   // Counts the current test question as wrong. Only an active test can be skipped.
@@ -481,6 +626,11 @@
     rankForXp: rankForXp,
     xpIntoRank: xpIntoRank,
     rankTitle: rankTitle,
+    addDays: addDays,
+    dailyFor: dailyFor,
+    startRewind: startRewind,
+    startSpeed: startSpeed,
+    finishSpeed: finishSpeed,
     nextGoal: nextGoal,
     goalOf: goalOf,
     todayXp: todayXp,

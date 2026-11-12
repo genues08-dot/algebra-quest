@@ -17,7 +17,7 @@ test('startLesson', () => {
   assert.deepEqual(s, {
     unitId: 'u1', kind: 'lesson', lessonId: 'a1', queue: ['q1', 'q2'], total: 2,
     hearts: 5, wrongCount: 0, firstTryCorrect: 0, seen: [], missed: [],
-    xpEarned: 0, perfect: false, status: 'active', awaitingContinue: false
+    xpEarned: 0, perfect: false, status: 'active', awaitingContinue: false, combo: 0, bestCombo: 0
   });
   assert.equal(game.currentQuestion(unit, s).id, 'q1');
   assert.equal(game.startLesson(unit, 'nope'), null);
@@ -26,7 +26,7 @@ test('startLesson', () => {
 test('perfect lesson', () => {
   const ctx = setup();
   const s = game.startLesson(ctx.unit, 'a1');
-  assert.deepEqual(answer(ctx, s, 1), { correct: true, question: ctx.unit.levels[0].lessons[0].questions[0] });
+  assert.deepEqual(answer(ctx, s, 1), { correct: true, question: ctx.unit.levels[0].lessons[0].questions[0], xp: 10, combo: 1 });
   assert.equal(ctx.save.xp, 10);
   answer(ctx, s, ' x = 7 ');
   assert.deepEqual([s.status, s.perfect, s.xpEarned, ctx.save.xp], ['complete', true, 50, 50]);

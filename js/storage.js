@@ -6,6 +6,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     require('./units.js');
     require('./game.js');
+    require('./rewards.js');
     require('./mascot.js');
   }
 
@@ -26,6 +27,10 @@
       progress: {},
       days: {},
       badges: {},
+      gems: 0,
+      freezes: 0,
+      bestCombo: 0,
+      outfits: { owned: [], worn: null },
       settings: { sound: true, angle: 'deg', goal: AQ.game.CONSTANTS.DEFAULT_GOAL, theme: 'light', mascot: defaultMascot() }
     };
   }
@@ -71,8 +76,38 @@
       var entry = days[date];
       return isDate(date) && isPlainObject(entry) &&
         typeof entry.xp === 'number' && isFinite(entry.xp) && entry.xp >= 0 &&
-        typeof entry.studied === 'boolean';
+        typeof entry.studied === 'boolean' &&
+        (!has(entry, 'frozen') || typeof entry.frozen === 'boolean');
     });
+  }
+
+  function isCount(value) {
+    return Number.isInteger(value) && value >= 0;
+  }
+
+  // { owned: [known hat ids, once each], worn: null or an owned id }.
+  function isValidOutfits(outfits) {
+    if (!isPlainObject(outfits) || !isStringArray(outfits.owned)) return false;
+    var known = outfits.owned.every(function (id, index) {
+      return AQ.rewards.hatById(id) !== null && outfits.owned.indexOf(id) === index;
+    });
+    return known && (outfits.worn === null || outfits.owned.indexOf(outfits.worn) !== -1);
+  }
+
+  // Today's quest counters.
+  function isValidDaily(daily) {
+    return isPlainObject(daily) && isDate(daily.date) &&
+      ['lessons', 'perfect', 'correct', 'bestCombo', 'practice'].every(function (key) { return isCount(daily[key]); }) &&
+      isStringArray(daily.claimed);
+  }
+
+  function isValidWeekRewards(rewards) {
+    return isPlainObject(rewards) && isDate(rewards.week) && Array.isArray(rewards.claimed) &&
+      rewards.claimed.length <= AQ.rewards.WEEK_REWARDS.length && rewards.claimed.every(isDate);
+  }
+
+  function isValidWeekChallenge(challenge) {
+    return isPlainObject(challenge) && isDate(challenge.week) && typeof challenge.claimed === 'boolean';
   }
 
   // Earned badges: { badgeId: "YYYY-MM-DD" }.
@@ -101,6 +136,8 @@
       if (has(progress, 'testBest') && progress.testBest !== null &&
           !(Number.isInteger(progress.testBest) && progress.testBest >= 0 && progress.testBest <= 100)) return false;
       if (has(progress, 'stars') && !isValidStars(progress.stars)) return false;
+      if (has(progress, 'chests') && !isStringArray(progress.chests)) return false;
+      if (has(progress, 'speedBest') && progress.speedBest !== null && !isCount(progress.speedBest)) return false;
     }
     if (has(candidate, 'settings')) {
       var settings = candidate.settings;
@@ -112,6 +149,14 @@
     }
     if (has(candidate, 'days') && !isValidDays(candidate.days)) return false;
     if (has(candidate, 'badges') && !isValidBadges(candidate.badges)) return false;
+    if (has(candidate, 'gems') && !isCount(candidate.gems)) return false;
+    if (has(candidate, 'bestCombo') && !isCount(candidate.bestCombo)) return false;
+    if (has(candidate, 'freezes') &&
+        !(isCount(candidate.freezes) && candidate.freezes <= AQ.game.CONSTANTS.MAX_FREEZES)) return false;
+    if (has(candidate, 'outfits') && !isValidOutfits(candidate.outfits)) return false;
+    if (has(candidate, 'daily') && !isValidDaily(candidate.daily)) return false;
+    if (has(candidate, 'weekRewards') && !isValidWeekRewards(candidate.weekRewards)) return false;
+    if (has(candidate, 'weekChallenge') && !isValidWeekChallenge(candidate.weekChallenge)) return false;
     if (candidate.currentUnitId !== null && unitIds.indexOf(candidate.currentUnitId) === -1) return false;
     return true;
   }
@@ -126,9 +171,14 @@
     if (!has(save.settings, 'mascot')) save.settings.mascot = defaultMascot();
     if (!has(save, 'days')) save.days = {};
     if (!has(save, 'badges')) save.badges = {};
+    if (!has(save, 'gems')) save.gems = 0;
+    if (!has(save, 'freezes')) save.freezes = 0;
+    if (!has(save, 'bestCombo')) save.bestCombo = 0;
+    if (!has(save, 'outfits')) save.outfits = { owned: [], worn: null };
     Object.keys(save.progress).forEach(function (id) {
       if (!has(save.progress[id], 'testBest')) save.progress[id].testBest = null;
       if (!has(save.progress[id], 'stars')) save.progress[id].stars = {};
+      if (!has(save.progress[id], 'chests')) save.progress[id].chests = [];
     });
     return save;
   }
@@ -168,7 +218,7 @@
   // Adds or replaces a unit and makes it current.
   // Replacing keeps completed lessons, stars, and review entries whose ids still exist in the new unit.
   function addUnit(save, unit) {
-    var kept = { completedLessons: [], review: [], testBest: null, stars: {} };
+    var kept = { completedLessons: [], review: [], testBest: null, stars: {}, chests: [] };
     var old = hasUnit(save, unit.id) ? save.progress[unit.id] : null;
     if (old) {
       var lessonIds = AQ.units.lessonIds(unit);
@@ -179,6 +229,8 @@
       Object.keys(old.stars || {}).forEach(function (id) {
         if (lessonIds.indexOf(id) !== -1) kept.stars[id] = old.stars[id];
       });
+      kept.chests = (old.chests || []).filter(function (index) { return Number(index) < unit.levels.length; });
+      if (typeof old.speedBest === 'number') kept.speedBest = old.speedBest;
     }
     save.units[unit.id] = unit;
     save.progress[unit.id] = kept;

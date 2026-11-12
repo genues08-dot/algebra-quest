@@ -15,7 +15,7 @@ test('load: empty storage gives a new save', () => {
   assert.equal(storage.KEY, KEY);
   assert.deepEqual(storage.load(fakeLs()), { ok: true, save: {
     version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: null, units: {}, progress: {},
-    days: {}, badges: {}, settings: { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } }
+    days: {}, badges: {}, gems: 0, freezes: 0, bestCombo: 0, outfits: { owned: [], worn: null }, settings: { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } }
   } });
 });
 
@@ -65,7 +65,7 @@ test('addUnit: replacing keeps progress only for ids that still exist', () => {
   save.xp = 70;
   save.progress.u1 = { completedLessons: ['a1', 'old-lesson'], review: ['q2', 'old-question'], testBest: 85 };
   storage.addUnit(save, makeUnit());
-  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'], testBest: 85, stars: {} });
+  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'], testBest: 85, stars: {}, chests: [] });
   assert.equal(save.xp, 70);
 });
 

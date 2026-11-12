@@ -18,9 +18,13 @@ function makeSave(unit) {
   return {
     version: 1, xp: 0, streak: 0, lastStudyDate: null, currentUnitId: unit.id,
     units: { [unit.id]: unit },
-    progress: { [unit.id]: { completedLessons: [], review: [], testBest: null, stars: {} } },
+    progress: { [unit.id]: { completedLessons: [], review: [], testBest: null, stars: {}, chests: [] } },
     days: {},
     badges: {},
+    gems: 0,
+    freezes: 0,
+    bestCombo: 0,
+    outfits: { owned: [], worn: null },
     settings: { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } }
   };
 }
