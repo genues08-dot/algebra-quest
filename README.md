@@ -27,7 +27,8 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 
 ## How it works
 
-- **Levels and lessons:** each unit is a winding path of lesson circles, grouped by level. Finish every lesson in a level to unlock the next one. You can replay any finished lesson. The glowing circle marked **Start** is your next lesson, and the trophy at the end is the final test.
+- **Getting around:** the bar at the bottom switches between **Home**, **Practice** (your missed questions, the final test, and the calculator), **Badges**, **Profile** (your axolotl, rank, daily goal, week, and stats), and **More** (Import, Backup, Sound, Dark mode, and Remove this unit). The bar at the top of Home shows your rank, streak, XP today, and questions to review. Tap any of them for more.
+- **Levels and lessons:** each unit is a winding path of lesson circles, grouped under a colored banner for each level. Tap 📖 on a banner to read that level's notes. A finished lesson shows 1 to 3 stars: 3 for no mistakes, 2 for at least 70% right the first time. Finish every lesson in a level to unlock the next one. You can replay any finished lesson. The glowing circle marked **Start** is your next lesson, and the trophy at the end is the final test.
 - **Continue:** the big **Continue** button starts your next lesson. When every lesson is done, it starts the final test, and after you pass, it starts a review of the questions you missed.
 - **XP and rank:** each correct answer is 10 XP. Finishing a lesson adds 20, and a lesson with no mistakes adds 10 more. Every 100 XP raises your rank. Ranks have titles, from Rookie (ranks 1–2) up to Algebra Legend (rank 30 and up). When a lesson raises your rank, its result screen says so.
 - **Daily goal:** the ring at the top fills with the XP you earn today. The goal starts at 100 XP, about one lesson. Tap **Goal** to change it to 50, 100, 200, or 300 XP.
