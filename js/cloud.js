@@ -2,8 +2,10 @@
 // index.html). web-boot.js uses only AQ.cloud, so tests/fake-cloud.js can stand in for it.
 //
 // AQ.cloud.ready is false when the Firebase scripts did not load (offline on a first visit).
-// An account is { uid, name }. Promises reject with Firebase errors, which carry a `code`,
-// except deleteAccount, which rejects with a message for the player.
+// An account is { key, name }: key is the username in lowercase, which names the player's save
+// and leaderboard row (so a player who signs up again with the same username gets them back),
+// and name is the username as first typed. Promises reject with Firebase errors, which carry a
+// `code`, except deleteAccount, which rejects with a message for the player.
 (function (root) {
   'use strict';
   var AQ = root.AQ = root.AQ || {};
@@ -26,15 +28,17 @@
   }
 
   function account(user) {
-    return user ? { uid: user.uid, name: user.displayName || AQ.online.nameFromEmail(user.email) } : null;
+    if (!user) return null;
+    var key = AQ.online.nameFromEmail(user.email);
+    return { key: key, name: user.displayName || key };
   }
 
-  function saveDoc(uid) {
-    return db.collection('saves').doc(uid);
+  function saveDoc(key) {
+    return db.collection('saves').doc(key);
   }
 
-  function playerDoc(uid) {
-    return db.collection('players').doc(uid);
+  function playerDoc(key) {
+    return db.collection('players').doc(key);
   }
 
   AQ.cloud = {
@@ -59,16 +63,16 @@
       return auth.signOut();
     },
     // { save, savedAt } or null.
-    loadSave: function (uid) {
-      return saveDoc(uid).get().then(function (snap) { return snap.exists ? snap.data() : null; });
+    loadSave: function (key) {
+      return saveDoc(key).get().then(function (snap) { return snap.exists ? snap.data() : null; });
     },
-    writeSave: function (uid, doc) {
-      return saveDoc(uid).set({ save: doc.save, savedAt: doc.savedAt });
+    writeSave: function (key, doc) {
+      return saveDoc(key).set({ save: doc.save, savedAt: doc.savedAt });
     },
-    writePlayer: function (uid, row) {
-      return playerDoc(uid).set(Object.assign({}, row, { updated: firebase.firestore.FieldValue.serverTimestamp() }));
+    writePlayer: function (key, row) {
+      return playerDoc(key).set(Object.assign({}, row, { updated: firebase.firestore.FieldValue.serverTimestamp() }));
     },
-    // Every player's row, with its uid.
+    // Every player's row, with its key as uid.
     listPlayers: function () {
       return db.collection('players').limit(AQ.online.BOARD_LIMIT).get().then(function (snap) {
         return snap.docs.map(function (doc) { return Object.assign({}, doc.data(), { uid: doc.id }); });
@@ -76,12 +80,12 @@
     },
     // Deletes the leaderboard row, the save, and then the login. A login used too long ago is
     // refused before anything is deleted.
-    deleteAccount: function (uid) {
+    deleteAccount: function (key) {
       var user = auth.currentUser;
-      if (!user || user.uid !== uid) return Promise.reject('You are not logged in.');
+      if (!user || AQ.online.nameFromEmail(user.email) !== key) return Promise.reject('You are not logged in.');
       var lastLogin = Date.parse(user.metadata.lastSignInTime);
       if (!(Date.now() - lastLogin < RECENT_LOGIN_MS)) return Promise.reject(LOG_IN_AGAIN);
-      return Promise.all([playerDoc(uid).delete(), saveDoc(uid).delete()]).then(function () {
+      return Promise.all([playerDoc(key).delete(), saveDoc(key).delete()]).then(function () {
         return user.delete();
       }).catch(function (error) {
         if (error && error.code === 'auth/requires-recent-login') throw LOG_IN_AGAIN;

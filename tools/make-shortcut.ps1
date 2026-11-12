@@ -1,5 +1,5 @@
 # Creates "Algebra Quest.lnk" in the project root.
-# The shortcut opens index.html in its own Edge window, with no tabs or address bar.
+# The shortcut opens offline.html (the PC app, which needs no internet) in its own Edge window, with no tabs or address bar.
 # Run this again if the project folder moves: the paths are rebuilt from this script's location.
 $root = Split-Path -Parent $PSScriptRoot
 
@@ -14,7 +14,7 @@ if (-not $edge) {
     exit 1
 }
 
-$indexPath = Join-Path $root 'index.html'
+$indexPath = Join-Path $root 'offline.html'
 $shortcutPath = Join-Path $root 'Algebra Quest.lnk'
 
 $shell = New-Object -ComObject WScript.Shell

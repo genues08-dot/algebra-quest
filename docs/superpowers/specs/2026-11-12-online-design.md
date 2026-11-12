@@ -50,7 +50,7 @@ Claude chose the details below. The work is built on branch `online`, cut from `
   - "Logged in as name".
   - **Log out**.
   - **Delete my account**, which deletes the save, the leaderboard row, and the login. If Firebase asks for a fresh login first, the app says to log out, log back in, and try again.
-- **Forgotten passwords:** the owner resets them in the Firebase console (Authentication, then Users). The README gives the steps.
+- **Forgotten passwords:** Firebase can't set a password for a player, and there is no email to reset it with. Saves and leaderboard rows are kept under the lowercase username, not Firebase's user id. So the owner deletes the login in the Firebase console (Authentication, then Users), and the player signs up again with the same username and a new password, which gets their progress back. The README gives the steps.
 - **Error messages:**
 
 | Firebase error | Message |
@@ -72,15 +72,16 @@ Claude chose the details below. The work is built on branch `online`, cut from `
 
 ## Cloud save (Cloud Firestore)
 
-- Each player's save is the document `saves/{uid}`, holding `{ save, savedAt }`.
+- Each player's save is the document `saves/{name}`, where name is the lowercase username. It holds `{ save, savedAt }`.
   - `save` is the save text, with bundled units replaced by `"bundled"` as in the phone build.
   - `savedAt` is an ISO time.
-- Each device keeps a copy in `localStorage` under `algebraQuest.web.<uid>`, holding `{ save, savedAt }`. Two friends can then share one phone without mixing up their progress.
+- Each device keeps a copy in `localStorage` under `algebraQuest.web.<name>`, holding `{ save, savedAt }`. Two friends can then share one phone without mixing up their progress.
 - **On start:**
   - The app reads the cloud document. It uses the newer of the cloud and device copies, by `savedAt`.
   - If the device copy is newer, it is uploaded.
-  - If the cloud read fails or takes over 10 seconds, the app starts from the device copy and says progress will sync later.
-  - With no save anywhere, the app starts fresh with the bundled units.
+  - If the cloud read fails or takes over 10 seconds, the app starts from the device copy and says progress will sync later. Before its first upload, it reads the cloud again. If the cloud changed after the copy the app started from, another device has played since. The app then keeps the cloud's progress, drops this visit's offline play, and reloads.
+  - If the cloud can't be reached and the device has no copy, the app does not start fresh, because that could replace real progress. It says it can't reach the progress and offers **Try again**.
+  - With no save in the cloud or on the device, the app starts fresh with the bundled units.
 - **Writing:**
   - Every write updates the device copy at once.
   - Writes to the cloud go one at a time, always sending the newest save.
@@ -89,7 +90,7 @@ Claude chose the details below. The work is built on branch `online`, cut from `
 
 ## Leaderboard
 
-- Each player has the document `players/{uid}`, which holds:
+- Each player has the document `players/{name}`, which holds:
   - `name`: the display username;
   - `nameLower`;
   - `weekXp`: the XP from Monday to today, from `days`;
@@ -99,8 +100,8 @@ Claude chose the details below. The work is built on branch `online`, cut from `
   - `updated`: the server time.
 - The row is written:
   - after a save, when any of its values changed;
-  - at most once every 15 seconds;
-  - right away when a lesson, review, practice, or test ends (the home screen shows).
+  - 3 seconds after the first save, then at most once every 15 seconds;
+  - right away when the app is hidden, such as when the player switches apps.
 - **Tab bar:** in the online app, the Badges tab becomes **Leaders** (🏆). Badges open from a button on Profile, which shows in every build.
 - **Leaderboard screen:**
   - Two tabs: **This week** and **All time**.
@@ -115,14 +116,15 @@ Claude chose the details below. The work is built on branch `online`, cut from `
 
 ## Security rules (`firestore.rules`, pasted into the Firebase console)
 
-- `saves/{uid}`:
+- A player owns `saves/{name}` and `players/{name}` only when their login address is exactly `<name>@algebra-quest1.firebaseapp.com`. The whole address is checked, so a login made some other way (such as `name@gmail.com` through Firebase's public API) owns nothing.
+- `saves/{name}`:
   - only the signed-in owner can read, write, or delete it;
   - its fields are only `save` (a string under 900,000 characters) and `savedAt` (a string).
-- `players/{uid}`:
+- `players/{name}`:
   - any signed-in player can read it;
   - only its owner can write or delete it.
 - A written `players` row must have:
-  - `nameLower` equal to the part of the account's login address before `@`, so nobody can post under another name;
+  - `nameLower` equal to the document's name;
   - `name` matching the username rule, and equal to `nameLower` when lowercased;
   - `weekXp` and `totalXp` as whole numbers from 0 to 10,000,000, with `weekXp` no more than `totalXp`;
   - `week` as a 10-character string;

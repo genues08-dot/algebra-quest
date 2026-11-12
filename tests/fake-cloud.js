@@ -20,8 +20,8 @@
       saves: {},
       // Two friends already on the leaderboard.
       players: {
-        f1: { name: 'Bee', nameLower: 'bee', weekXp: 140, week: week, totalXp: 900, color: 'blue', hat: 'crown' },
-        f2: { name: 'Cat_22', nameLower: 'cat_22', weekXp: 60, week: week, totalXp: 2400, color: 'purple', hat: null }
+        bee: { name: 'Bee', nameLower: 'bee', weekXp: 140, week: week, totalXp: 900, color: 'blue', hat: 'crown' },
+        cat_22: { name: 'Cat_22', nameLower: 'cat_22', weekXp: 60, week: week, totalXp: 2400, color: 'purple', hat: null }
       },
       session: null
     };
@@ -54,9 +54,9 @@
     listeners.forEach(function (callback) { callback(account); });
   }
 
-  function accountOf(data, uid) {
-    var user = Object.keys(data.users).map(function (key) { return data.users[key]; }).filter(function (u) { return u.uid === uid; })[0];
-    return user ? { uid: user.uid, name: user.name } : null;
+  function accountOf(data, key) {
+    var user = data.users[key];
+    return user ? { key: key, name: user.name } : null;
   }
 
   AQ.cloud = {
@@ -69,11 +69,10 @@
       return later(function (data) {
         var key = name.trim().toLowerCase();
         if (data.users[key]) fail('auth/email-already-in-use');
-        var uid = 'fake-' + key;
-        data.users[key] = { uid: uid, name: name.trim(), password: password };
-        data.session = uid;
+        data.users[key] = { name: name.trim(), password: password };
+        data.session = key;
         keep(data);
-        var account = accountOf(data, uid);
+        var account = accountOf(data, key);
         tell(account);
         return account;
       });
@@ -82,9 +81,10 @@
       return later(function (data) {
         var user = data.users[name.trim().toLowerCase()];
         if (!user || user.password !== password) fail('auth/invalid-credential');
-        data.session = user.uid;
+        var key = name.trim().toLowerCase();
+        data.session = key;
         keep(data);
-        var account = accountOf(data, user.uid);
+        var account = accountOf(data, key);
         tell(account);
         return account;
       });
@@ -96,23 +96,23 @@
         tell(null);
       });
     },
-    loadSave: function (uid) {
+    loadSave: function (key) {
       return later(function (data) {
         down();
-        return data.saves[uid] || null;
+        return data.saves[key] || null;
       });
     },
-    writeSave: function (uid, doc) {
+    writeSave: function (key, doc) {
       return later(function (data) {
         down();
-        data.saves[uid] = { save: doc.save, savedAt: doc.savedAt };
+        data.saves[key] = { save: doc.save, savedAt: doc.savedAt };
         keep(data);
       });
     },
-    writePlayer: function (uid, row) {
+    writePlayer: function (key, row) {
       return later(function (data) {
         down();
-        data.players[uid] = row;
+        data.players[key] = row;
         keep(data);
       });
     },
@@ -122,11 +122,11 @@
         return Object.keys(data.players).map(function (uid) { return Object.assign({}, data.players[uid], { uid: uid }); });
       });
     },
-    deleteAccount: function (uid) {
+    deleteAccount: function (key) {
       return later(function (data) {
-        delete data.players[uid];
-        delete data.saves[uid];
-        Object.keys(data.users).forEach(function (key) { if (data.users[key].uid === uid) delete data.users[key]; });
+        delete data.players[key];
+        delete data.saves[key];
+        delete data.users[key];
         data.session = null;
         keep(data);
       });

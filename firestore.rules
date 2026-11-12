@@ -3,20 +3,19 @@ rules_version = '2';
 // Algebra Quest's database rules. Paste this file into the Firebase console:
 // Firestore Database, then Rules, then Publish.
 //
-// - saves/{uid}: a player's progress. Only that player can read or change it.
-// - players/{uid}: a player's leaderboard row. Every logged-in player can read it; only its
-//   owner can change it, and only under their own username.
+// Both are named by the username in lowercase, so a player who signs up again with the same
+// username (after the owner deletes a login with a forgotten password) gets them back.
+// - saves/{name}: a player's progress. Only that player can read or change it.
+// - players/{name}: a player's leaderboard row. Every logged-in player can read it; only its
+//   owner can change it.
 // Everything else is denied.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isOwner(uid) {
-      return request.auth != null && request.auth.uid == uid;
-    }
-
-    // The username in the login address: "axl_fan@algebra-quest1.firebaseapp.com" gives "axl_fan".
-    function myName() {
-      return request.auth.token.email.split('@')[0];
+    // The app logs in username "axl_fan" as "axl_fan@algebra-quest1.firebaseapp.com". The whole
+    // address is checked, so a login made some other way (such as "axl_fan@gmail.com") owns nothing.
+    function isOwner(name) {
+      return request.auth != null && request.auth.token.email == name + '@algebra-quest1.firebaseapp.com';
     }
 
     function validSave(data) {
@@ -29,9 +28,9 @@ service cloud.firestore {
       return value is int && value >= 0 && value <= 10000000;
     }
 
-    function validRow(data) {
+    function validRow(data, name) {
       return data.keys().hasOnly(['name', 'nameLower', 'weekXp', 'week', 'totalXp', 'color', 'hat', 'updated']) &&
-        data.nameLower == myName() &&
+        data.nameLower == name &&
         data.name is string && data.name.matches('[A-Za-z0-9_]{3,15}') && data.name.lower() == data.nameLower &&
         validXp(data.weekXp) && validXp(data.totalXp) && data.weekXp <= data.totalXp &&
         data.week is string && data.week.size() == 10 &&
@@ -40,15 +39,15 @@ service cloud.firestore {
         data.updated == request.time;
     }
 
-    match /saves/{uid} {
-      allow read, delete: if isOwner(uid);
-      allow create, update: if isOwner(uid) && validSave(request.resource.data);
+    match /saves/{name} {
+      allow read, delete: if isOwner(name);
+      allow create, update: if isOwner(name) && validSave(request.resource.data);
     }
 
-    match /players/{uid} {
+    match /players/{name} {
       allow read: if request.auth != null;
-      allow delete: if isOwner(uid);
-      allow create, update: if isOwner(uid) && validRow(request.resource.data);
+      allow delete: if isOwner(name);
+      allow create, update: if isOwner(name) && validRow(request.resource.data, name);
     }
   }
 }

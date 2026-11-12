@@ -3,7 +3,11 @@
 Offline Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-11-algebra-quest-design.md
 
 - Tests: `node --test "tests/*.test.js"`
-- No npm packages, no build step, no ES modules. The app runs from file://.
+- No npm packages, no build step, no ES modules. `offline.html` runs from file://.
+- `index.html` is the online app, served by GitHub Pages from `main` (`genues08-dot/algebra-quest`), with Firebase (project `algebra-quest1`) for logins, saves, and the leaderboard. Spec: docs/superpowers/specs/2026-11-12-online-design.md
+- The repo is public. Never commit packet photos (`packets/` is ignored), passwords, or personal details.
+- When a unit is added or changed, rebuild `js/phone-units.js` with `node tools/make-phone-units.js` and every unit file, so the online app gets it.
+- When the online app gains or renames a file, add it to `FILES` in `sw.js` and raise `CACHE`. `tests/sw.test.js` checks the list.
 - Making a unit from packet photos: follow spec section 10 and write `units/<unit-id>.json`. Then run `node tools/validate-unit.js units/<unit-id>.json` and fix every error before telling the user to import it.
 - The student is in Algebra 2. Their packets set the content and level.
 

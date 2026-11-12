@@ -1,4 +1,5 @@
-// Writes js/phone-units.js, the units built into the phone page (phone.html).
+// Writes js/phone-units.js, the units built into the online app (index.html) and the phone page
+// (phone.html).
 // Usage: node tools/make-phone-units.js units/<unit>.json [more unit files...]
 'use strict';
 

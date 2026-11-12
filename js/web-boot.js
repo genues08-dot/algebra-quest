@@ -3,6 +3,7 @@
 //   object made here.
 // - The save is kept in the cloud (AQ.cloud), with a copy on this device for offline play.
 //   Each account has its own device copy, so friends can share a phone.
+// - Everything is kept under the account's key, its username in lowercase (see cloud.js).
 // - The player's leaderboard row is updated from the save as it changes.
 (function (root) {
   'use strict';
@@ -40,21 +41,21 @@
 
   // ----- This device's copy of each account's save: { save, savedAt } -----
 
-  function readLocal(uid) {
+  function readLocal(key) {
     try {
-      var doc = JSON.parse(root.localStorage.getItem(LOCAL_PREFIX + uid));
+      var doc = JSON.parse(root.localStorage.getItem(LOCAL_PREFIX + key));
       return doc && typeof doc.save === 'string' ? doc : null;
     } catch (e) {
       return null;
     }
   }
 
-  function writeLocal(uid, doc) {
-    try { root.localStorage.setItem(LOCAL_PREFIX + uid, JSON.stringify(doc)); } catch (e) { /* the cloud still has it */ }
+  function writeLocal(key, doc) {
+    try { root.localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(doc)); } catch (e) { /* the cloud still has it */ }
   }
 
-  function removeLocal(uid) {
-    try { root.localStorage.removeItem(LOCAL_PREFIX + uid); } catch (e) { /* nothing to remove */ }
+  function removeLocal(key) {
+    try { root.localStorage.removeItem(LOCAL_PREFIX + key); } catch (e) { /* nothing to remove */ }
   }
 
   // ----- Screens before the app: a problem, and the login form -----
@@ -139,7 +140,7 @@
 
   // ----- The cloud save -----
 
-  var account = null;   // { uid, name } once logged in
+  var account = null;   // { key, name } once logged in
   var opened = false;   // openApp has run
   var mounted = false;  // the app is drawing the page
   var closing = false;  // logging out or deleting: nothing more is sent
@@ -164,7 +165,7 @@
     if (doc.save === lastSent) return;
     writing = true;
     var again = false;
-    cloud.writeSave(account.uid, doc).then(function () {
+    cloud.writeSave(account.key, doc).then(function () {
       lastSent = doc.save;
     }, function (error) {
       var code = (error && error.code) || 'error';
@@ -188,13 +189,13 @@
   function checkCloud() {
     if (checking) return;
     checking = true;
-    cloud.loadSave(account.uid).then(function (doc) {
+    cloud.loadSave(account.key).then(function (doc) {
       checking = false;
       // The cloud changed after the copy this visit started from: another device played since.
       // Its progress is kept, and this visit's offline play is dropped.
       if (online.newerSave({ save: 'x', savedAt: startedAt }, doc) === 'cloud' && doc.savedAt !== startedAt) {
         closing = true;
-        writeLocal(account.uid, doc);
+        writeLocal(account.key, doc);
         root.alert('Newer progress from another device was found online. The app will reload with it.');
         reload();
         return;
@@ -227,7 +228,7 @@
       memory[key] = String(value);
       if (key !== KEY || closing) return;
       var doc = { save: online.packSave(memory[key], BUNDLED), savedAt: new Date().toISOString() };
-      writeLocal(account.uid, doc);
+      writeLocal(account.key, doc);
       queued = doc;
       pump();
       scheduleRow();
@@ -258,7 +259,7 @@
     if (online.sameRow(row, lastRow)) return;
     lastRow = row;
     lastRowAt = Date.now();
-    cloud.writePlayer(account.uid, row).then(null, function () { lastRow = null; });
+    cloud.writePlayer(account.key, row).then(null, function () { lastRow = null; });
   }
 
   // Send a waiting row now, when the player leaves the app.
@@ -281,9 +282,9 @@
     if (rowTimer !== null) clearTimeout(rowTimer);
     rowTimer = null;
     return whenIdle().then(function () {
-      return cloud.deleteAccount(account.uid);
+      return cloud.deleteAccount(account.key);
     }).then(function () {
-      removeLocal(account.uid);
+      removeLocal(account.key);
       reload();
     }, function (message) {
       closing = false;
@@ -298,7 +299,7 @@
     opened = true;
     account = found;
     app.innerHTML = '<p class="boot-note">Loading your progress&hellip;</p>';
-    var local = readLocal(account.uid);
+    var local = readLocal(account.key);
     var done = false;
 
     function finish(cloudDoc, reached) {
@@ -321,7 +322,7 @@
     }
 
     var timer = setTimeout(function () { finish(null, false); }, WAIT_MS);
-    cloud.loadSave(account.uid).then(function (doc) {
+    cloud.loadSave(account.key).then(function (doc) {
       finish(doc && typeof doc.save === 'string' ? doc : null, true);
     }, function () {
       finish(null, false);
@@ -334,7 +335,7 @@
     mounted = true;
     AQ.ui.mount(app, store, {
       online: {
-        uid: account.uid,
+        uid: account.key,
         name: account.name,
         leaderboard: function () { return cloud.listPlayers(); },
         logOut: logOut,
