@@ -20,6 +20,8 @@ Claude chose the details below. The work is built on branch `online`, cut from `
 
 ## Install and offline play
 
+- If an update leaves the page holding files from two versions (a weak signal right after a deploy), the app says it is updating and asks the player to close and reopen it.
+
 - `manifest.webmanifest` declares:
   - the name "Algebra Quest";
   - `display: standalone`;
@@ -52,7 +54,7 @@ Claude chose the details below. The work is built on branch `online`, cut from `
   - **Delete my account**, which deletes the save, the leaderboard row, and the login.
     - The app first waits for the last save to reach the cloud, then stops saving.
     - Firebase deletes only a login used in the last few minutes. Before deleting anything, the app checks the login time against the token time, both from Firebase's servers. If the login is older, it says to log out, log back in, and try again.
-    - With no internet, the delete gives up after 20 seconds and saving starts again.
+    - With no internet, the delete gives up after 20 seconds and saving starts again. A delete that gave up never deletes the login later.
 - **Forgotten passwords:** Firebase can't set a password for a player, and there is no email to reset it with. Saves and leaderboard rows are kept under the lowercase username, not Firebase's user id. So the owner deletes the login in the Firebase console (Authentication, then Users), and the player signs up again with the same username and a new password, which gets their progress back. The README gives the steps.
 - **Error messages:**
 
@@ -80,21 +82,23 @@ Claude chose the details below. The work is built on branch `online`, cut from `
   - `rev` names this save (the time plus a few random letters);
   - `base` names the save it grew from, or null for the first one.
 - **Saves must grow from the cloud's save.** The rules accept an update only when its `base` is the cloud's `rev`. So a device holding older progress can't write over newer progress, whether it was opened offline or left open while another device played. When the cloud refuses a save, the app reads the cloud's save. If another device saved since, the app keeps the cloud's progress, drops this device's unsent play, and reloads. Device clocks are never compared.
-- Each device keeps a copy in `localStorage` under `algebraQuest.web.<name>`, holding `{ uid, save, base, dirty }`:
+- Each device keeps a copy in `localStorage` under `algebraQuest.web.<name>`, holding `{ uid, save, base, pending, dirty }`:
   - `uid` is the Firebase login's id. A copy left by a deleted account is never given to a new account with the same name.
   - `base` is the cloud revision the copy grew from.
+  - `pending` is the revision of a save sent but not yet confirmed, or null. The page may close after the cloud took a save but before its answer arrived; the next start then recognizes that save as this device's own.
   - `dirty` is true when the copy has changes the cloud has not confirmed.
   - Two friends can share one phone without mixing up their progress.
 - **On start:**
-  - The app reads the cloud save. The device copy wins only when it is dirty and its `base` is the cloud's `rev` (unsent play on top of the current cloud save). Otherwise the cloud wins.
+  - The app reads the cloud save. The device copy wins only when it is dirty and its `base` or `pending` is the cloud's `rev` (unsent play on top of the current cloud save). Otherwise the cloud wins.
   - If the cloud read fails or takes over 10 seconds, the app starts from the device copy and says it will sync later. Its first upload names the copy's `base`, so the rule above protects newer progress.
   - If the cloud can't be reached and the device has no copy, the app does not start fresh, because that could replace real progress. It says it can't reach the progress and offers **Try again**.
   - With no save in the cloud or on the device, the app starts fresh with the bundled units.
 - **Writing:**
   - Every save updates the device copy at once.
   - Saves go to the cloud one at a time, always the newest.
-  - A save over 1,000,000 bytes is not sent, and one message says why.
-  - Brief outages retry after 10 seconds. Other errors show one message, and the next save tries again.
+  - A save over 990,000 bytes is not sent, and one message says why.
+  - Brief outages retry after 10 seconds. Other errors show one message; a newer save waiting is still sent, and the next save tries again.
+  - When a save is refused and reading the cloud is refused too (for example, the login was deleted), one message shows and nothing retries on its own.
 - **Moving existing progress:** make a Backup in the old app (`offline.html`), then use More, Import on the website. Import already handles backups.
 - The code is `js/cloud-sync.js`. It has no page code, so `tests/cloud-sync.test.js` runs it against a fake cloud that checks saves the way the rules do.
 
@@ -110,9 +114,9 @@ Claude chose the details below. The work is built on branch `online`, cut from `
   - `updated`: the server time.
 - The row is written:
   - after a save, when any of its values changed;
-  - only after the cloud has been reached during this visit, so a device holding old progress can't lower the row;
+  - only from the save the cloud has confirmed, so a device holding old progress can't lower the row;
   - 3 seconds after the first save, then at most once every 15 seconds;
-  - right away when the app is hidden, such as when the player switches apps.
+  - right away when the app is hidden, such as when the player switches apps, unless a row went out in the last 6 seconds.
 - **Tab bar:** in the online app, the Badges tab becomes **Leaders** (🏆). Badges open from a button on Profile, which shows in every build.
 - **Leaderboard screen:**
   - Two tabs: **This week** and **All time**.
@@ -131,7 +135,7 @@ Claude chose the details below. The work is built on branch `online`, cut from `
 - `saves/{name}`:
   - only the signed-in owner can read, write, or delete it;
   - its fields are only `save` (a string under 1,000,000 characters), `rev` (a string of at most 40), and `base` (null or such a string);
-  - an update's `base` must equal the stored `rev`.
+  - an update's `base` must equal the stored `rev` (null when the stored save has none).
 - `players/{name}`:
   - any signed-in player can read it;
   - only its owner can write or delete it.

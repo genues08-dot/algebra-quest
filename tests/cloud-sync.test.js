@@ -18,11 +18,22 @@ function fakeCloud() {
     players: {},
     online: true,
     writes: 0,
+    reads: 0,
+    denyAll: false,   // every read and write is refused, as after the login is deleted
+    failNext: null,   // the next write fails with this code
     loadSave(key) {
+      cloud.reads += 1;
+      if (cloud.denyAll) return Promise.reject(Object.assign(new Error('x'), { code: 'permission-denied' }));
       return cloud.online ? Promise.resolve(cloud.saves[key] || null) : Promise.reject(Object.assign(new Error('x'), { code: 'unavailable' }));
     },
     writeSave(key, doc) {
       cloud.writes += 1;
+      if (cloud.denyAll) return Promise.reject(Object.assign(new Error('x'), { code: 'permission-denied' }));
+      if (cloud.failNext) {
+        const code = cloud.failNext;
+        cloud.failNext = null;
+        return Promise.reject(Object.assign(new Error('x'), { code }));
+      }
       if (!cloud.online) return Promise.reject(Object.assign(new Error('x'), { code: 'unavailable' }));
       const current = cloud.saves[key];
       if (current && doc.base !== current.rev) return Promise.reject(Object.assign(new Error('x'), { code: 'permission-denied' }));
@@ -196,11 +207,11 @@ test('the leaderboard row waits until the cloud has been reached', async () => {
   const { sync } = makeSync(cloud, device);
   sync.start(null, false);
   sync.store.setItem(KEY, saveText(45));
-  cloud.online = true;
-  await wait(15);
+  await wait(3);
   assert.equal(cloud.players.axl_fan, undefined);
+  cloud.online = true;
   // The retry sends the save, and then the row goes out.
-  await wait(40);
+  await wait(60);
   assert.equal(xpIn(cloud.saves.axl_fan.save), 45);
   assert.equal(cloud.players.axl_fan.totalXp, 45);
 });
@@ -242,4 +253,92 @@ test('bundled units are sent as markers', async () => {
   await sync.whenIdle(500);
   assert.equal(JSON.parse(cloud.saves.axl_fan.save).units.u1, 'bundled');
   assert.equal(online.unpackSave(cloud.saves.axl_fan.save, [unit]).includes('"title":"Unit 1"'), true);
+});
+
+test('a stale session never lowers the leaderboard row', async () => {
+  const cloud = fakeCloud();
+  cloud.saves.axl_fan = { save: saveText(100), rev: 'A', base: null };
+  const phone = makeSync(cloud, fakeDevice());
+  phone.sync.start(cloud.saves.axl_fan, true);
+  await wait(15);
+  assert.equal(cloud.players.axl_fan.totalXp, 100);
+
+  // The PC plays to 300 and writes its row; then the phone, still open, saves 110.
+  cloud.saves.axl_fan = { save: saveText(300), rev: 'B', base: 'A' };
+  cloud.players.axl_fan = Object.assign({}, cloud.players.axl_fan, { totalXp: 300 });
+  phone.sync.store.setItem(KEY, saveText(110));
+  phone.sync.flushRow();
+  await wait(40);
+  assert.equal(phone.events.conflicts, 1);
+  assert.equal(cloud.players.axl_fan.totalXp, 300);
+});
+
+test('a save that landed without an answer is recognized on the next start', async () => {
+  // Sent as revision B, the cloud kept it, but the page closed first. Then more play (150).
+  const cloud = fakeCloud();
+  cloud.saves.axl_fan = { save: saveText(140), rev: 'B', base: 'A' };
+  const device = fakeDevice();
+  device.setItem('aq.axl_fan', JSON.stringify({ uid: 'uid-1', save: saveText(150), base: 'A', pending: 'B', dirty: true }));
+  const { sync, events } = makeSync(cloud, device);
+  assert.equal(sync.start(cloud.saves.axl_fan, true), 'local');
+  sync.store.setItem(KEY, sync.store.getItem(KEY));
+  await sync.whenIdle(500);
+  assert.equal(xpIn(cloud.saves.axl_fan.save), 150);
+  assert.equal(events.conflicts, 0);
+});
+
+test('the same, when the next start is offline', async () => {
+  const cloud = fakeCloud();
+  cloud.saves.axl_fan = { save: saveText(140), rev: 'B', base: 'A' };
+  const device = fakeDevice();
+  device.setItem('aq.axl_fan', JSON.stringify({ uid: 'uid-1', save: saveText(150), base: 'A', pending: 'B', dirty: true }));
+  cloud.online = false;
+  const { sync, events } = makeSync(cloud, device);
+  assert.equal(sync.start(null, false), 'local');
+  sync.store.setItem(KEY, saveText(160));
+  cloud.online = true;
+  await wait(80);
+  assert.equal(xpIn(cloud.saves.axl_fan.save), 160);
+  assert.equal(events.conflicts, 0);
+});
+
+test('when the cloud refuses reads too, it warns once and does not keep retrying', async () => {
+  const cloud = fakeCloud();
+  const { sync, events } = makeSync(cloud, fakeDevice());
+  sync.start(null, true);
+  cloud.denyAll = true;
+  sync.store.setItem(KEY, saveText(10));
+  await wait(100);
+  assert.deepEqual([cloud.writes, cloud.reads], [1, 1]);
+  assert.equal(events.warnings.length, 1);
+  assert.equal(events.conflicts, 0);
+});
+
+test('a newer save waiting behind a failed one is still sent', async () => {
+  const cloud = fakeCloud();
+  const { sync } = makeSync(cloud, fakeDevice());
+  sync.start(null, true);
+  cloud.failNext = 'invalid-argument';
+  sync.store.setItem(KEY, saveText(10));
+  sync.store.setItem(KEY, saveText(20));
+  await wait(60);
+  assert.equal(xpIn(cloud.saves.axl_fan.save), 20);
+});
+
+test('a write that throws at once is treated as a failed write', async () => {
+  const cloud = fakeCloud();
+  const realWrite = cloud.writeSave;
+  let threw = false;
+  cloud.writeSave = (key, doc) => {
+    if (!threw) { threw = true; throw Object.assign(new Error('bad data'), { code: 'invalid-argument' }); }
+    return realWrite(key, doc);
+  };
+  const { sync, events } = makeSync(cloud, fakeDevice());
+  sync.start(null, true);
+  sync.store.setItem(KEY, saveText(10));
+  await wait(5);
+  assert.equal(events.warnings.length, 1);
+  sync.store.setItem(KEY, saveText(20));
+  await sync.whenIdle(500);
+  assert.equal(xpIn(cloud.saves.axl_fan.save), 20);
 });

@@ -169,13 +169,17 @@
   }
 
   // Which copy to start from: 'local' (this device), 'cloud', or null when neither has a save.
-  // local is this device's copy, { save, base, dirty }: base is the cloud revision it grew from,
-  // and dirty is true when it has changes the cloud never got. cloud is { save, rev } or null.
+  // local is this device's copy, { save, base, pending, dirty }: base is the cloud revision it
+  // grew from, pending is a revision it sent that may have landed without an answer, and dirty
+  // is true when it has changes the cloud never confirmed. cloud is { save, rev } or null.
   // The device's copy wins only when it has such changes and grew from the cloud's revision as
-  // it is now. Clocks are never compared, so a device with a wrong clock can't win.
+  // it is now (its base, or its own pending save). Clocks are never compared, so a device with a
+  // wrong clock can't win.
   function chooseStart(local, cloud) {
     if (!usable(cloud)) return usable(local) ? 'local' : null;
-    return usable(local) && local.dirty === true && local.base === cloud.rev ? 'local' : 'cloud';
+    var grewFromCloud = usable(local) && cloud.rev != null &&
+      (local.base === cloud.rev || local.pending === cloud.rev);
+    return grewFromCloud && local.dirty === true ? 'local' : 'cloud';
   }
 
   // Bundled units are stored as the marker "bundled", so a saved document stays small and always

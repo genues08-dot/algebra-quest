@@ -87,14 +87,16 @@
     },
     // Deletes the leaderboard row, the save, and then the login. A login used too long ago is
     // refused before anything is deleted. Both times come from Firebase's servers, so the
-    // device's clock doesn't matter.
-    deleteAccount: function (key) {
+    // device's clock doesn't matter. stopped(), when given, is checked before the login is
+    // deleted: true means the app gave up waiting and carried on, so the login must stay.
+    deleteAccount: function (key, stopped) {
       var user = auth.currentUser;
       if (!user || AQ.online.nameFromEmail(user.email) !== key) return Promise.reject('You are not logged in.');
       return user.getIdTokenResult(true).then(function (token) {
         if (Date.parse(token.issuedAtTime) - Date.parse(token.authTime) > RECENT_LOGIN_MS) throw LOG_IN_AGAIN;
         return Promise.all([playerDoc(key).delete(), saveDoc(key).delete()]);
       }).then(function () {
+        if (stopped && stopped()) throw 'The delete was stopped.';
         return user.delete();
       }).catch(function (error) {
         if (typeof error === 'string') throw error;

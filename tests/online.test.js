@@ -135,6 +135,10 @@ test('the device copy wins only with unsent changes grown from the cloud as it i
   assert.equal(online.chooseStart(device('A', false), null), 'local');
   assert.equal(online.chooseStart(null, null), null);
   assert.equal(online.chooseStart({ save: '' }, { save: '' }), null);
+  // Its own save landed without an answer, then it played on.
+  assert.equal(online.chooseStart({ save: '{}', base: 'A', pending: 'B', dirty: true }, cloud), 'local');
+  assert.equal(online.chooseStart({ save: '{}', base: 'A', pending: 'C', dirty: true }, cloud), 'cloud');
+  assert.equal(online.chooseStart({ save: '{}', base: undefined, dirty: true }, { save: '{}' }), 'cloud');
 });
 
 test('bundled units are packed to a marker and unpacked to the newest copy', () => {

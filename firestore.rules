@@ -49,7 +49,7 @@ service cloud.firestore {
       // Only a save that grew from the one now in the cloud. A device holding older progress
       // (opened offline, or left open while another device played) can't write over newer progress.
       allow update: if isOwner(name) && validSave(request.resource.data) &&
-        request.resource.data.base == resource.data.rev;
+        request.resource.data.base == resource.data.get('rev', null);
     }
 
     match /players/{name} {

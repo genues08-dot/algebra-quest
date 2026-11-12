@@ -156,9 +156,15 @@
   function deleteAccount() {
     if (deleting) return deleting;
     toast('Deleting your account…', DELETE_WAIT_MS);
+    var gaveUp = false;
     deleting = sync.whenIdle(IDLE_WAIT_MS).then(function () {
       sync.close();
-      return withTimeout(cloud.deleteAccount(account.key), DELETE_WAIT_MS, 'No internet connection. Try again when you are online.');
+      // After a timeout the app carries on, so the login must not be deleted later.
+      var work = cloud.deleteAccount(account.key, function () { return gaveUp; });
+      return withTimeout(work, DELETE_WAIT_MS, 'No internet connection. Try again when you are online.').then(null, function (error) {
+        gaveUp = true;
+        throw error;
+      });
     }).then(function () {
       sync.forgetDevice();
       reload();
@@ -249,6 +255,11 @@
     navigator.serviceWorker.register('sw.js').catch(function () { /* the app works without it, online only */ });
   }
 
+  // Right after an update on a weak signal, the page can hold files from two versions.
+  if (!AQ.cloudSync || !AQ.online || !AQ.ui) {
+    showProblem('Algebra Quest is updating', 'Close it and open it again to finish.');
+    return;
+  }
   if (!cloud || !cloud.ready) {
     showProblem('Algebra Quest needs the internet', 'The first time it opens, it needs a connection. Check yours and try again.');
     return;
