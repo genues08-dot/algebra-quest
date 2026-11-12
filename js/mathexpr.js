@@ -15,7 +15,51 @@
   };
   var CONSTANTS = { pi: Math.PI, e: Math.E };
   // Longest first, so "sqrt" is never read as something shorter.
-  var NAMES = ['sqrt', 'cbrt', 'abs', 'log', 'ln', 'pi', 'e', 'x'];
+  var NAMES = ['asin', 'acos', 'atan', 'sqrt', 'cbrt', 'root', 'sin', 'cos', 'tan', 'abs', 'log', 'ans', 'ln', 'pi', 'e', 'x'];
+  var COMMA_MESSAGE = 'Use a comma only inside root(n, x).';
+  var ROOT_MESSAGE = 'Use root(n, x) with a comma, like root(3, 8).';
+  var NO_ANSWER_MESSAGE = 'There is no answer yet.';
+  var TRIG = { sin: 1, cos: 1, tan: 1, asin: 1, acos: 1, atan: 1 };
+
+  // Trig functions for the chosen angle mode. In degrees, multiples of 90 come out exact.
+  function trigFunction(name, degrees) {
+    if (!degrees) return Math[name];
+    var toRad = Math.PI / 180;
+    var toDeg = 180 / Math.PI;
+    if (name === 'sin') {
+      return function (a) {
+        if (a % 90 === 0) return [0, 1, 0, -1][(((a / 90) % 4) + 4) % 4];
+        return Math.sin(a * toRad);
+      };
+    }
+    if (name === 'cos') {
+      return function (a) {
+        if (a % 90 === 0) return [1, 0, -1, 0][(((a / 90) % 4) + 4) % 4];
+        return Math.cos(a * toRad);
+      };
+    }
+    if (name === 'tan') {
+      return function (a) {
+        if (a % 90 === 0) return a % 180 === 0 ? 0 : NaN;
+        return Math.tan(a * toRad);
+      };
+    }
+    var inverse = Math[name];
+    return function (v) { return inverse(v) * toDeg; };
+  }
+
+  function factorial(n) {
+    if (n !== Math.floor(n) || n < 0 || !isFinite(n)) return NaN;
+    if (n > 170) return Infinity;
+    var result = 1;
+    for (var i = 2; i <= n; i++) result *= i;
+    return result;
+  }
+
+  function nthRoot(n, x) {
+    if (x < 0 && n === Math.floor(n) && Math.abs(n) % 2 === 1) return -Math.pow(-x, 1 / n);
+    return Math.pow(x, 1 / n);
+  }
 
   var NUMBER = /^(\d+\.?\d*|\.\d+)/;
   var LETTERS = /^[a-z]+/;
@@ -36,6 +80,11 @@
       .replace(/×/g, '*')
       .replace(/÷/g, '/')
       .replace(/π/g, 'pi')
+      .replace(/²/g, '^2')
+      .replace(/³/g, '^3')
+      .replace(/√\(/g, 'sqrt(')
+      .replace(/√(\d+\.?\d*|\.\d+)/g, 'sqrt($1)')
+      .replace(/√x/g, 'sqrt(x)')
       .replace(LEADING_Y, '');
   }
 
@@ -66,6 +115,12 @@
       } else if ((match = NUMBER.exec(rest))) {
         tokens.push({ type: 'num', text: match[0] });
         rest = rest.slice(match[0].length);
+      } else if (ch === ',') {
+        tokens.push({ type: 'comma', text: ch });
+        rest = rest.slice(1);
+      } else if (ch === '!') {
+        tokens.push({ type: 'bang', text: ch });
+        rest = rest.slice(1);
       } else if ((match = LETTERS.exec(rest))) {
         splitLetters(match[0]).forEach(function (name) {
           tokens.push({ type: 'name', text: name });
@@ -88,7 +143,8 @@
   }
 
   // Recursive descent. Each parse function returns a closure: x -> number.
-  function parse(tokens) {
+  function parse(tokens, options) {
+    var degrees = options.angle === 'deg';
     var pos = 0;
     var usesX = false;
 
@@ -163,13 +219,26 @@
     }
 
     function closeParen() {
-      if (!peek()) fail('A closing parenthesis is missing.');
+      var token = peek();
+      if (!token) fail('A closing parenthesis is missing.');
+      if (token.type === 'comma') fail(COMMA_MESSAGE);
       pos++;
     }
 
+    // A value followed by any number of ! postfixes.
     function primary() {
+      var value = atom();
+      while (peek() && peek().type === 'bang') {
+        pos++;
+        var operand = value;
+        value = function (x) { return factorial(operand(x)); };
+      }
+      return value;
+    }
+
+    function atom() {
       var token = peek();
-      if (!token || token.type === 'op' || token.type === 'close') missing();
+      if (!token || token.type === 'op' || token.type === 'close' || token.type === 'comma' || token.type === 'bang') missing();
       pos++;
       if (token.type === 'num') {
         var number = Number(token.text);
@@ -179,6 +248,32 @@
         var inner = sum();
         closeParen();
         return inner;
+      }
+      if (token.text === 'root') {
+        if (!peek() || peek().type !== 'open') fail('Something is missing near "root".');
+        pos++;
+        var index = sum();
+        var after = peek();
+        if (!after) fail('A closing parenthesis is missing.');
+        if (after.type === 'close') fail(ROOT_MESSAGE);
+        if (after.type !== 'comma') missing();
+        pos++;
+        var radicand = sum();
+        closeParen();
+        return function (x) { return nthRoot(index(x), radicand(x)); };
+      }
+      if (token.text === 'ans') {
+        var previous = options.ans;
+        if (typeof previous !== 'number' || !isFinite(previous)) fail(NO_ANSWER_MESSAGE);
+        return function () { return previous; };
+      }
+      if (TRIG.hasOwnProperty(token.text)) {
+        if (!peek() || peek().type !== 'open') fail('Something is missing near "' + token.text + '".');
+        pos++;
+        var trigArgument = sum();
+        closeParen();
+        var trig = trigFunction(token.text, degrees);
+        return function (x) { return trig(trigArgument(x)); };
       }
       if (FUNCTIONS.hasOwnProperty(token.text)) {
         if (!peek() || peek().type !== 'open') fail('Something is missing near "' + token.text + '".');
@@ -197,17 +292,22 @@
     }
 
     var result = sum();
+    if (peek() && peek().type === 'comma') fail(COMMA_MESSAGE);
     if (peek()) fail('There is an extra closing parenthesis.');
     return { evaluate: result, usesX: usesX };
   }
 
-  function compile(text) {
+  function compile(text, options) {
+    var settings = {
+      angle: options && options.angle === 'deg' ? 'deg' : 'rad',
+      ans: options && options.ans !== undefined ? options.ans : null
+    };
     try {
       var prepared = prepare(text);
       if (prepared.indexOf('=') >= 0) fail(EQUATION_MESSAGE);
       var tokens = tokenize(prepared);
       if (!tokens.length) fail('Type something to calculate.');
-      var parsed = parse(tokens);
+      var parsed = parse(tokens, settings);
       return { ok: true, usesX: parsed.usesX, evaluate: parsed.evaluate };
     } catch (problem) {
       if (problem && problem.isReaderError) return { ok: false, error: problem.message };
