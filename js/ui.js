@@ -22,7 +22,8 @@
   var CALC_BOX = '[data-role="calc-input"]';
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
-  // 'test-result', 'calculator', 'badges', or 'mascot'. A final test question shows on the 'lesson' screen,
+  // 'test-result', 'calculator', 'badges', 'mascot', 'practice', 'profile', 'more', or 'guide'.
+  // The five TAB_SCREENS have the tab bar. 'guide' shows a level's teaching cards from its banner. A final test question shows on the 'lesson' screen,
   // drawn in test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
@@ -42,6 +43,7 @@
     mascotTap: null,     // the line the mascot says after a tap on home, until home is opened again
     mascotLine: null,    // the mascot's line on the feedback panel, picked when the answer is checked
     mascotError: null,   // the message on the Mascot screen, such as a missing name
+    guide: null,         // { level, index } while a level's guide shows
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -66,6 +68,7 @@
       ranText: null
     }
   };
+  var TAB_SCREENS = ['home', 'practice', 'badges', 'profile', 'more'];
   var rootEl = null;
   var ls = null;
   var fileInput = null;
@@ -178,6 +181,32 @@
     return Object.assign(result, state.news || {}, { mascot: mascotSettings() });
   }
 
+  function onTabScreen() {
+    return TAB_SCREENS.indexOf(state.screen) !== -1;
+  }
+
+  // Every teaching card in the lessons of level levelIndex of the current unit.
+  function guideCards(levelIndex) {
+    var level = currentUnit().levels[levelIndex];
+    if (!level) return [];
+    return level.lessons.reduce(function (cards, lesson) { return cards.concat(lesson.teach || []); }, []);
+  }
+
+  function guideModel() {
+    var cards = guideCards(state.guide.level);
+    var card = cards[state.guide.index];
+    return {
+      index: state.guide.index,
+      total: cards.length,
+      guide: 'Level ' + (state.guide.level + 1),
+      title: card.title,
+      text: card.text,
+      example: card.example,
+      graph: card.graph,
+      mascot: mascotSettings()
+    };
+  }
+
   function homeHtml() {
     var model = views.homeModel(state.save, today());
     if (state.mascotTap !== null) {
@@ -230,6 +259,14 @@
         return views.badgesHtml(views.badgesModel(state.save));
       case 'mascot':
         return views.mascotScreenHtml({ color: mascotSettings().color, name: mascotSettings().name, error: state.mascotError });
+      case 'practice':
+        return views.practiceHtml(views.homeModel(state.save, today()));
+      case 'profile':
+        return views.profileHtml(views.homeModel(state.save, today()));
+      case 'more':
+        return views.moreHtml(views.homeModel(state.save, today()));
+      case 'guide':
+        return views.teachHtml(guideModel());
       default:
         return homeHtml();
     }
@@ -288,7 +325,18 @@
   function showHome() {
     state.session = null;
     state.mascotTap = null;
+    state.guide = null;
     show(state.save === null ? 'broken' : 'home');
+    if (state.screen === 'home') scrollToCurrent(false);
+  }
+
+  // Scrolls home to the mascot's spot on the path. With always false, only when that spot is
+  // below the bottom of the window.
+  function scrollToCurrent(always) {
+    var spot = rootEl.querySelector('[data-current]');
+    if (!spot || typeof spot.scrollIntoView !== 'function') return;
+    if (!always && spot.getBoundingClientRect().bottom <= (root.innerHeight || 0)) return;
+    spot.scrollIntoView({ block: 'center', behavior: always ? 'smooth' : 'auto' });
   }
 
   function showMessage(title, lines) {
@@ -693,7 +741,40 @@
       else if (next.kind === 'review') beginSession(game.startReview(unit, progress));
     },
     'open-badges': function () {
-      if (state.screen === 'home') show('badges');
+      if (onTabScreen()) show('badges');
+    },
+    'open-practice': function () {
+      if (onTabScreen()) show('practice');
+    },
+    'open-profile': function () {
+      if (onTabScreen()) show('profile');
+    },
+    'open-more': function () {
+      if (onTabScreen()) show('more');
+    },
+    'jump': function () {
+      if (state.screen === 'home') scrollToCurrent(true);
+    },
+    // Notes on a level banner: every teaching card of that level.
+    'open-guide': function (target) {
+      var level = Number(target.getAttribute('data-level'));
+      if (state.screen !== 'home' || guideCards(level).length === 0) return;
+      state.guide = { level: level, index: 0 };
+      show('guide');
+    },
+    'guide-next': function () {
+      if (state.screen !== 'guide') return;
+      if (state.guide.index < guideCards(state.guide.level).length - 1) {
+        state.guide.index++;
+        show('guide');
+      } else {
+        showHome();
+      }
+    },
+    'guide-back': function () {
+      if (state.screen !== 'guide' || state.guide.index === 0) return;
+      state.guide.index--;
+      show('guide');
     },
     // A tap on the mascot on home: a new hype line and a bounce.
     'mascot-tap': function () {
@@ -702,7 +783,7 @@
       render('[data-action="mascot-tap"]');
     },
     'open-mascot': function () {
-      if (state.screen !== 'home') return;
+      if (!onTabScreen()) return;
       state.mascotError = null;
       show('mascot');
     },
@@ -715,13 +796,13 @@
     },
     'mascot-name': saveMascotName,
     'cycle-goal': function () {
-      if (state.screen !== 'home') return;
+      if (!onTabScreen()) return;
       var next = copyOfSave();
       next.settings.goal = game.nextGoal(next.settings.goal);
       if (commit(next)) render('[data-action="cycle-goal"]');
     },
     'toggle-theme': function () {
-      if (state.screen !== 'home') return;
+      if (!onTabScreen()) return;
       var next = copyOfSave();
       next.settings.theme = next.settings.theme === 'dark' ? 'light' : 'dark';
       if (commit(next)) render('[data-action="toggle-theme"]');
@@ -803,7 +884,7 @@
       render(CALC_BOX);
     },
     'open-calculator': function () {
-      if (state.screen === 'home') show('calculator');
+      if (onTabScreen()) show('calculator');
     },
     'calc-zoom-in': function () {
       setCalculatorWindow(calc.zoom(state.calc.window, 0.5));
@@ -833,7 +914,7 @@
     },
     // Redraws home in place, keeping the window's scroll position and the keyboard on the button.
     'toggle-sound': function () {
-      if (state.screen !== 'home') return;
+      if (!onTabScreen()) return;
       var next = copyOfSave();
       next.settings.sound = !next.settings.sound;
       if (commit(next)) render('[data-action="toggle-sound"]');

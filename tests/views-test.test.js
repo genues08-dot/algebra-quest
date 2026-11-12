@@ -33,11 +33,11 @@ test('homeHtml: final test entry', () => {
 });
 
 test('homeHtml: sound button, with and without units', () => {
-  assert.match(views.homeHtml(views.homeModel(richSave(), TODAY)), /data-action="toggle-sound"[^>]*>Sound: on</);
-  assert.match(views.homeHtml(views.homeModel(richSave(save => { save.settings.sound = false; }), TODAY)), /data-action="toggle-sound"[^>]*>Sound: off</);
-  const empty = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
-  assert.equal(has(empty, 'toggle-sound'), true);
-  assert.equal(has(empty, 'start-test'), false);
+  assert.match(views.moreHtml(views.homeModel(richSave(), TODAY)), /data-action="toggle-sound"[^]*?Sound: on</);
+  assert.match(views.moreHtml(views.homeModel(richSave(save => { save.settings.sound = false; }), TODAY)), /data-action="toggle-sound"[^]*?Sound: off</);
+  assert.equal(has(views.moreHtml(views.homeModel(storage.newSave(), TODAY)), 'toggle-sound'), true);
+  assert.equal(has(views.homeHtml(views.homeModel(storage.newSave(), TODAY)), 'start-test'), false);
+  assert.equal(has(views.practiceHtml(views.homeModel(storage.newSave(), TODAY)), 'start-test'), false);
 });
 
 test('lessonHtml: test mode shows no hearts, hint, or Notes', () => {

@@ -65,7 +65,7 @@ test('addUnit: replacing keeps progress only for ids that still exist', () => {
   save.xp = 70;
   save.progress.u1 = { completedLessons: ['a1', 'old-lesson'], review: ['q2', 'old-question'], testBest: 85 };
   storage.addUnit(save, makeUnit());
-  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'], testBest: 85 });
+  assert.deepEqual(save.progress.u1, { completedLessons: ['a1'], review: ['q2'], testBest: 85, stars: {} });
   assert.equal(save.xp, 70);
 });
 

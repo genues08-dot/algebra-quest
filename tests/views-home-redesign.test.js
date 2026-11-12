@@ -8,6 +8,8 @@ const TODAY = '2026-11-12';
 const tag = (html, marker) => html.match(new RegExp('<[a-z]+[^>]*' + marker + '[^>]*>'))[0];
 const count = (html, text) => html.split(text).length - 1;
 const home = (save) => views.homeHtml(views.homeModel(save, TODAY));
+const profile = (save) => views.profileHtml(views.homeModel(save, TODAY));
+const more = (save) => views.moreHtml(views.homeModel(save, TODAY));
 
 function richSave(change) {
   const save = makeSave(makeRichUnit());
@@ -15,11 +17,16 @@ function richSave(change) {
   return save;
 }
 
-test('top bar: rank title chip, goal ring, and goal button', () => {
-  const html = home(richSave(save => {
+test('stats bar and Profile: rank title, goal ring, and goal button', () => {
+  const change = save => {
     save.xp = 520;
     save.days = { [TODAY]: { xp: 40, studied: false } };
-  }));
+  };
+  const bar = home(richSave(change));
+  assert.match(bar, /class="stat stat-rank tier-3"/);
+  assert.match(bar, /aria-label="Rank 6, Solver"/);
+  assert.match(bar, /aria-label="40 of 100 XP today"/);
+  const html = profile(richSave(change));
   assert.match(html, /<span class="rank-title tier-3">Solver<\/span>/);
   assert.match(html, /Rank 6/);
   assert.match(html, /aria-label="40 of 100 XP today"/);
@@ -30,19 +37,19 @@ test('top bar: rank title chip, goal ring, and goal button', () => {
 });
 
 test('goal ring: met at the goal, and never drawn past full', () => {
-  const met = home(richSave(save => {
+  const met = profile(richSave(save => {
     save.settings.goal = 50;
     save.days = { [TODAY]: { xp: 120, studied: true } };
   }));
   assert.match(met, /goal-met/);
   assert.match(met, /Goal met!/);
   assert.match(met, /stroke-dashoffset="0"/);
-  const empty = home(richSave());
+  const empty = profile(richSave());
   assert.match(empty, /aria-label="0 of 100 XP today"/);
 });
 
 test('week strip: seven days with letters, studied days filled, today marked', () => {
-  const html = home(richSave(save => {
+  const html = profile(richSave(save => {
     save.days = { '2026-11-10': { xp: 50, studied: true }, [TODAY]: { xp: 10, studied: true } };
   }));
   assert.equal((html.match(/class="day( [^"]*)?"/g) || []).length, 7);
@@ -78,7 +85,7 @@ test('continue button: the next lesson, then the test, then review, then done', 
 
 test('winding path: nodes zigzag across the whole unit', () => {
   const html = home(richSave(save => { save.progress.u1.completedLessons = ['a1']; }));
-  const shifts = [...html.matchAll(/class="path-row[^"]*" style="--shift:(-?\d+)"/g)].map(match => Number(match[1]));
+  const shifts = [...html.matchAll(/class="path-spot" style="--shift:(-?\d+)"/g)].map(match => Number(match[1]));
   assert.deepEqual(shifts, [0, 1, 2, 1]);
 });
 
@@ -87,7 +94,7 @@ test('winding path: done, next, open and locked nodes', () => {
   const done = tag(html, 'data-lesson-id="a1"');
   assert.match(done, /data-action="start-lesson"/);
   assert.match(done, /node-done/);
-  assert.match(done, /aria-label="Level A, lesson 1, complete"/);
+  assert.match(done, /aria-label="Level A, lesson 1, complete, 1 of 3 stars"/);
   const next = tag(html, 'data-lesson-id="a2"');
   assert.match(next, /node-next/);
   assert.match(next, /aria-label="Level A, lesson 2, start here"/);
@@ -101,9 +108,9 @@ test('winding path: done, next, open and locked nodes', () => {
 
 test('winding path: level headings keep their state labels', () => {
   const html = home(richSave(save => { save.progress.u1.completedLessons = ['a1', 'a2']; }));
-  assert.match(html, /class="path-level level-complete"/);
-  assert.match(html, /class="path-level level-open"/);
-  assert.match(html, /<span class="level-state">Complete<\/span>/);
+  assert.match(html, /class="path-level level-complete lc-0"/);
+  assert.match(html, /class="path-level level-open lc-1"/);
+  assert.match(html, /<span class="level-state">Complete &#10003;<\/span>/);
 });
 
 test('winding path: the final test is a trophy node at the end', () => {
@@ -115,14 +122,13 @@ test('winding path: the final test is a trophy node at the end', () => {
   assert.equal(home(makeSave(makeUnit())).includes('node-trophy'), false);
 });
 
-test('footer: badges count and dark mode button', () => {
-  const html = home(richSave(save => { save.badges = { 'first-lesson': TODAY, perfect: TODAY }; }));
-  assert.match(html, /data-action="open-badges"[^>]*>Badges \(2\/12\)</);
-  assert.match(html, /data-action="toggle-theme"[^>]*>Dark mode: off</);
-  const dark = home(richSave(save => { save.settings.theme = 'dark'; }));
-  assert.match(dark, /data-action="toggle-theme"[^>]*>Dark mode: on</);
+test('Profile counts badges, and More has the dark mode button', () => {
+  const html = profile(richSave(save => { save.badges = { 'first-lesson': TODAY, perfect: TODAY }; }));
+  assert.match(html, /2\/12/);
+  assert.match(more(richSave()), /data-action="toggle-theme"[^]*?Dark mode: off</);
+  assert.match(more(richSave(save => { save.settings.theme = 'dark'; })), /data-action="toggle-theme"[^]*?Dark mode: on</);
   const empty = home(storage.newSave());
-  for (const action of ['open-badges', 'toggle-theme', 'cycle-goal', 'import']) {
+  for (const action of ['open-badges', 'open-profile', 'open-more', 'import']) {
     assert.match(empty, new RegExp('data-action="' + action + '"'));
   }
   assert.doesNotMatch(empty, /data-action="resume"/);

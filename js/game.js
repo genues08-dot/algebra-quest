@@ -19,7 +19,8 @@
     TEST_PASS_PERCENT: 80,
     GOAL_CHOICES: [50, 100, 200, 300],
     DEFAULT_GOAL: 100,
-    DAYS_KEPT: 14
+    DAYS_KEPT: 14,
+    TWO_STAR_PERCENT: 70
   };
   var MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -262,6 +263,18 @@
     return AQ.checker.isCorrect(response, question.answers);
   }
 
+  // 3 stars for no mistakes, 2 for at least 70% right on the first try, otherwise 1.
+  function lessonStars(session) {
+    if (session.wrongCount === 0) return 3;
+    return accuracy(session) >= CONSTANTS.TWO_STAR_PERCENT ? 2 : 1;
+  }
+
+  // Keeps the best stars a lesson has earned.
+  function recordStars(progress, lessonId, stars) {
+    if (!progress.stars) progress.stars = {};
+    if (!(progress.stars[lessonId] >= stars)) progress.stars[lessonId] = stars;
+  }
+
   function completeSession(save, session, today) {
     session.status = 'complete';
     awardXp(save, session, CONSTANTS.XP_LESSON_COMPLETE, today);
@@ -270,7 +283,9 @@
       session.perfect = true;
     }
     if (session.kind === 'lesson') {
-      addOnce(save.progress[session.unitId].completedLessons, session.lessonId);
+      var progress = save.progress[session.unitId];
+      addOnce(progress.completedLessons, session.lessonId);
+      recordStars(progress, session.lessonId, lessonStars(session));
     }
     applyStreak(save, today);
   }
@@ -489,7 +504,8 @@
     currentQuestion: currentQuestion,
     submitAnswer: submitAnswer,
     continueSession: continueSession,
-    accuracy: accuracy
+    accuracy: accuracy,
+    lessonStars: lessonStars
   };
   AQ.game = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

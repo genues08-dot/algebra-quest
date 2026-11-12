@@ -38,6 +38,8 @@ test('a lesson can be played from start to finish', () => {
     [40, 1, ['a1'], ['q1']]
   );
   env.click('home');
+  assert.match(env.html(), /aria-label="1 questions to review"/);
+  env.click('open-practice');
   assert.match(env.html(), /Review \(1\)/);
 });
 

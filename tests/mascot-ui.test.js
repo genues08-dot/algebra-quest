@@ -31,13 +31,15 @@ test('mascotHtml escapes the name and line and picks the image', () => {
   assert.match(tappable, /aria-label="Talk to Axl"/);
 });
 
-test('home shows the mascot with its home line and a Mascot button', () => {
+test('home shows the mascot with its home line, and Profile has the Mascot button', () => {
   const save = makeSave(makeUnit());
   save.settings.mascot = { color: 'purple', name: 'Gilly' };
-  const html = views.homeHtml(views.homeModel(save, TODAY));
+  const model = views.homeModel(save, TODAY);
+  const html = views.homeHtml(model);
   assert.match(html, /img\/axl\/purple-happy\.png/);
   assert.match(html, /Ready\? Next up: Level A!/);
-  assert.match(html, /data-action="open-mascot"[^>]*>Mascot</);
+  assert.match(views.profileHtml(model), /data-action="open-mascot"/);
+  assert.match(views.profileHtml(model), /Gilly/);
   const empty = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
   assert.match(empty, /Hi, I&#39;m Axl! Import a unit/);
 });

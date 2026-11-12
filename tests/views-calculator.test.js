@@ -70,8 +70,8 @@ test('a whole-number history entry reads with one equals sign', () => {
 });
 
 test('home has a Calculator button, and the calculator screen has Home and no close', () => {
-  assert.match(views.homeHtml(views.homeModel(makeSave(makeUnit()), TODAY)), /data-action="open-calculator"/);
-  assert.match(views.homeHtml(views.homeModel(storage.newSave(), TODAY)), /data-action="open-calculator"/);
+  assert.match(views.practiceHtml(views.homeModel(makeSave(makeUnit()), TODAY)), /data-action="open-calculator"/);
+  assert.match(views.practiceHtml(views.homeModel(storage.newSave(), TODAY)), /data-action="open-calculator"/);
   const screen = views.calculatorScreenHtml(panel());
   assert.match(screen, /data-action="home"/);
   assert.match(screen, /Calculator/);

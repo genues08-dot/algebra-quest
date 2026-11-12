@@ -52,6 +52,14 @@
       AQ.mascot.cleanName(mascot.name) !== null;
   }
 
+  // Stars per finished lesson: { lessonId: 1, 2, or 3 }.
+  function isValidStars(stars) {
+    if (!isPlainObject(stars)) return false;
+    return Object.keys(stars).every(function (id) {
+      return Number.isInteger(stars[id]) && stars[id] >= 1 && stars[id] <= 3;
+    });
+  }
+
   function isDate(value) {
     return typeof value === 'string' && DATE_PATTERN.test(value);
   }
@@ -92,6 +100,7 @@
       if (!isStringArray(progress.completedLessons) || !isStringArray(progress.review)) return false;
       if (has(progress, 'testBest') && progress.testBest !== null &&
           !(Number.isInteger(progress.testBest) && progress.testBest >= 0 && progress.testBest <= 100)) return false;
+      if (has(progress, 'stars') && !isValidStars(progress.stars)) return false;
     }
     if (has(candidate, 'settings')) {
       var settings = candidate.settings;
@@ -119,6 +128,7 @@
     if (!has(save, 'badges')) save.badges = {};
     Object.keys(save.progress).forEach(function (id) {
       if (!has(save.progress[id], 'testBest')) save.progress[id].testBest = null;
+      if (!has(save.progress[id], 'stars')) save.progress[id].stars = {};
     });
     return save;
   }
@@ -156,9 +166,9 @@
   }
 
   // Adds or replaces a unit and makes it current.
-  // Replacing keeps completed lessons and review entries whose ids still exist in the new unit.
+  // Replacing keeps completed lessons, stars, and review entries whose ids still exist in the new unit.
   function addUnit(save, unit) {
-    var kept = { completedLessons: [], review: [], testBest: null };
+    var kept = { completedLessons: [], review: [], testBest: null, stars: {} };
     var old = hasUnit(save, unit.id) ? save.progress[unit.id] : null;
     if (old) {
       var lessonIds = AQ.units.lessonIds(unit);
@@ -166,6 +176,9 @@
       kept.completedLessons = old.completedLessons.filter(function (id) { return lessonIds.indexOf(id) !== -1; });
       kept.review = old.review.filter(function (id) { return questionIds.indexOf(id) !== -1; });
       kept.testBest = has(old, 'testBest') ? old.testBest : null;
+      Object.keys(old.stars || {}).forEach(function (id) {
+        if (lessonIds.indexOf(id) !== -1) kept.stars[id] = old.stars[id];
+      });
     }
     save.units[unit.id] = unit;
     save.progress[unit.id] = kept;

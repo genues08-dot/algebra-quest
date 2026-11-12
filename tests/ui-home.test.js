@@ -29,9 +29,13 @@ function answerRight(env) {
 test('home shows the new parts', () => {
   const env = envWith(makeUnit());
   const html = env.html();
-  for (const marker of ['rank-title', 'goal-ring', 'week-days', 'data-action="resume"', 'path-row', 'open-badges', 'toggle-theme']) {
+  for (const marker of ['statsbar', 'stat-ring', 'data-action="resume"', 'path-row', 'tabbar', 'open-badges', 'open-profile', 'open-more']) {
     assert.ok(html.includes(marker), marker);
   }
+  env.click('open-profile');
+  for (const marker of ['rank-title', 'goal-ring', 'week-days', 'cycle-goal']) assert.ok(env.html().includes(marker), marker);
+  env.click('open-more');
+  assert.ok(env.html().includes('toggle-theme'));
   assert.equal(env.theme(), 'light');
 });
 
@@ -57,6 +61,7 @@ test('continue starts the final test once every lesson is done', () => {
 
 test('the goal button cycles the goal and saves it', () => {
   const env = envWith(makeUnit());
+  env.click('open-profile');
   env.click('cycle-goal');
   assert.equal(stored(env).settings.goal, 200);
   assert.match(env.html(), /Goal: 200 XP/);
@@ -67,6 +72,7 @@ test('the goal button cycles the goal and saves it', () => {
 
 test('dark mode is saved and set on the page', () => {
   const env = envWith(makeUnit());
+  env.click('open-more');
   env.click('toggle-theme');
   assert.equal(stored(env).settings.theme, 'dark');
   assert.equal(env.theme(), 'dark');
@@ -96,7 +102,8 @@ test('badges already earned are recorded when the app opens, without a message',
   assert.deepEqual(Object.keys(stored(env).badges).sort(), ['first-lesson', 'level', 'streak-3']);
   assert.equal(stored(env).badges.level, today());
   assert.doesNotMatch(env.html(), /New badge/);
-  assert.match(env.html(), /Badges \(3\/12\)/);
+  env.click('open-badges');
+  assert.match(env.html(), /3 of 12/);
 });
 
 test('finishing a lesson shows new badges and a rank up, and saves the day', () => {

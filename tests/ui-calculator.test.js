@@ -24,6 +24,8 @@ test('home opens the calculator screen, and Home returns', () => {
   assert.match(env.html(), /data-role="calc-input"/);
   assert.doesNotMatch(env.html(), /data-action="calc-close"/);
   env.click('home');
+  assert.match(env.html(), /data-action="resume"/);
+  env.click('open-practice');
   assert.match(env.html(), /data-action="open-calculator"/);
 });
 

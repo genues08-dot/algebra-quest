@@ -66,12 +66,15 @@
 
   // ----- Home screen -----
 
+  var LEVEL_COLORS = 6;
+
   // today is the local date "YYYY-MM-DD", for today's XP and the week strip.
   function homeModel(save, today) {
     var rank = AQ.game.rankForXp(save.xp);
     var badges = save.badges || {};
     var model = {
       rank: rank,
+      xp: save.xp,
       xpIntoRank: AQ.game.xpIntoRank(save.xp),
       xpPerRank: AQ.game.CONSTANTS.XP_PER_RANK,
       streak: save.streak,
@@ -83,6 +86,9 @@
         return { id: id, title: save.units[id].title };
       }),
       currentUnitId: save.currentUnitId,
+      lessonsDone: Object.keys(save.progress).reduce(function (sum, id) {
+        return sum + save.progress[id].completedLessons.length;
+      }, 0),
       reviewCount: 0,
       levels: [],
       test: null,
@@ -111,6 +117,7 @@
 
     var unit = save.units[save.currentUnitId];
     var progress = save.progress[unit.id];
+    var stars = progress.stars || {};
     var states = AQ.game.levelStates(unit, progress);
     model.reviewCount = progress.review.length;
     model.next = AQ.game.nextStep(unit, progress);
@@ -127,12 +134,17 @@
       return {
         title: level.title,
         state: states[levelIndex],
+        color: levelIndex % LEVEL_COLORS,
+        hasNotes: level.lessons.some(function (lesson) { return Boolean(lesson.teach && lesson.teach.length); }),
         lessons: level.lessons.map(function (lesson, lessonIndex) {
+          var complete = progress.completedLessons.indexOf(lesson.id) !== -1;
           return {
             id: lesson.id,
             number: lessonIndex + 1,
-            complete: progress.completedLessons.indexOf(lesson.id) !== -1,
-            next: lesson.id === nextLessonId
+            complete: complete,
+            next: lesson.id === nextLessonId,
+            // Lessons finished before stars were kept count as 1 star.
+            stars: complete ? (has(stars, lesson.id) ? stars[lesson.id] : 1) : 0
           };
         })
       };
@@ -147,36 +159,50 @@
   var RING_RADIUS = 18;
   var RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
-  // The daily goal ring. It fills with today's XP and stops at full.
-  function goalHtml(model) {
-    var met = model.todayXp >= model.goal;
+  // A goal ring filled with today's XP, stopping at full. center is the text inside it.
+  function ringSvg(model, cls, center) {
     var fraction = Math.min(model.todayXp / model.goal, 1);
     var offset = Math.round(RING_LENGTH * (1 - fraction) * 10) / 10;
     var circle = ' cx="22" cy="22" r="' + RING_RADIUS + '"';
+    return '<svg class="' + cls + '" viewBox="0 0 44 44" role="img" aria-label="' + model.todayXp + ' of ' + model.goal + ' XP today">' +
+      '<circle class="goal-track"' + circle + '></circle>' +
+      '<circle class="goal-fill"' + circle + ' transform="rotate(-90 22 22)"' +
+        ' stroke-dasharray="' + (Math.round(RING_LENGTH * 10) / 10) + '" stroke-dashoffset="' + offset + '"></circle>' +
+      (center ? '<text class="goal-number" x="22" y="22">' + center + '</text>' : '') +
+    '</svg>';
+  }
+
+  // The daily goal ring with its text and Goal button, on Profile.
+  function goalHtml(model) {
+    var met = model.todayXp >= model.goal;
     return '<div class="goal' + (met ? ' goal-met' : '') + '">' +
-      '<svg class="goal-ring" viewBox="0 0 44 44" role="img" aria-label="' + model.todayXp + ' of ' + model.goal + ' XP today">' +
-        '<circle class="goal-track"' + circle + '></circle>' +
-        '<circle class="goal-fill"' + circle + ' transform="rotate(-90 22 22)"' +
-          ' stroke-dasharray="' + (Math.round(RING_LENGTH * 10) / 10) + '" stroke-dashoffset="' + offset + '"></circle>' +
-        '<text class="goal-number" x="22" y="22">' + (met ? '&#10003;' : model.todayXp) + '</text>' +
-      '</svg>' +
+      ringSvg(model, 'goal-ring', met ? '&#10003;' : String(model.todayXp)) +
       '<div class="goal-text">' + (met ? 'Goal met!' : model.todayXp + ' / ' + model.goal + ' XP today') + '</div>' +
       '<button type="button" class="btn btn-quiet goal-button" data-action="cycle-goal">Goal: ' + model.goal + ' XP</button>' +
     '</div>';
   }
 
-  function headerHtml(model) {
-    var percent = Math.round(100 * model.xpIntoRank / model.xpPerRank);
-    return '<header class="topbar">' +
-      '<div class="rank">' +
-        '<div class="rank-head">' +
-          '<span class="rank-title tier-' + model.title.tier + '">' + escapeHtml(model.title.name) + '</span>' +
-          '<span class="rank-name">Rank ' + model.rank + '</span>' +
-        '</div>' +
-        '<div class="xp-bar"><div class="xp-fill" style="width:' + percent + '%"></div></div>' +
-        '<div class="xp-text">' + model.xpIntoRank + ' / ' + model.xpPerRank + ' XP</div>' +
-      '</div>' +
-      goalHtml(model) +
+  // The bar pinned to the top of home: rank, streak, today's XP, and the review pile.
+  function statsBarHtml(model) {
+    var met = model.todayXp >= model.goal;
+    return '<header class="statsbar">' +
+      '<button type="button" class="stat stat-rank tier-' + model.title.tier + '" data-action="open-profile"' +
+        ' aria-label="Rank ' + model.rank + ', ' + escapeHtml(model.title.name) + '">' +
+        '<span class="stat-badge">' + model.rank + '</span>' +
+        '<span class="stat-label rank-title-text">' + escapeHtml(model.title.name) + '</span>' +
+      '</button>' +
+      '<button type="button" class="stat stat-streak' + (model.streak > 0 ? '' : ' stat-off') + '" data-action="open-profile"' +
+        ' aria-label="' + model.streak + '-day streak">' +
+        '<span class="stat-icon" aria-hidden="true">&#128293;</span><span class="stat-value">' + model.streak + '</span>' +
+      '</button>' +
+      '<button type="button" class="stat stat-goal' + (met ? ' goal-met' : '') + '" data-action="open-profile"' +
+        ' aria-label="' + model.todayXp + ' of ' + model.goal + ' XP today">' +
+        ringSvg(model, 'stat-ring', '') + '<span class="stat-value">' + model.todayXp + '</span>' +
+      '</button>' +
+      '<button type="button" class="stat stat-review" data-action="open-practice"' +
+        ' aria-label="' + model.reviewCount + ' questions to review">' +
+        '<span class="stat-icon" aria-hidden="true">&#128257;</span><span class="stat-value">' + model.reviewCount + '</span>' +
+      '</button>' +
     '</header>';
   }
 
@@ -186,7 +212,7 @@
     return WEEKDAY_NAMES[new Date(date + 'T00:00:00Z').getUTCDay()];
   }
 
-  // The streak count and the last seven days.
+  // The streak count and the last seven days, on Profile.
   function weekHtml(model) {
     var days = model.streak === 1 ? 'day' : 'days';
     var dots = model.week.map(function (day) {
@@ -212,7 +238,6 @@
     return '<section class="unit-bar">' +
       '<label class="unit-label" for="unit-select">Unit</label>' +
       '<select id="unit-select" class="unit-select" data-action="select-unit">' + options + '</select>' +
-      '<button type="button" class="btn btn-quiet" data-action="remove-unit">Remove unit</button>' +
     '</section>';
   }
 
@@ -239,36 +264,56 @@
     '</section>';
   }
 
-  // Node offsets along the winding path, repeated. One step is drawn as 44px by the CSS.
+  // Node offsets along the winding path, repeated. One step is drawn as 48px by the CSS.
   var PATH_SHIFTS = [0, 1, 2, 1, 0, -1, -2, -1];
 
   function pathShift(index) {
     return PATH_SHIFTS[index % PATH_SHIFTS.length];
   }
 
-  var LEVEL_STATE_LABELS = { locked: 'Locked', open: '', complete: 'Complete' };
-
-  function lessonNodeHtml(level, lesson, index) {
-    var locked = level.state === 'locked';
-    var kind = lesson.complete ? 'done' : (lesson.next ? 'next' : (locked ? 'locked' : 'open'));
-    var status = { done: 'complete', next: 'start here', locked: 'locked', open: 'not started' }[kind];
-    var face = lesson.complete ? '&#10003;' : String(lesson.number);
-    return '<div class="path-row" style="--shift:' + pathShift(index) + '">' +
-      '<button type="button" class="node node-' + kind + '" data-action="start-lesson"' +
-        ' data-lesson-id="' + escapeHtml(lesson.id) + '"' +
-        ' aria-label="' + escapeHtml(level.title) + ', lesson ' + lesson.number + ', ' + status + '"' +
-        (locked ? ' disabled' : '') + '>' +
-        (lesson.next ? '<span class="node-start">Start</span>' : '') +
-        '<span class="node-face" aria-hidden="true">' + face + '</span>' +
+  // The mascot beside the path, on the side away from the circle, with its line above it.
+  function pathAxlHtml(mascot, shift) {
+    var side = shift > 0 ? 'left' : (shift < 0 ? 'right' : 'left');
+    return '<div class="mascot mascot-big path-axl path-axl-' + side + (mascot.bounce ? ' mascot-bounce' : '') + '">' +
+      '<p class="mascot-bubble path-bubble">' + escapeHtml(mascot.line) + '</p>' +
+      '<button type="button" class="mascot-button" data-action="mascot-tap" aria-label="Talk to ' + escapeHtml(mascot.name) + '">' +
+        '<img class="mascot-img" src="' + AQ.mascot.imagePath(mascot.color, 'happy') + '" alt="' + escapeHtml(mascot.name) + '">' +
       '</button>' +
     '</div>';
   }
 
-  // The final test, as a trophy node at the end of the path.
-  function trophyHtml(test, index) {
+  // A path row. withAxl puts the mascot beside it and marks it as the spot home scrolls to.
+  function pathRowHtml(spot, shift, model, withAxl, extraClass) {
+    return '<div class="path-row' + (extraClass ? ' ' + extraClass : '') + (withAxl ? ' path-row-axl" data-current="true' : '') + '">' +
+      '<div class="path-spot" style="--shift:' + shift + '">' + spot + '</div>' +
+      (withAxl ? pathAxlHtml(model.mascot, shift) : '') +
+    '</div>';
+  }
+
+  function starsHtml(count) {
+    var html = '';
+    for (var i = 1; i <= 3; i++) html += '<span class="node-star' + (i <= count ? ' node-star-on' : '') + '">&#9733;</span>';
+    return '<div class="node-stars" aria-hidden="true">' + html + '</div>';
+  }
+
+  function lessonNodeHtml(level, lesson) {
+    var locked = level.state === 'locked';
+    var kind = lesson.complete ? 'done' : (lesson.next ? 'next' : (locked ? 'locked' : 'open'));
+    var status = { done: 'complete, ' + lesson.stars + ' of 3 stars', next: 'start here', locked: 'locked', open: 'not started' }[kind];
+    return '<button type="button" class="node node-' + kind + '" data-action="start-lesson"' +
+        ' data-lesson-id="' + escapeHtml(lesson.id) + '"' +
+        ' aria-label="' + escapeHtml(level.title) + ', lesson ' + lesson.number + ', ' + status + '"' +
+        (locked ? ' disabled' : '') + '>' +
+        (lesson.next ? '<span class="node-start">Start</span>' : '') +
+        '<span class="node-face" aria-hidden="true">&#9733;</span>' +
+      '</button>' +
+      (lesson.complete ? starsHtml(lesson.stars) : '');
+  }
+
+  // The final test, as a trophy circle at the end of the path.
+  function trophyHtml(test) {
     var locked = test.state === 'locked';
-    return '<div class="path-row path-trophy" style="--shift:' + pathShift(index) + '">' +
-      '<button type="button" class="node node-trophy test-' + test.state + '" data-action="start-test"' +
+    return '<button type="button" class="node node-trophy test-' + test.state + '" data-action="start-test"' +
         ' aria-label="Final test' + (locked ? ', locked until every level is complete' : '') + '"' +
         (locked ? ' disabled' : '') + '>' +
         '<span class="node-face" aria-hidden="true">&#127942;</span>' +
@@ -276,61 +321,167 @@
       '<div class="test-info">' +
         '<h2 class="test-title">Final test</h2>' +
         '<span class="test-best">' + (test.best === null ? 'Not taken yet' : 'Best: ' + test.best + '%') + '</span>' +
+      '</div>';
+  }
+
+  var LEVEL_STATE_LABELS = { locked: 'Locked &#128274;', open: '', complete: 'Complete &#10003;' };
+
+  function levelBannerHtml(level, index) {
+    return '<div class="level-banner">' +
+      '<div class="level-banner-text">' +
+        '<div class="level-kicker">Level ' + (index + 1) +
+          (level.state === 'open' ? '' : ' · <span class="level-state">' + LEVEL_STATE_LABELS[level.state] + '</span>') + '</div>' +
+        '<h2 class="level-title">' + escapeHtml(level.title) + '</h2>' +
       '</div>' +
+      (level.hasNotes ? '<button type="button" class="level-notes" data-action="open-guide" data-level="' + index + '"' +
+        ' aria-label="Notes for level ' + (index + 1) + '"><span aria-hidden="true">&#128214;</span></button>' : '') +
     '</div>';
   }
 
   function pathHtml(model) {
+    // Where the mascot stands: the next lesson, else the trophy, else the last lesson.
+    var lastId = null;
+    model.levels.forEach(function (level) { level.lessons.forEach(function (lesson) { lastId = lesson.id; }); });
+    var nextId = model.next && model.next.kind === 'lesson' ? model.next.lessonId : null;
+    var axlAt = nextId || (model.test ? 'trophy' : lastId);
     var index = 0;
-    var levels = model.levels.map(function (level) {
-      var nodes = level.lessons.map(function (lesson) { return lessonNodeHtml(level, lesson, index++); }).join('');
-      return '<section class="path-level level-' + level.state + '">' +
-        '<div class="level-head">' +
-          '<h2 class="level-title">' + escapeHtml(level.title) + '</h2>' +
-          '<span class="level-state">' + LEVEL_STATE_LABELS[level.state] + '</span>' +
-        '</div>' +
-        nodes +
+    var levels = model.levels.map(function (level, levelIndex) {
+      var rows = level.lessons.map(function (lesson) {
+        return pathRowHtml(lessonNodeHtml(level, lesson), pathShift(index++), model, lesson.id === axlAt);
+      }).join('');
+      return '<section class="path-level level-' + level.state + ' lc-' + level.color + '">' +
+        levelBannerHtml(level, levelIndex) + rows +
       '</section>';
     }).join('');
-    return '<div class="path">' + levels + (model.test ? trophyHtml(model.test, index) : '') + '</div>';
+    var trophy = model.test ? pathRowHtml(trophyHtml(model.test), pathShift(index), model, axlAt === 'trophy', 'path-trophy') : '';
+    return '<div class="path">' + levels + trophy + '</div>';
   }
 
-  function footerHtml(model) {
-    return '<footer class="footer">' +
-      '<button type="button" class="btn" data-action="import">Import</button>' +
-      '<button type="button" class="btn" data-action="backup">Backup</button>' +
-      '<button type="button" class="btn" data-action="open-calculator">Calculator</button>' +
-      '<button type="button" class="btn" data-action="open-badges">Badges (' + model.badgeCount + '/' + model.badgeTotal + ')</button>' +
-      '<button type="button" class="btn" data-action="open-mascot">Mascot</button>' +
-      '<button type="button" class="btn" data-action="toggle-sound">Sound: ' + (model.soundOn ? 'on' : 'off') + '</button>' +
-      '<button type="button" class="btn" data-action="toggle-theme">Dark mode: ' + (model.darkOn ? 'on' : 'off') + '</button>' +
-    '</footer>';
+  // ----- Tab bar and the tab screens -----
+
+  var TABS = [
+    { id: 'home', action: 'home', label: 'Home', icon: '&#127968;' },
+    { id: 'practice', action: 'open-practice', label: 'Practice', icon: '&#128170;' },
+    { id: 'badges', action: 'open-badges', label: 'Badges', icon: '&#127941;' },
+    { id: 'profile', action: 'open-profile', label: 'Profile', icon: null },
+    { id: 'more', action: 'open-more', label: 'More', icon: '&#8943;' }
+  ];
+
+  // The bar pinned to the bottom of the main screens. The Profile tab shows the player's axolotl.
+  function tabBarHtml(active, mascotColor) {
+    return '<nav class="tabbar" aria-label="Main">' + TABS.map(function (tab) {
+      var on = tab.id === active;
+      var icon = tab.icon ||
+        '<img class="tab-axl" src="' + AQ.mascot.imagePath(mascotColor, 'happy') + '" alt="">';
+      return '<button type="button" class="tab' + (on ? ' tab-active' : '') + '" data-action="' + tab.action + '"' +
+        (on ? ' aria-current="page"' : '') + '>' +
+        '<span class="tab-icon" aria-hidden="true">' + icon + '</span>' +
+        '<span class="tab-label">' + tab.label + '</span>' +
+      '</button>';
+    }).join('') + '</nav>';
   }
 
-  function homeMascotHtml(model) {
-    return mascotHtml(Object.assign({ mood: 'happy', size: 'big', tap: true }, model.mascot));
+  function screenHeadHtml(title, note) {
+    return '<header class="screen-head"><h1 class="screen-title">' + title + '</h1>' +
+      (note ? '<p class="screen-note">' + note + '</p>' : '') + '</header>';
   }
 
   function homeHtml(model) {
+    var tabs = tabBarHtml('home', model.mascot.color);
     if (model.units.length === 0) {
-      return headerHtml(model) + weekHtml(model) + homeMascotHtml(model) +
-        '<section class="empty"><p class="empty-text">Import a unit to start</p></section>' +
-        footerHtml(model);
+      return statsBarHtml(model) +
+        '<section class="empty">' +
+          mascotHtml(Object.assign({ mood: 'happy', size: 'big', tap: true }, model.mascot)) +
+          '<button type="button" class="btn btn-primary btn-big" data-action="import">Import a unit to start</button>' +
+        '</section>' + tabs;
     }
-    var reviewDisabled = model.reviewCount === 0 ? ' disabled' : '';
-    return headerHtml(model) +
-      weekHtml(model) +
+    return statsBarHtml(model) +
       unitBarHtml(model) +
-      homeMascotHtml(model) +
       resumeHtml(model.next) +
       pathHtml(model) +
-      '<section class="review-bar">' +
-        '<button type="button" class="btn btn-primary" data-action="start-review"' + reviewDisabled + '>' +
-          'Review (' + model.reviewCount + ')' +
-        '</button>' +
-        '<span class="review-note">Questions you missed come back here.</span>' +
+      '<button type="button" class="jump" data-action="jump" aria-label="Jump to your next lesson">&#11015;</button>' +
+      tabs;
+  }
+
+  // A big card on the Practice screen.
+  function practiceCardHtml(icon, title, note, button) {
+    return '<section class="practice-card">' +
+      '<div class="practice-icon" aria-hidden="true">' + icon + '</div>' +
+      '<div class="practice-text"><h2 class="practice-title">' + title + '</h2><p class="practice-note">' + note + '</p></div>' +
+      button +
+    '</section>';
+  }
+
+  function practiceHtml(model) {
+    var cards = '';
+    if (model.currentUnitId !== null) {
+      cards += practiceCardHtml('&#128257;', 'Mistakes',
+        model.reviewCount === 0 ? 'No missed questions right now.' : model.reviewCount + ' missed ' + (model.reviewCount === 1 ? 'question comes' : 'questions come') + ' back here.',
+        '<button type="button" class="btn btn-primary" data-action="start-review"' + (model.reviewCount === 0 ? ' disabled' : '') + '>' +
+          'Review (' + model.reviewCount + ')</button>');
+      if (model.test) {
+        cards += practiceCardHtml('&#127942;', 'Final test',
+          model.test.state === 'locked' ? 'Unlocks when every level is complete.' :
+            (model.test.best === null ? 'Not taken yet.' : 'Best: ' + model.test.best + '%'),
+          '<button type="button" class="btn btn-primary" data-action="start-test"' + (model.test.state === 'locked' ? ' disabled' : '') + '>Start test</button>');
+      }
+    }
+    cards += practiceCardHtml('&#129518;', 'Calculator', 'Numbers, trig, and graphs.',
+      '<button type="button" class="btn" data-action="open-calculator">Open</button>');
+    return '<section class="tab-screen">' + screenHeadHtml('Practice', 'Sharpen up between lessons.') + cards + '</section>' +
+      tabBarHtml('practice', model.mascot.color);
+  }
+
+  function statHtml(value, label) {
+    return '<div class="profile-stat"><div class="profile-stat-value">' + value + '</div><div class="profile-stat-label">' + label + '</div></div>';
+  }
+
+  function profileHtml(model) {
+    var percent = Math.round(100 * model.xpIntoRank / model.xpPerRank);
+    var best = model.test && model.test.best !== null ? model.test.best + '%' : '–';
+    return '<section class="tab-screen profile">' +
+      '<header class="profile-head">' +
+        '<img class="profile-axl" src="' + AQ.mascot.imagePath(model.mascot.color, 'happy') + '" alt="">' +
+        '<div class="profile-who">' +
+          '<h1 class="screen-title">' + escapeHtml(model.mascot.name) + '</h1>' +
+          '<button type="button" class="btn btn-quiet" data-action="open-mascot">Change color or name</button>' +
+        '</div>' +
+      '</header>' +
+      '<section class="profile-card">' +
+        '<div class="rank-head">' +
+          '<span class="rank-title tier-' + model.title.tier + '">' + escapeHtml(model.title.name) + '</span>' +
+          '<span class="rank-name">Rank ' + model.rank + '</span>' +
+        '</div>' +
+        '<div class="xp-bar"><div class="xp-fill" style="width:' + percent + '%"></div></div>' +
+        '<div class="xp-text">' + model.xpIntoRank + ' / ' + model.xpPerRank + ' XP</div>' +
       '</section>' +
-      footerHtml(model);
+      '<section class="profile-card profile-goal">' + goalHtml(model) + '</section>' +
+      weekHtml(model) +
+      '<section class="profile-stats">' +
+        statHtml(model.xp, 'total XP') +
+        statHtml(model.lessonsDone, 'lessons done') +
+        statHtml(best, 'best test') +
+        statHtml(model.badgeCount + '/' + model.badgeTotal, 'badges') +
+      '</section>' +
+    '</section>' + tabBarHtml('profile', model.mascot.color);
+  }
+
+  function moreRowHtml(action, icon, label) {
+    return '<button type="button" class="more-row" data-action="' + action + '">' +
+      '<span class="more-icon" aria-hidden="true">' + icon + '</span><span class="more-label">' + label + '</span>' +
+    '</button>';
+  }
+
+  function moreHtml(model) {
+    return '<section class="tab-screen">' + screenHeadHtml('More') +
+      '<div class="more-list">' +
+        moreRowHtml('import', '&#128229;', 'Import') +
+        moreRowHtml('backup', '&#128190;', 'Backup') +
+        moreRowHtml('toggle-sound', model.soundOn ? '&#128264;' : '&#128263;', 'Sound: ' + (model.soundOn ? 'on' : 'off')) +
+        moreRowHtml('toggle-theme', '&#127769;', 'Dark mode: ' + (model.darkOn ? 'on' : 'off')) +
+        (model.currentUnitId !== null ? moreRowHtml('remove-unit', '&#128465;', 'Remove this unit') : '') +
+      '</div>' +
+    '</section>' + tabBarHtml('more', model.mascot.color);
   }
 
   // ----- Badges screen -----
@@ -349,6 +500,7 @@
   }
 
   function badgesModel(save) {
+    var mascotColor = mascotOf(save).color;
     var earned = save.badges || {};
     var badges = AQ.game.BADGES.map(function (badge) {
       return { id: badge.id, name: badge.name, how: badge.how, earned: has(earned, badge.id) ? earned[badge.id] : null };
@@ -356,7 +508,8 @@
     return {
       badges: badges,
       count: badges.filter(function (badge) { return badge.earned !== null; }).length,
-      total: badges.length
+      total: badges.length,
+      mascotColor: mascotColor
     };
   }
 
@@ -374,14 +527,13 @@
         (earned ? '<span class="badge-date">Earned ' + formatDate(badge.earned) + '</span>' : '') +
       '</li>';
     }).join('');
-    return '<section class="badges-screen">' +
-      '<header class="badges-bar">' +
-        '<button type="button" class="btn" data-action="home">Home</button>' +
-        '<h1 class="badges-title">Badges</h1>' +
+    return '<section class="badges-screen tab-screen">' +
+      '<header class="screen-head badges-bar">' +
+        '<h1 class="screen-title">Badges</h1>' +
         '<span class="badges-count">' + model.count + ' of ' + model.total + '</span>' +
       '</header>' +
       '<ul class="badge-grid">' + items + '</ul>' +
-    '</section>';
+    '</section>' + tabBarHtml('badges', model.mascotColor);
   }
 
   // Rank up and new badges, for the result screens. Both are optional on the result.
@@ -589,20 +741,23 @@
       '</div>';
     }
     var graph = model.graph ? graphHtml(model.graph, 'Graph for this card') : '';
-    var nextLabel = !last ? 'Next' : (model.fromNotes ? 'Back to question' : 'Start practice');
-    var skipLabel = model.fromNotes ? 'Back to question' : 'Skip to questions';
+    var nextLabel = !last ? 'Next' : (model.guide ? 'Done' : (model.fromNotes ? 'Back to question' : 'Start practice'));
+    var skipLabel = model.guide ? 'Close' : (model.fromNotes ? 'Back to question' : 'Skip to questions');
+    // The level guide (Notes on a level banner) has its own buttons.
+    var act = model.guide ? { back: 'guide-back', next: 'guide-next', skip: 'home' } :
+      { back: 'teach-back', next: 'teach-next', skip: 'teach-skip' };
     var coach = model.mascot ? mascotHtml({ color: model.mascot.color, name: model.mascot.name, mood: 'think',
       size: 'small', line: AQ.mascot.teachLine(model.index, model.total) }) : '';
     return '<section class="teach">' +
       coach +
-      '<div class="teach-count">' + (model.index + 1) + ' of ' + model.total + '</div>' +
+      '<div class="teach-count">' + (model.guide ? escapeHtml(model.guide) + ' · ' : '') + (model.index + 1) + ' of ' + model.total + '</div>' +
       '<h1 class="teach-title">' + escapeHtml(model.title) + '</h1>' +
       paragraphs + example + graph +
       '<div class="teach-actions">' +
-        '<button type="button" class="btn" data-action="teach-back"' + (model.index === 0 ? ' disabled' : '') + '>Back</button>' +
-        '<button type="button" class="btn btn-primary" data-action="teach-next">' + nextLabel + '</button>' +
+        '<button type="button" class="btn" data-action="' + act.back + '"' + (model.index === 0 ? ' disabled' : '') + '>Back</button>' +
+        '<button type="button" class="btn btn-primary" data-action="' + act.next + '">' + nextLabel + '</button>' +
       '</div>' +
-      '<button type="button" class="btn btn-quiet teach-skip" data-action="teach-skip">' + skipLabel + '</button>' +
+      '<button type="button" class="btn btn-quiet teach-skip" data-action="' + act.skip + '">' + skipLabel + '</button>' +
     '</section>';
   }
 
@@ -781,6 +936,10 @@
     homeHtml: homeHtml,
     badgesModel: badgesModel,
     badgesHtml: badgesHtml,
+    practiceHtml: practiceHtml,
+    profileHtml: profileHtml,
+    moreHtml: moreHtml,
+    tabBarHtml: tabBarHtml,
     mascotHtml: mascotHtml,
     mascotScreenHtml: mascotScreenHtml,
     messageHtml: messageHtml,

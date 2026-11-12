@@ -140,6 +140,7 @@ test('Enter submits a typed test answer, and hint and Notes do nothing in a test
 
 test('the sound button saves the setting, and off is passed to play', () => {
   const env = ready();
+  env.click('open-more');
   env.click('toggle-sound');
   assert.equal(stored(env).settings.sound, false);
   assert.match(env.html(), /Sound: off/);
