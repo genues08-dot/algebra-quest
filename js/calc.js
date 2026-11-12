@@ -14,7 +14,6 @@
   var MAX_DENOMINATOR = 1000;
   var FRACTION_TOLERANCE = 1e-9;
   var EXACT_TOLERANCE = 1e-12;
-  var ZERO_BELOW = 1e-12;
   var HISTORY_SIZE = 10;
   var UNDEFINED_MESSAGE = 'That is undefined, like dividing by zero.';
 
@@ -58,7 +57,6 @@
       if (typeof value !== 'number' || !isFinite(value)) {
         return { kind: 'error', message: UNDEFINED_MESSAGE };
       }
-      if (Math.abs(value) < ZERO_BELOW) value = 0;
       return { kind: 'number', display: numberDisplay(value), value: value };
     }
     var found = AQ.plot.features(compiled.evaluate, win);

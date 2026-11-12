@@ -21,6 +21,25 @@ test('number results carry their value, and tiny values are zero', () => {
   assert.equal(calc.run('cos(90)', W, DEG).display, '= 0');
 });
 
+test('small results keep their value, and float noise is zero', () => {
+  const small = [
+    ['1.6×10^(-19)', 1.6e-19],
+    ['6.626×10^(-34)', 6.626e-34],
+    ['(3×10^(-8))×(2×10^(-7))', 6e-15],
+    ['9.11×10^(-31)×2', 1.822e-30]
+  ];
+  for (const [text, expected] of small) {
+    const result = calc.run(text, W);
+    assert.notEqual(result.value, 0, text);
+    assert.equal(Number(result.value.toPrecision(10)), expected, text);
+  }
+  const noise = [['sin(pi)'], ['cos(pi/2)'], ['0.1+0.2-0.3'], ['sin(30)-0.5', DEG]];
+  for (const [text, options] of noise) {
+    const result = calc.run(text, W, options);
+    assert.deepEqual([result.display, result.value], ['= 0', 0], text);
+  }
+});
+
 test('undefined results', () => {
   for (const text of ['asin(2)', '3.5!', 'root(2, -4)', '171!']) assert.deepEqual(calc.run(text, W), UNDEFINED, text);
   assert.deepEqual(calc.run('tan(90)', W, DEG), UNDEFINED);

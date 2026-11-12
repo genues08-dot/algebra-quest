@@ -20,6 +20,20 @@
   var ROOT_MESSAGE = 'Use root(n, x) with a comma, like root(3, 8).';
   var NO_ANSWER_MESSAGE = 'There is no answer yet.';
   var TRIG = { sin: 1, cos: 1, tan: 1, asin: 1, acos: 1, atan: 1 };
+  // Float noise is cleared where it is made: a trig result this close to 0 is 0, and so is a
+  // sum or difference this small next to its parts, like 0.1 + 0.2 - 0.3. Other small values,
+  // like 1.6×10^-19, are kept.
+  var NOISE = 1e-12;
+
+  function trigNoise(v) {
+    return Math.abs(v) < NOISE ? 0 : v;
+  }
+
+  // a + b or a - b, given as `result`, is 0 when it is only the noise left after cancelling.
+  function cancelNoise(a, b, result) {
+    if (!isFinite(result)) return result;
+    return Math.abs(result) <= NOISE * Math.max(Math.abs(a), Math.abs(b)) ? 0 : result;
+  }
 
   // Trig functions for the chosen angle mode. In degrees, multiples of 90 come out exact.
   function trigFunction(name, degrees) {
@@ -171,8 +185,8 @@
     }
 
     function combine(op, a, b) {
-      if (op === '+') return function (x) { return a(x) + b(x); };
-      if (op === '-') return function (x) { return a(x) - b(x); };
+      if (op === '+') return function (x) { var p = a(x), q = b(x); return cancelNoise(p, q, p + q); };
+      if (op === '-') return function (x) { var p = a(x), q = b(x); return cancelNoise(p, q, p - q); };
       if (op === '*') return function (x) { return a(x) * b(x); };
       return function (x) { return a(x) / b(x); };
     }
@@ -277,7 +291,7 @@
         var trigArgument = sum();
         closeParen();
         var trig = trigFunction(token.text, degrees);
-        return function (x) { return trig(trigArgument(x)); };
+        return function (x) { return trigNoise(trig(trigArgument(x))); };
       }
       if (FUNCTIONS.hasOwnProperty(token.text)) {
         if (!peek() || peek().type !== 'open') fail('Something is missing near "' + token.text + '".');
