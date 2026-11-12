@@ -20,6 +20,8 @@
   var NUMBER = /^(\d+\.?\d*|\.\d+)/;
   var LETTERS = /^[a-z]+/;
   var LEADING_Y = /^\s*(?:y|f\s*\(\s*x\s*\))\s*=/;
+  // An "=" left after the leading "y =" is gone means the student typed an equation.
+  var EQUATION_MESSAGE = 'The calculator can\'t solve equations. Type one side, like x^2 - 4, to graph it.';
 
   function fail(error) {
     var problem = new Error(error);
@@ -201,7 +203,9 @@
 
   function compile(text) {
     try {
-      var tokens = tokenize(prepare(text));
+      var prepared = prepare(text);
+      if (prepared.indexOf('=') >= 0) fail(EQUATION_MESSAGE);
+      var tokens = tokenize(prepared);
       if (!tokens.length) fail('Type something to calculate.');
       var parsed = parse(tokens);
       return { ok: true, usesX: parsed.usesX, evaluate: parsed.evaluate };

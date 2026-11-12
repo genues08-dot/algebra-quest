@@ -56,7 +56,9 @@ test('what students type', () => {
   close(value('y = 2x + 1', 3), 7);
   close(value('f(x) = x^2', 4), 16);
   close(value('X^2', 5), 25);
-  assert.equal(error('x^2 = 4'), 'I don\'t understand "=".');
+  const equation = 'The calculator can\'t solve equations. Type one side, like x^2 - 4, to graph it.';
+  assert.equal(error('x^2 = 4'), equation);
+  assert.equal(error('3x - 7 = 11'), equation);
 });
 
 test('usesX', () => {
