@@ -40,6 +40,22 @@ test('small results keep their value, and float noise is zero', () => {
   }
 });
 
+test('very big and very small numbers show as ×10^, which reads back as the same value', () => {
+  const shown = [
+    ['25!', '1.551121004×10^25'],
+    ['6.02×10^(23)', '6.02×10^23'],
+    ['-6.02×10^(23)', '-6.02×10^23'],
+    ['1.6×10^(-19)', '1.6×10^-19']
+  ];
+  for (const [text, display] of shown) {
+    const result = calc.run(text, W);
+    assert.equal(result.display, '= ' + display, text);
+    const again = calc.run(display, W);
+    assert.equal(again.value.toPrecision(10), result.value.toPrecision(10), display);
+    assert.equal(again.display, result.display, display);
+  }
+});
+
 test('undefined results', () => {
   for (const text of ['asin(2)', '3.5!', 'root(2, -4)', '171!']) assert.deepEqual(calc.run(text, W), UNDEFINED, text);
   assert.deepEqual(calc.run('tan(90)', W, DEG), UNDEFINED);

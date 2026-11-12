@@ -17,10 +17,15 @@
   var HISTORY_SIZE = 10;
   var UNDEFINED_MESSAGE = 'That is undefined, like dividing by zero.';
 
+  // The value to 10 significant digits. A number JavaScript would write with e, like 6.02e+23,
+  // is written as 6.02×10^23 instead, which the reader takes back as the same number.
   function formatNumber(value) {
     var n = Number(value.toPrecision(10));
     if (n === 0) n = 0;
-    return String(n);
+    var text = String(n);
+    var e = text.indexOf('e');
+    if (e < 0) return text;
+    return text.slice(0, e) + '×10^' + Number(text.slice(e + 1));
   }
 
   function asFraction(value) {
@@ -38,7 +43,7 @@
     var fraction = asFraction(value);
     if (!fraction) return '= ' + text;
     var label = fraction.n + '/' + fraction.d;
-    var exact = Math.abs(value - Number(text)) <= EXACT_TOLERANCE;
+    var exact = Math.abs(value - Number(value.toPrecision(10))) <= EXACT_TOLERANCE;
     return label + (exact ? ' = ' : ' ≈ ') + text;
   }
 
