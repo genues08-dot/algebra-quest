@@ -109,6 +109,14 @@ test('after =, a number key starts a new entry', () => {
   assert.equal(box(env), '7');
 });
 
+test('after =, the box text is selected, so typing on the keyboard replaces it', () => {
+  const env = calcScreen();
+  run(env, '5*2');
+  assert.deepEqual([env.calcBox.selectionStart, env.calcBox.selectionEnd], [0, 3]);
+  run(env, '(2');
+  assert.deepEqual([env.calcBox.selectionStart, env.calcBox.selectionEnd], [2, 2]);
+});
+
 test('after a graph with no Ans yet, an operator key starts a new entry', () => {
   const env = calcScreen();
   run(env, 'x^2');

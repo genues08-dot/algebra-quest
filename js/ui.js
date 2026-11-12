@@ -506,6 +506,14 @@
       if (entry !== null) panel.history = calc.addHistory(panel.history, entry);
     }
     render(CALC_BOX);
+    if (result.kind !== 'error') selectCalculatorText();
+  }
+
+  // Selects all the text in the calculator box, which has the focus after a run. Typing on the
+  // keyboard then starts a new calculation instead of adding to the old one, and a click deselects.
+  function selectCalculatorText() {
+    var box = rootEl.querySelector(CALC_BOX);
+    if (box && box.setSelectionRange) box.setSelectionRange(0, box.value.length);
   }
 
   // Draws the last graph again, for a new window or a new angle mode.
@@ -569,10 +577,12 @@
   }
 
   // ← deletes the selection, or else the character before the caret.
+  // Right after =, the box is selected only so typing replaces it, so ← deletes the last character.
   function deleteCalculatorText() {
     if (!calculatorShowing()) return;
+    var length = state.calc.text.length;
+    var selection = startsNewEntry() ? { start: length, end: length } : calculatorSelection();
     state.calc.ranText = null;
-    var selection = calculatorSelection();
     var start = selection.start === selection.end ? Math.max(selection.start - 1, 0) : selection.start;
     editCalculatorText(start, selection.end, '');
   }
