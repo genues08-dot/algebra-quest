@@ -4,14 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Algebra Quest</title>
+  <meta name="description" content="Algebra practice with lessons, streaks, and a leaderboard.">
+  <meta name="theme-color" content="#6C4DF5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Algebra Quest">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.ico">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app"><p class="boot-note">Loading Algebra Quest&hellip;</p></div>
   <input type="file" id="import-file" accept=".json,application/json" hidden>
+  <div class="app-toast" id="app-toast" role="status" aria-live="polite" hidden></div>
 
-  <!-- Classic scripts, in dependency order. Module scripts do not load from file:// URLs. -->
+  <!-- Firebase (accounts, saves, leaderboard): the compat builds, which run as classic scripts. -->
+  <script src="https://www.gstatic.com/firebasejs/13.3.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.3.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore-compat.js"></script>
+
+  <!-- The online app: the same app scripts as offline.html, without main.js. -->
   <script src="js/checker.js"></script>
   <script src="js/mathexpr.js"></script>
   <script src="js/units.js"></script>
@@ -24,6 +37,10 @@
   <script src="js/sound.js"></script>
   <script src="js/views.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/online.js"></script>
+  <script src="js/phone-units.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/cloud.js"></script>
+  <script src="js/web-boot.js"></script>
 </body>
 </html>

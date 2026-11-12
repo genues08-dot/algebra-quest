@@ -1126,3 +1126,51 @@ button:disabled { cursor: not-allowed; }
 .shop-name { font-weight: 800; }
 .shop-item .btn { width: 100%; }
 .profile-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+/* ----- Online app: loading, messages, login, leaderboard, and account ----- */
+.boot-note { text-align: center; color: var(--muted); padding: 2rem 1rem; }
+.app-toast {
+  /* Above the tab bar; taps go through it to the page. */
+  position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); pointer-events: none;
+  max-width: 22rem; width: calc(100% - 2rem);
+  background: #2B2540; color: #FFFFFF; padding: 12px 16px; border-radius: 12px;
+  font-size: 15px; line-height: 1.35; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); z-index: 1000;
+}
+.app-toast[hidden] { display: none; }
+.login {
+  max-width: 420px; margin: 0 auto; padding: 24px var(--pad);
+  display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+}
+.login-axl { width: 140px; height: auto; }
+.login-title { margin: 0; font-size: 30px; color: var(--accent); }
+.login-sub { margin: 0; color: var(--muted); }
+.login-form { width: 100%; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+.login-label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
+.login-input {
+  font: inherit; font-size: 18px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 12px;
+  background: var(--card); color: var(--text);
+}
+.login-input:focus { outline: none; border-color: var(--accent); }
+.login-error { margin: 0; color: var(--wrong-text); font-weight: 700; }
+.login-go { width: 100%; }
+.login-note { margin: 0; font-size: 14px; color: var(--muted); }
+.account-who { margin: 0; }
+.board-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.board-tab {
+  font: inherit; font-weight: 800; padding: 10px; border: 2px solid var(--line); border-radius: 12px;
+  background: var(--card); color: var(--muted); cursor: pointer;
+}
+.board-tab-on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.board-note { margin: 8px 0; text-align: center; color: var(--muted); }
+.board-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.board-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  background: var(--card); border: 2px solid var(--line); border-radius: var(--radius);
+}
+.board-me { border-color: var(--accent); background: var(--accent-soft); }
+.board-rank { flex: none; width: 2.2em; text-align: center; font-size: 18px; font-weight: 800; }
+.board-axl { display: block; width: 44px; height: auto; }
+.board-row .axl-wrap { width: 44px; }
+.board-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.board-you { color: var(--muted); font-weight: 600; }
+.board-xp { flex: none; font-weight: 800; color: var(--accent); }

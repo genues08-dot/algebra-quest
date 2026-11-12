@@ -1,0 +1,54 @@
+rules_version = '2';
+
+// Algebra Quest's database rules. Paste this file into the Firebase console:
+// Firestore Database, then Rules, then Publish.
+//
+// - saves/{uid}: a player's progress. Only that player can read or change it.
+// - players/{uid}: a player's leaderboard row. Every logged-in player can read it; only its
+//   owner can change it, and only under their own username.
+// Everything else is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // The username in the login address: "axl_fan@algebra-quest1.firebaseapp.com" gives "axl_fan".
+    function myName() {
+      return request.auth.token.email.split('@')[0];
+    }
+
+    function validSave(data) {
+      return data.keys().hasOnly(['save', 'savedAt']) &&
+        data.save is string && data.save.size() < 900000 &&
+        data.savedAt is string && data.savedAt.size() < 40;
+    }
+
+    function validXp(value) {
+      return value is int && value >= 0 && value <= 10000000;
+    }
+
+    function validRow(data) {
+      return data.keys().hasOnly(['name', 'nameLower', 'weekXp', 'week', 'totalXp', 'color', 'hat', 'updated']) &&
+        data.nameLower == myName() &&
+        data.name is string && data.name.matches('[A-Za-z0-9_]{3,15}') && data.name.lower() == data.nameLower &&
+        validXp(data.weekXp) && validXp(data.totalXp) && data.weekXp <= data.totalXp &&
+        data.week is string && data.week.size() == 10 &&
+        data.color in ['pink', 'purple', 'blue'] &&
+        (data.hat == null || data.hat in ['party', 'beanie', 'bow', 'grad', 'wizard', 'crown']) &&
+        data.updated == request.time;
+    }
+
+    match /saves/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validSave(request.resource.data);
+    }
+
+    match /players/{uid} {
+      allow read: if request.auth != null;
+      allow delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validRow(request.resource.data);
+    }
+  }
+}
