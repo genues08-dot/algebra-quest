@@ -257,3 +257,76 @@ test('bad reward fields make a save invalid, and old saves get the defaults', ()
   assert.deepEqual([loaded.gems, loaded.freezes, loaded.bestCombo, loaded.outfits, loaded.progress.u1.chests],
     [0, 0, 0, { owned: [], worn: null }, []]);
 });
+
+// ----- Review fixes -----
+
+test('a Speed Round with no answers does not count as studying', () => {
+  const unit = makeUnit();
+  const save = makeSave(unit);
+  save.progress.u1.completedLessons = ['a1'];
+  save.streak = 4;
+  save.lastStudyDate = '2026-11-11';
+  const session = game.startSpeed(unit, save.progress.u1, () => 0, 0);
+  assert.equal(game.finishSpeed(save, session, TODAY), true);
+  assert.deepEqual([save.streak, save.lastStudyDate], [4, '2026-11-11']);
+  assert.equal(save.daily === undefined || save.daily.practice === 0, true);
+  assert.equal(rewards.weekRewardStatus(save, TODAY).canClaim, false);
+});
+
+test('a freeze still covers missed days when the app stayed open over them', () => {
+  const unit = makeUnit();
+  const save = makeSave(unit);
+  save.streak = 10;
+  save.freezes = 2;
+  save.lastStudyDate = '2026-11-09';
+  const session = game.startLesson(unit, 'a2');
+  game.submitAnswer(save, unit, session, '1/2', TODAY);
+  assert.deepEqual([save.streak, save.freezes, save.lastStudyDate], [11, 0, TODAY]);
+});
+
+test('moving the clock back does not give quests, week rewards, or the challenge again', () => {
+  const save = makeSave(makeUnit());
+  const later = '2026-11-20';
+  save.days = { [TODAY]: { xp: 500, studied: true }, [later]: { xp: 500, studied: true } };
+  save.daily = { date: later, lessons: 5, perfect: 5, correct: 50, bestCombo: 9, practice: 5, claimed: [] };
+  save.weekRewards = { week: '2026-11-16', claimed: [] };
+  save.weekChallenge = { week: '2026-11-16', claimed: true };
+  assert.ok(rewards.questStatus(save, TODAY).every(q => q.claimed));
+  assert.equal(rewards.claimQuest(save, TODAY, rewards.questsFor(TODAY)[0].id), 0);
+  assert.equal(rewards.weekRewardStatus(save, TODAY).canClaim, false);
+  assert.equal(rewards.challengeStatus(save, TODAY).claimed, true);
+  assert.equal(game.dailyFor(save, TODAY).date, TODAY);
+  assert.equal(save.daily.date, later);
+});
+
+test('two finished lessons open the next level, and Continue picks up after the latest one', () => {
+  const unit = fourLessonUnit();
+  unit.levels.push({ id: 'C', title: 'Level C', lessons: [{ id: 'c1', questions: [{ id: 'q9', type: 'input', prompt: 'P', hint: 'h', solution: 's', answers: ['9'] }] }] });
+  const progress = { completedLessons: ['a1'], review: [], testBest: null };
+  assert.deepEqual(game.levelStates(unit, progress), ['open', 'locked', 'locked']);
+  progress.completedLessons = ['a1', 'a2'];
+  assert.deepEqual(game.levelStates(unit, progress), ['open', 'open', 'locked']);
+  assert.equal(game.nextStep(unit, progress).lessonId, 'a3');
+  progress.completedLessons = ['a1', 'a2', 'b1'];
+  assert.deepEqual(game.levelStates(unit, progress), ['open', 'complete', 'open']);
+  assert.equal(game.nextStep(unit, progress).lessonId, 'c1');
+  progress.completedLessons = ['a1', 'a2', 'b1', 'c1'];
+  assert.equal(game.nextStep(unit, progress).lessonId, 'a3');
+});
+
+test('a final test taken before stays open after the unit gains lessons', () => {
+  const unit = fourLessonUnit();
+  unit.test = { questions: [{ id: 't1', type: 'input', prompt: 'T', hint: 'h', solution: 's', answers: ['1'] }] };
+  const progress = { completedLessons: ['a1', 'a2', 'b1'], review: [], testBest: null };
+  assert.equal(game.isTestUnlocked(unit, progress), false);
+  progress.testBest = 85;
+  assert.equal(game.isTestUnlocked(unit, progress), true);
+});
+
+test('a 2-lesson level has its chest after lesson 2', () => {
+  const unit = makeUnit();
+  const save = makeSave(unit);
+  assert.equal(rewards.chestState(unit, save.progress.u1, 0), 'locked');
+  save.progress.u1.completedLessons = ['a1', 'a2'];
+  assert.equal(rewards.openChest(save, 'u1', 0), 15);
+});

@@ -35,7 +35,7 @@ test('homeModel', () => {
     gems: 0, freezes: 0, bestCombo: 0, claimable: 0, finishedLessons: 1, speedBest: null,
     mascot: { color: 'pink', name: 'Axl', line: '4-day streak! One lesson keeps it alive!', hat: null },
     levels: [
-      { title: 'Level A', state: 'open', color: 0, hasNotes: false, chest: null, chestGems: 15, lessons: [
+      { title: 'Level A', state: 'open', color: 0, hasNotes: false, chest: 'locked', chestGems: 15, lessons: [
         { id: 'a1', number: 1, complete: true, next: false, stars: 1 },
         { id: 'a2', number: 2, complete: false, next: true, stars: 0 }] },
       { title: 'Level B', state: 'locked', color: 1, hasNotes: false, chest: null, chestGems: 20, lessons: [{ id: 'b1', number: 1, complete: false, next: false, stars: 0 }] }

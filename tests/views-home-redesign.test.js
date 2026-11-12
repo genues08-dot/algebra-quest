@@ -86,7 +86,7 @@ test('continue button: the next lesson, then the test, then review, then done', 
 test('winding path: nodes zigzag across the whole unit', () => {
   const html = home(richSave(save => { save.progress.u1.completedLessons = ['a1']; }));
   const shifts = [...html.matchAll(/class="path-spot" style="--shift:(-?\d+)"/g)].map(match => Number(match[1]));
-  assert.deepEqual(shifts, [0, 1, 2, 1]);
+  assert.deepEqual(shifts, [0, 1, 2, 1, 0]); // a1, a2, the chest, b1, the trophy
 });
 
 test('winding path: done, next, open and locked nodes', () => {

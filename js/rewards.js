@@ -56,14 +56,20 @@
   }
 
   // Today's quests with their progress. Does not change the save.
+  // True when date is before the date saved in a reward record: the PC clock was moved back.
+  function clockMovedBack(record, key, date) {
+    return Boolean(record) && game.dayDiff(record[key], date) < 0;
+  }
+
   function questStatus(save, today) {
+    var back = clockMovedBack(save.daily, 'date', today);
     var daily = save.daily && save.daily.date === today ? save.daily :
       { date: today, lessons: 0, perfect: 0, correct: 0, bestCombo: 0, practice: 0, claimed: [] };
     return questsFor(today).map(function (quest) {
       var progress = Math.min(quest.measure(save, daily, today), quest.target);
       return {
         id: quest.id, text: quest.text, target: quest.target, gems: quest.gems,
-        progress: progress, done: progress >= quest.target, claimed: daily.claimed.indexOf(quest.id) !== -1
+        progress: progress, done: progress >= quest.target, claimed: back || daily.claimed.indexOf(quest.id) !== -1
       };
     });
   }
@@ -102,7 +108,8 @@
     var rewards = weekRewardsFor(save, today);
     var count = rewards.claimed.length;
     var claimedToday = rewards.claimed.indexOf(today) !== -1;
-    var canClaim = !claimedToday && count < WEEK_REWARDS.length && studiedOn(save, today);
+    var canClaim = !claimedToday && count < WEEK_REWARDS.length && studiedOn(save, today) &&
+      !clockMovedBack(save.weekRewards, 'week', weekStart(today));
     return {
       canClaim: canClaim,
       slots: WEEK_REWARDS.map(function (gems, index) {
@@ -139,7 +146,8 @@
     var lastWeek = xpBetween(save, game.addDays(week, -7), game.addDays(week, -1));
     var thisWeek = xpBetween(save, week, today);
     var target = Math.max(lastWeek + 1, CHALLENGE_MIN_TARGET);
-    var claimed = Boolean(save.weekChallenge && save.weekChallenge.week === week && save.weekChallenge.claimed);
+    var claimed = Boolean(save.weekChallenge && save.weekChallenge.week === week && save.weekChallenge.claimed) ||
+      clockMovedBack(save.weekChallenge, 'week', week);
     return { thisWeek: thisWeek, lastWeek: lastWeek, target: target, beaten: thisWeek >= target, claimed: claimed, gems: CHALLENGE_GEMS };
   }
 
@@ -197,14 +205,14 @@
     return true;
   }
 
-  // ----- Chests on the path: one per level, after its second lesson -----
+  // ----- Chests on the path: one per level with 2 or more lessons, after its second lesson -----
 
   function chestGems(levelIndex) {
     return 15 + 5 * (levelIndex % 3);
   }
 
   function hasChest(level) {
-    return level.lessons.length >= 3;
+    return level.lessons.length >= 2;
   }
 
   // 'locked', 'ready', or 'open'. Null when the level has no chest.

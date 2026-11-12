@@ -27,7 +27,8 @@
     SPEED_MAX: 40,
     COMBO_BONUS_EVERY: 5,
     COMBO_BONUS_XP: 5,
-    MAX_FREEZES: 2
+    MAX_FREEZES: 2,
+    LESSONS_TO_UNLOCK: 2
   };
   var MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -78,21 +79,26 @@
   }
 
   // One state per level: the first level is open, and each level opens when the one before it is complete.
-  // One state per level. A level is open when the one before it is complete, or when it or any
-  // later level has a finished lesson (so adding lessons to a unit never locks a level again).
+  function doneCount(level, progress) {
+    return level.lessons.filter(function (lesson) {
+      return progress.completedLessons.indexOf(lesson.id) !== -1;
+    }).length;
+  }
+
+  // One state per level. The first level is open. A level opens when the open level before it has
+  // LESSONS_TO_UNLOCK finished lessons (all of them, if it has fewer), or when it or a later level
+  // has any finished lesson, so adding lessons to a unit never locks a level again.
+  // A level is complete only when all of its lessons are.
   function levelStates(unit, progress) {
     var lastTouched = -1;
     unit.levels.forEach(function (level, index) {
-      var touched = level.lessons.some(function (lesson) {
-        return progress.completedLessons.indexOf(lesson.id) !== -1;
-      });
-      if (touched) lastTouched = index;
+      if (doneCount(level, progress) > 0) lastTouched = index;
     });
-    var previousComplete = true;
+    var opensNext = true;
     return unit.levels.map(function (level, index) {
-      var complete = isLevelComplete(level, progress);
-      var state = complete ? 'complete' : (previousComplete || index <= lastTouched ? 'open' : 'locked');
-      previousComplete = complete;
+      var done = doneCount(level, progress);
+      var state = done === level.lessons.length ? 'complete' : (opensNext || index <= lastTouched ? 'open' : 'locked');
+      opensNext = state !== 'locked' && done >= Math.min(CONSTANTS.LESSONS_TO_UNLOCK, level.lessons.length);
       return state;
     });
   }
@@ -174,6 +180,7 @@
   // Anything else restarts at 1, including a date before the last study date (a corrected PC clock).
   // The day is also marked studied in the day log.
   function applyStreak(save, today) {
+    if (save.lastStudyDate !== null && dayDiff(save.lastStudyDate, today) > 1) refreshStreak(save, today);
     dayEntry(save, today).studied = true;
     var days = save.lastStudyDate === null ? null : dayDiff(save.lastStudyDate, today);
     if (days === 0) return;
@@ -212,7 +219,12 @@
 
   // ----- Today's counters, for the daily quests -----
 
+  // A date before the saved one (a clock moved back) gets throwaway counters, so the saved day,
+  // and what was claimed on it, stays.
   function dailyFor(save, today) {
+    if (save.daily && dayDiff(save.daily.date, today) < 0) {
+      return { date: today, lessons: 0, perfect: 0, correct: 0, bestCombo: 0, practice: 0, claimed: [] };
+    }
     if (!save.daily || save.daily.date !== today) {
       save.daily = { date: today, lessons: 0, perfect: 0, correct: 0, bestCombo: 0, practice: 0, claimed: [] };
     }
@@ -389,8 +401,10 @@
       session.newBest = session.firstTryCorrect > 0;
       progress.speedBest = session.firstTryCorrect;
     }
-    dailyFor(save, today).practice += 1;
-    applyStreak(save, today);
+    if (session.seen.length > 0) {
+      dailyFor(save, today).practice += 1;
+      applyStreak(save, today);
+    }
     return true;
   }
 
@@ -517,23 +531,35 @@
   }
 
   // The test opens once the unit has one and every level is complete.
+  // Also open when the test was taken before, so a unit that gains lessons does not lock it again.
   function isTestUnlocked(unit, progress) {
     if (AQ.units.testQuestions(unit).length === 0) return false;
+    if (typeof progress.testBest === 'number') return true;
     return unit.levels.every(function (level) { return isLevelComplete(level, progress); });
   }
 
   // What the Continue button on home does next: the first unfinished lesson, then the final test
   // until it is passed, then the review pile. 'done' when none of those is left.
+  // The next lesson is the first unfinished, open one after the latest finished lesson on the path,
+  // or else the first unfinished, open one anywhere.
   function nextStep(unit, progress) {
     var states = levelStates(unit, progress);
-    for (var i = 0; i < unit.levels.length; i++) {
-      if (states[i] !== 'open') continue;
-      var level = unit.levels[i];
-      for (var j = 0; j < level.lessons.length; j++) {
-        if (progress.completedLessons.indexOf(level.lessons[j].id) !== -1) continue;
-        return { kind: 'lesson', lessonId: level.lessons[j].id, levelNumber: i + 1, lessonNumber: j + 1, levelTitle: level.title };
-      }
-    }
+    var open = [];
+    var lastDone = -1;
+    unit.levels.forEach(function (level, i) {
+      level.lessons.forEach(function (lesson, j) {
+        if (progress.completedLessons.indexOf(lesson.id) !== -1) {
+          lastDone = open.length;
+          open.push(null);
+        } else {
+          open.push(states[i] === 'locked' ? null :
+            { kind: 'lesson', lessonId: lesson.id, levelNumber: i + 1, lessonNumber: j + 1, levelTitle: level.title });
+        }
+      });
+    });
+    var after = open.slice(lastDone + 1).filter(Boolean)[0];
+    var anywhere = open.filter(Boolean)[0];
+    if (after || anywhere) return after || anywhere;
     var passed = typeof progress.testBest === 'number' && progress.testBest >= CONSTANTS.TEST_PASS_PERCENT;
     if (AQ.units.testQuestions(unit).length > 0 && !passed) return { kind: 'test' };
     if (progress.review.length > 0) return { kind: 'review', count: progress.review.length };

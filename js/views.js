@@ -600,10 +600,12 @@
       '</li>';
     }).join('');
     var slots = model.week.slots.map(function (slot, index) {
-      return '<li class="week-slot slot-' + slot.state + '" aria-label="Day ' + (index + 1) + ': ' + slot.gems + ' gems, ' + slot.state + '">' +
-        '<span class="slot-day">' + (index + 1) + '</span>' +
+      var spoken = { claimed: 'claimed', ready: 'ready to claim', waiting: 'finish a lesson today to claim', later: 'coming later' }[slot.state];
+      return '<li class="week-slot slot-' + slot.state + '">' +
+        '<span class="visually-hidden">Day ' + (index + 1) + ': ' + slot.gems + ' gems, ' + spoken + '</span>' +
+        '<span class="slot-day" aria-hidden="true">' + (index + 1) + '</span>' +
         '<span class="slot-icon" aria-hidden="true">' + (slot.state === 'claimed' ? '&#10003;' : (index === 6 ? '&#127873;' : '&#128142;')) + '</span>' +
-        '<span class="slot-gems">' + slot.gems + '</span>' +
+        '<span class="slot-gems" aria-hidden="true">' + slot.gems + '</span>' +
       '</li>';
     }).join('');
     var weekButton = model.week.canClaim ?
@@ -639,13 +641,16 @@
   function shopHtml(model) {
     var maxFreezes = AQ.game.CONSTANTS.MAX_FREEZES;
     var freezeButton = model.freezes >= maxFreezes ? '<span class="quest-done">Full (' + maxFreezes + '/' + maxFreezes + ')</span>' :
-      '<button type="button" class="btn btn-primary" data-action="buy-freeze"' + (model.gems < AQ.rewards.FREEZE_PRICE ? ' disabled' : '') + '>' +
+      '<button type="button" class="btn btn-primary" data-action="buy-freeze" aria-label="Buy a streak freeze for ' + AQ.rewards.FREEZE_PRICE + ' gems"' +
+        (model.gems < AQ.rewards.FREEZE_PRICE ? ' disabled' : '') + '>' +
         AQ.rewards.FREEZE_PRICE + ' &#128142;</button>';
     var hats = model.hats.map(function (hat) {
       var button = hat.owned ?
-        '<button type="button" class="btn' + (hat.worn ? ' btn-primary' : '') + '" data-action="wear-hat" data-hat="' + hat.id + '">' +
+        '<button type="button" class="btn' + (hat.worn ? ' btn-primary' : '') + '" data-action="wear-hat" data-hat="' + hat.id + '"' +
+          ' aria-label="' + (hat.worn ? 'Take off ' : 'Wear ') + escapeHtml(hat.name) + '">' +
           (hat.worn ? 'Take off' : 'Wear') + '</button>' :
-        '<button type="button" class="btn btn-primary" data-action="buy-hat" data-hat="' + hat.id + '"' + (model.gems < hat.price ? ' disabled' : '') + '>' +
+        '<button type="button" class="btn btn-primary" data-action="buy-hat" data-hat="' + hat.id + '"' +
+          ' aria-label="Buy ' + escapeHtml(hat.name) + ' for ' + hat.price + ' gems"' + (model.gems < hat.price ? ' disabled' : '') + '>' +
           hat.price + ' &#128142;</button>';
       return '<li class="shop-item' + (hat.worn ? ' shop-worn' : '') + '">' +
         '<span class="shop-hat">' + hatSvg(hat.id) + '</span>' +
@@ -1059,6 +1064,7 @@
         '<div class="speed-bar" role="img" aria-label="' + Math.round(total - elapsed) + ' seconds left">' +
           '<div class="speed-fill" style="animation-duration:' + total + 's;animation-delay:-' + elapsed.toFixed(1) + 's"></div>' +
         '</div>' +
+        '<span class="speed-left">' + Math.round(total - elapsed) + 's</span>' +
         '<div class="speed-count" aria-label="' + model.right + ' right">&#9989; ' + model.right + '</div>' +
       '</div>' +
       '<h1 class="prompt">' + escapeHtml(model.prompt) + '</h1>' +

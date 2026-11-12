@@ -15,7 +15,7 @@ On 2026-11-12 the user asked for ideas 8–17 from Claude's list, plus more less
 
 ## 8. Chests on the path
 
-- One chest per level, between lesson 2 and lesson 3, drawn as an SVG chest circle.
+- One chest per level with 2 or more lessons, right after lesson 2, drawn as an SVG chest circle.
 - The chest is ready once every lesson before it in that level is complete. Before that it is locked and grey.
 - A ready chest glows. Tapping it opens it: the gems are added, and a **Reward** screen shows the opened chest, "+n gems", and Axl cheering, with confetti.
 - An opened chest stays open and can't be tapped.
@@ -127,10 +127,13 @@ The Shop is a screen opened from the gems in the stats bar and from a Shop butto
 
 ## Level unlocking change
 
-Unit 5 gets new lessons, and levels finished before would otherwise lock again. So:
+Unit 5 gets new lessons, and levels finished before would otherwise lock again. So (changed after the final review):
 
-- A level is open when the level before it is complete, **or** when it or any later level has a finished lesson.
+- The first level is open.
+- A level opens when the open level before it has 2 finished lessons (all of them, if it has fewer), **or** when it or any later level has a finished lesson.
 - A level is complete only when all of its lessons are complete.
+- **Continue** goes to the first unfinished, open lesson after the latest finished lesson on the path. If there is none, it goes to the first unfinished, open lesson anywhere. A student who comes back after the update keeps going where they were, and lessons 3 and 4 of earlier levels wait for later.
+- A final test that was taken before stays open, even after the unit gains lessons.
 
 ## More lessons per level (Unit 5)
 

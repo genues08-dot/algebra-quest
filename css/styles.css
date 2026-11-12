@@ -315,7 +315,10 @@ button:disabled { cursor: not-allowed; }
 .stat-ring .goal-track, .stat-ring .goal-fill { stroke-width: 7; }
 .stat-goal.goal-met { color: var(--correct-text); }
 .stat-review { color: var(--accent); }
-@media (max-width: 420px) {
+@media (max-width: 480px) {
+  .statsbar { gap: 2px; }
+  .stat { gap: 4px; padding: 6px 4px; font-size: 17px; }
+  .stat-icon { font-size: 19px; }
   .stat-label { display: none; }
 }
 
@@ -949,6 +952,8 @@ button:disabled { cursor: not-allowed; }
   .mascot-img, .mascot-button, .axl-wrap { animation: none !important; }
   .confetti, .xp-pop { display: none; }
   .speed-fill { animation: none; }
+  .speed-left { display: inline; }
+  .node-chest.chest-ready, .slot-ready { animation: none; }
 }
 
 /* ----- Rewards: gems, chests, hats, quests, shop, practice modes ----- */
@@ -1045,6 +1050,7 @@ button:disabled { cursor: not-allowed; }
   to { width: 0%; }
 }
 .speed-count { flex: none; font-size: 18px; font-weight: 800; }
+.speed-left { display: none; flex: none; font-weight: 800; color: var(--muted); }
 
 /* Quests. */
 .quests-head { padding: 18px; border-radius: 22px; background: var(--accent); color: #FFFFFF; box-shadow: 0 5px 0 var(--accent-dark); }

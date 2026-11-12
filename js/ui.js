@@ -1120,7 +1120,11 @@
     if (state.screen !== 'quests') return;
     var next = copyOfSave();
     var gems = claim(next);
-    if (gems === 0 || !commit(next)) return;
+    if (gems === 0) {
+      render();
+      return;
+    }
+    if (!commit(next)) return;
     state.note = '+' + gems + ' gems!';
     render();
     playSound('correct');
