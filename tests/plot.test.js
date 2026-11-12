@@ -79,3 +79,18 @@ test('poles are not zeros or turning points', () => {
   assert.deepEqual(plot.features(f('1/(x - 0.03)'), W), { zeros: [], turningPoints: [] });
   assert.deepEqual(plot.features(f('1/(x - 0.03)^2'), W), { zeros: [], turningPoints: [] });
 });
+
+test('a pole on a sample point is not a zero or a turning point', () => {
+  assert.deepEqual(plot.features(f('1/(x-0.3)'), W), { zeros: [], turningPoints: [] });
+  assert.deepEqual(plot.features(f('1/(5x-2)'), W), { zeros: [], turningPoints: [] });
+  const found = plot.features(f('(x+1)/(10x-3)'), W);
+  assert.deepEqual(found.zeros.map(r2), [-1]);
+  assert.deepEqual(found.turningPoints, []);
+  // A real zero on a sample point is still found.
+  assert.deepEqual(plot.features(f('x - 0.3'), W).zeros.map(r2), [0.3]);
+  assert.deepEqual(plot.features(f('x^2 - 0.09'), W).zeros.map(r2), [-0.3, 0.3]);
+  const drawn =plot.svg({ evaluate: f('1/(x-0.3)'), window: W, numbers: false, marks: [], label: 'Graph' });
+  const d = drawn.match(/<path[^>]*class="plot-curve"[^>]*d="([^"]*)"/)[1];
+  assert.ok(d.match(/M/g).length >= 2, 'the curve should break at the pole');
+  assert.doesNotMatch(d, /-1000/);
+});

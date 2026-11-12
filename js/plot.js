@@ -13,9 +13,22 @@
   var ZERO_TOLERANCE = 1e-6;
   var SLOPE_STEP = 1e-6;
   var PIXEL_LIMIT = { min: -1000, max: 1320 };
+  // A value more than this many window heights from 0 is treated as undefined. Such a value
+  // comes from a sample that landed within rounding error of a pole, not from the graph.
+  var HUGE_HEIGHTS = 1e6;
 
   function isFinite_(value) {
     return typeof value === 'number' && isFinite(value);
+  }
+
+  // The size beyond which a value counts as undefined in this window.
+  function hugeLimit(win) {
+    return HUGE_HEIGHTS * (win.yMax - win.yMin);
+  }
+
+  // A finite value that is not beyond the limit. With no limit, every finite value is usable.
+  function usable(value, limit) {
+    return isFinite_(value) && !(Math.abs(value) > limit);
   }
 
   function sign(value) {
@@ -45,11 +58,13 @@
   function features(evaluate, win) {
     var xs = [];
     var ys = [];
+    var limit = hugeLimit(win);
     var i;
     for (i = 0; i <= SAMPLES; i++) {
       var x = win.xMin + (win.xMax - win.xMin) * i / SAMPLES;
+      var y = evaluate(x);
       xs.push(x);
-      ys.push(evaluate(x));
+      ys.push(usable(y, limit) ? y : NaN);
     }
     var slope = function (x) {
       return (evaluate(x + SLOPE_STEP) - evaluate(x - SLOPE_STEP)) / (2 * SLOPE_STEP);
@@ -161,10 +176,11 @@
     var d = '';
     var penDown = false;
     var previousSide = 0;
+    var limit = hugeLimit(win);
     for (var i = 0; i <= CURVE_STEPS; i++) {
       var x = win.xMin + xSpan * i / CURVE_STEPS;
       var y = evaluate(x);
-      if (!isFinite_(y)) { penDown = false; previousSide = 0; continue; }
+      if (!usable(y, limit)) { penDown = false; previousSide = 0; continue; }
       var side = y > win.yMax ? 1 : y < win.yMin ? -1 : 0;
       if (penDown && side !== 0 && side === -previousSide) penDown = false;
       d += (penDown ? 'L' : 'M') + pixel(px(x)) + ' ' + pixel(py(y));
