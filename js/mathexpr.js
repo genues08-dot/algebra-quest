@@ -35,38 +35,61 @@
     return Math.abs(result) <= NOISE * Math.max(Math.abs(a), Math.abs(b)) ? 0 : result;
   }
 
+  // A value just past ±1 by float noise, like 1.0000000000000002, is read as ±1, so asin and
+  // acos give an answer. A value further outside, like 1.1, is left as it is and gives NaN.
+  function clampToUnit(v) {
+    if (v > 1 && v - 1 < NOISE) return 1;
+    if (v < -1 && -1 - v < NOISE) return -1;
+    return v;
+  }
+
+  // Degree results are rounded to 15 significant digits, so sin(30) is 0.5 and not
+  // 0.49999999999999994, and the residue does not reach later steps like asin(2sin(30)).
+  function roundDegreeResult(v) {
+    return isFinite(v) ? Number(v.toPrecision(15)) : v;
+  }
+
   // Trig functions for the chosen angle mode. In degrees, multiples of 90 come out exact.
   function trigFunction(name, degrees) {
-    if (!degrees) return Math[name];
+    if (!degrees) {
+      if (name === 'asin' || name === 'acos') return function (v) { return Math[name](clampToUnit(v)); };
+      return Math[name];
+    }
     var toRad = Math.PI / 180;
     var toDeg = 180 / Math.PI;
     if (name === 'sin') {
       return function (a) {
         if (a % 90 === 0) return [0, 1, 0, -1][(((a / 90) % 4) + 4) % 4];
-        return Math.sin(a * toRad);
+        return roundDegreeResult(Math.sin(a * toRad));
       };
     }
     if (name === 'cos') {
       return function (a) {
         if (a % 90 === 0) return [1, 0, -1, 0][(((a / 90) % 4) + 4) % 4];
-        return Math.cos(a * toRad);
+        return roundDegreeResult(Math.cos(a * toRad));
       };
     }
     if (name === 'tan') {
       return function (a) {
         if (a % 90 === 0) return a % 180 === 0 ? 0 : NaN;
-        return Math.tan(a * toRad);
+        return roundDegreeResult(Math.tan(a * toRad));
       };
     }
     var inverse = Math[name];
-    return function (v) { return inverse(v) * toDeg; };
+    return function (v) { return roundDegreeResult(inverse(clampToUnit(v)) * toDeg); };
   }
 
+  // Defined for whole numbers 0 to 170. A value within 1e-9 of a whole number, like
+  // 2.0000000000000004 from (sqrt(2)^2), counts as that whole number.
+  var WHOLE_TOLERANCE = 1e-9;
+
   function factorial(n) {
-    if (n !== Math.floor(n) || n < 0 || !isFinite(n)) return NaN;
-    if (n > 170) return Infinity;
+    if (!isFinite(n)) return NaN;
+    var whole = Math.round(n);
+    if (Math.abs(n - whole) > WHOLE_TOLERANCE || whole < 0) return NaN;
+    if (whole > 170) return Infinity;
     var result = 1;
-    for (var i = 2; i <= n; i++) result *= i;
+    for (var i = 2; i <= whole; i++) result *= i;
     return result;
   }
 

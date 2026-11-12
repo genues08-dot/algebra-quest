@@ -40,6 +40,19 @@ test('degree mode gives exact values at multiples of 90', () => {
   assert.ok(Number.isNaN(value('tan(-270)', 0, DEG)));
 });
 
+test('float residue from degree trig does not reach later steps', () => {
+  assert.equal(value('sin(30)', 0, DEG), 0.5);
+  assert.equal(value('tan(45)', 0, DEG), 1);
+  assert.equal(value('asin(2sin(30))', 0, DEG), 90);
+  assert.equal(value('acos(2cos(60))', 0, DEG), 0);
+  assert.equal(value('asin(sqrt(2)/2*sqrt(2))', 0, DEG), 90);
+  assert.equal(value('Ans!', 0, { angle: 'deg', ans: value('tan(45)', 0, DEG) }), 1);
+  assert.equal(value('(sqrt(2)^2)!'), 2);
+  assert.ok(Number.isNaN(value('3.5!')));
+  assert.ok(Number.isNaN(value('asin(1.1)')));
+  assert.ok(Number.isNaN(value('asin(1.1)', 0, DEG)));
+});
+
 test('factorial binds tighter than everything', () => {
   assert.equal(value('5!'), 120);
   assert.equal(value('0!'), 1);
