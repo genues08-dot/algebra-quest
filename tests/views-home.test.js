@@ -32,6 +32,7 @@ test('homeModel', () => {
     units: [{ id: 'u1', title: 'Unit <1>' }], currentUnitId: 'u1', reviewCount: 2, test: null,
     next: { kind: 'lesson', lessonId: 'a2', levelNumber: 1, lessonNumber: 2, levelTitle: 'Level A' },
     soundOn: true, darkOn: false, badgeCount: 1, badgeTotal: 12,
+    mascot: { color: 'pink', name: 'Axl', line: '4-day streak! One lesson keeps it alive!' },
     levels: [
       { title: 'Level A', state: 'open', lessons: [
         { id: 'a1', number: 1, complete: true, next: false },
@@ -44,7 +45,8 @@ test('homeModel', () => {
     rank: 1, xpIntoRank: 0, xpPerRank: 100, streak: 0, title: { name: 'Rookie', tier: 1 },
     todayXp: 0, goal: 100, week: game.weekStrip(fresh, TODAY),
     units: [], currentUnitId: null, reviewCount: 0, levels: [], test: null, next: null,
-    soundOn: true, darkOn: false, badgeCount: 0, badgeTotal: 12
+    soundOn: true, darkOn: false, badgeCount: 0, badgeTotal: 12,
+    mascot: { color: 'pink', name: 'Axl', line: "Hi, I'm Axl! Import a unit and let's crush some algebra!" }
   });
 });
 

@@ -6,6 +6,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     require('./units.js');
     require('./game.js');
+    require('./mascot.js');
   }
 
   var KEY = 'algebraQuest.v1';
@@ -25,7 +26,7 @@
       progress: {},
       days: {},
       badges: {},
-      settings: { sound: true, angle: 'deg', goal: AQ.game.CONSTANTS.DEFAULT_GOAL, theme: 'light' }
+      settings: { sound: true, angle: 'deg', goal: AQ.game.CONSTANTS.DEFAULT_GOAL, theme: 'light', mascot: defaultMascot() }
     };
   }
 
@@ -39,6 +40,16 @@
 
   function has(object, key) {
     return Object.prototype.hasOwnProperty.call(object, key);
+  }
+
+  function defaultMascot() {
+    return { color: AQ.mascot.DEFAULT.color, name: AQ.mascot.DEFAULT.name };
+  }
+
+  // { color, name }: one of the mascot colors, and a name of 1 to 16 characters after trimming.
+  function isValidMascot(mascot) {
+    return isPlainObject(mascot) && AQ.mascot.COLORS.indexOf(mascot.color) !== -1 &&
+      AQ.mascot.cleanName(mascot.name) !== null;
   }
 
   function isDate(value) {
@@ -88,6 +99,7 @@
       if (has(settings, 'angle') && settings.angle !== 'deg' && settings.angle !== 'rad') return false;
       if (has(settings, 'goal') && AQ.game.CONSTANTS.GOAL_CHOICES.indexOf(settings.goal) === -1) return false;
       if (has(settings, 'theme') && THEMES.indexOf(settings.theme) === -1) return false;
+      if (has(settings, 'mascot') && !isValidMascot(settings.mascot)) return false;
     }
     if (has(candidate, 'days') && !isValidDays(candidate.days)) return false;
     if (has(candidate, 'badges') && !isValidBadges(candidate.badges)) return false;
@@ -95,13 +107,14 @@
     return true;
   }
 
-  // Older v1 saves lack settings, settings.angle, testBest, and the home screen fields
-  // (days, badges, settings.goal, settings.theme). Fill them in on the object in hand.
+  // Older v1 saves lack settings, settings.angle, testBest, the home screen fields
+  // (days, badges, settings.goal, settings.theme), and settings.mascot. Fill them in on the object in hand.
   function fillDefaults(save) {
     if (!has(save, 'settings')) save.settings = { sound: true };
     if (!has(save.settings, 'angle')) save.settings.angle = 'deg';
     if (!has(save.settings, 'goal')) save.settings.goal = AQ.game.CONSTANTS.DEFAULT_GOAL;
     if (!has(save.settings, 'theme')) save.settings.theme = 'light';
+    if (!has(save.settings, 'mascot')) save.settings.mascot = defaultMascot();
     if (!has(save, 'days')) save.days = {};
     if (!has(save, 'badges')) save.badges = {};
     Object.keys(save.progress).forEach(function (id) {

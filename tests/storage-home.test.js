@@ -7,7 +7,7 @@ test('a new save has the home screen fields', () => {
   const save = storage.newSave();
   assert.deepEqual(save.days, {});
   assert.deepEqual(save.badges, {});
-  assert.deepEqual(save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light' });
+  assert.deepEqual(save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } });
 });
 
 test('an older save gets the home screen fields when it loads', () => {
@@ -28,7 +28,7 @@ test('an older backup gets the home screen fields when it is imported', () => {
   delete old.settings;
   const result = storage.parseImportText(JSON.stringify(old));
   assert.equal(result.kind, 'backup');
-  assert.deepEqual(result.save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light' });
+  assert.deepEqual(result.save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } });
   assert.deepEqual(result.save.days, {});
 });
 

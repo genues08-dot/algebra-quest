@@ -21,7 +21,7 @@ function makeSave(unit) {
     progress: { [unit.id]: { completedLessons: [], review: [], testBest: null } },
     days: {},
     badges: {},
-    settings: { sound: true, angle: 'deg', goal: 100, theme: 'light' }
+    settings: { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } }
   };
 }
 

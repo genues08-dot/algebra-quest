@@ -5,6 +5,7 @@
   var AQ = root.AQ = root.AQ || {};
   if (typeof module !== 'undefined' && module.exports) {
     require('./game.js');
+    require('./mascot.js');
     require('./mathexpr.js');
     require('./plot.js');
     require('./calc.js');
@@ -14,6 +15,53 @@
 
   function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, function (character) { return ESCAPES[character]; });
+  }
+
+  // ----- Mascot -----
+
+  // m: { color, name, mood, line, size ('big' or 'small'), tap, bounce }. A tappable mascot is a
+  // button; the line sits in a speech bubble beside it.
+  function mascotHtml(m) {
+    var classes = 'mascot mascot-' + (m.size || 'small') + ' mascot-' + m.mood + (m.bounce ? ' mascot-bounce' : '');
+    var img = '<img class="mascot-img" src="' + AQ.mascot.imagePath(m.color, m.mood) + '" alt="' + escapeHtml(m.name) + '">';
+    var figure = m.tap ?
+      '<button type="button" class="mascot-button" data-action="mascot-tap" aria-label="Talk to ' + escapeHtml(m.name) + '">' + img + '</button>' :
+      img;
+    return '<div class="' + classes + '">' + figure +
+      (m.line ? '<p class="mascot-bubble">' + escapeHtml(m.line) + '</p>' : '') +
+    '</div>';
+  }
+
+  // The mascot settings on the save, or the default for a save made before there was one.
+  function mascotOf(save) {
+    return save.settings && save.settings.mascot ? save.settings.mascot : AQ.mascot.DEFAULT;
+  }
+
+  // The Mascot screen: pick a color, change the name. model: { color, name, error }.
+  function mascotScreenHtml(model) {
+    var colors = AQ.mascot.COLORS.map(function (color) {
+      var chosen = color === model.color;
+      return '<button type="button" class="mascot-choice' + (chosen ? ' mascot-chosen' : '') + '" data-action="mascot-color"' +
+        ' data-color="' + color + '" aria-pressed="' + chosen + '">' +
+        '<img class="mascot-choice-img" src="' + AQ.mascot.imagePath(color, 'happy') + '" alt="">' +
+        '<span class="mascot-choice-name">' + color.charAt(0).toUpperCase() + color.slice(1) + '</span>' +
+      '</button>';
+    }).join('');
+    return '<section class="mascot-screen">' +
+      '<header class="badges-bar">' +
+        '<button type="button" class="btn" data-action="home">Home</button>' +
+        '<h1 class="badges-title">Your axolotl</h1>' +
+      '</header>' +
+      '<h2 class="mascot-heading">Color</h2>' +
+      '<div class="mascot-colors">' + colors + '</div>' +
+      '<h2 class="mascot-heading"><label for="mascot-name">Name</label></h2>' +
+      '<div class="mascot-name-row">' +
+        '<input type="text" id="mascot-name" class="answer mascot-name" data-role="mascot-name" autocomplete="off" spellcheck="false"' +
+          ' maxlength="' + AQ.mascot.NAME_MAX + '" value="' + escapeHtml(model.name) + '">' +
+        '<button type="button" class="btn btn-primary" data-action="mascot-name">Save name</button>' +
+      '</div>' +
+      (model.error ? '<p class="calc-error" role="alert">' + escapeHtml(model.error) + '</p>' : '') +
+    '</section>';
   }
 
   // ----- Home screen -----
@@ -44,13 +92,30 @@
       badgeCount: AQ.game.BADGES.filter(function (badge) { return has(badges, badge.id); }).length,
       badgeTotal: AQ.game.BADGES.length
     };
-    if (save.currentUnitId === null) return model;
+    var mascot = mascotOf(save);
+    model.mascot = { color: mascot.color, name: mascot.name, line: '' };
+    var lineInfo = {
+      name: mascot.name,
+      hasUnit: save.currentUnitId !== null,
+      goalMet: model.todayXp >= model.goal,
+      streak: save.streak,
+      studiedToday: Boolean(save.days && has(save.days, today) && save.days[today].studied),
+      todayXp: model.todayXp,
+      goal: model.goal,
+      next: null
+    };
+    if (save.currentUnitId === null) {
+      model.mascot.line = AQ.mascot.homeLine(lineInfo);
+      return model;
+    }
 
     var unit = save.units[save.currentUnitId];
     var progress = save.progress[unit.id];
     var states = AQ.game.levelStates(unit, progress);
     model.reviewCount = progress.review.length;
     model.next = AQ.game.nextStep(unit, progress);
+    lineInfo.next = model.next;
+    model.mascot.line = AQ.mascot.homeLine(lineInfo);
     var nextLessonId = model.next.kind === 'lesson' ? model.next.lessonId : null;
     if (AQ.units.testQuestions(unit).length > 0) {
       model.test = {
@@ -236,14 +301,19 @@
       '<button type="button" class="btn" data-action="backup">Backup</button>' +
       '<button type="button" class="btn" data-action="open-calculator">Calculator</button>' +
       '<button type="button" class="btn" data-action="open-badges">Badges (' + model.badgeCount + '/' + model.badgeTotal + ')</button>' +
+      '<button type="button" class="btn" data-action="open-mascot">Mascot</button>' +
       '<button type="button" class="btn" data-action="toggle-sound">Sound: ' + (model.soundOn ? 'on' : 'off') + '</button>' +
       '<button type="button" class="btn" data-action="toggle-theme">Dark mode: ' + (model.darkOn ? 'on' : 'off') + '</button>' +
     '</footer>';
   }
 
+  function homeMascotHtml(model) {
+    return mascotHtml(Object.assign({ mood: 'happy', size: 'big', tap: true }, model.mascot));
+  }
+
   function homeHtml(model) {
     if (model.units.length === 0) {
-      return headerHtml(model) + weekHtml(model) +
+      return headerHtml(model) + weekHtml(model) + homeMascotHtml(model) +
         '<section class="empty"><p class="empty-text">Import a unit to start</p></section>' +
         footerHtml(model);
     }
@@ -251,6 +321,7 @@
     return headerHtml(model) +
       weekHtml(model) +
       unitBarHtml(model) +
+      homeMascotHtml(model) +
       resumeHtml(model.next) +
       pathHtml(model) +
       '<section class="review-bar">' +
@@ -520,7 +591,10 @@
     var graph = model.graph ? graphHtml(model.graph, 'Graph for this card') : '';
     var nextLabel = !last ? 'Next' : (model.fromNotes ? 'Back to question' : 'Start practice');
     var skipLabel = model.fromNotes ? 'Back to question' : 'Skip to questions';
+    var coach = model.mascot ? mascotHtml({ color: model.mascot.color, name: model.mascot.name, mood: 'think',
+      size: 'small', line: AQ.mascot.teachLine(model.index, model.total) }) : '';
     return '<section class="teach">' +
+      coach +
       '<div class="teach-count">' + (model.index + 1) + ' of ' + model.total + '</div>' +
       '<h1 class="teach-title">' + escapeHtml(model.title) + '</h1>' +
       paragraphs + example + graph +
@@ -620,7 +694,10 @@
       '<h2 class="feedback-title">Correct!</h2>' :
       '<h2 class="feedback-title">Not quite</h2>' +
       '<p class="feedback-solution">' + escapeHtml(feedback.solution) + '</p>';
+    var coach = feedback.mascot ? mascotHtml({ color: feedback.mascot.color, name: feedback.mascot.name,
+      mood: feedback.correct ? 'cheer' : 'encourage', size: 'small', line: feedback.mascot.line }) : '';
     return '<section class="feedback ' + (feedback.correct ? 'feedback-correct' : 'feedback-wrong') + '">' +
+      coach +
       body +
       '<button type="button" class="btn btn-primary" data-action="continue">Continue</button>' +
     '</section>';
@@ -628,9 +705,17 @@
 
   // ----- End-of-lesson screens -----
 
+  // The mascot on a result screen, when the result carries one: { color, name }.
+  function resultMascotHtml(result, kind) {
+    if (!result.mascot) return '';
+    var said = AQ.mascot.result(kind, result);
+    return mascotHtml({ color: result.mascot.color, name: result.mascot.name, mood: said.mood, size: 'big', line: said.line });
+  }
+
   function completeHtml(result) {
     return '<section class="result">' +
       '<h1 class="result-title">Lesson complete!</h1>' +
+      resultMascotHtml(result, 'complete') +
       '<div class="result-stats">' +
         '<div class="result-stat"><div class="result-value">+' + result.xpEarned + ' XP</div><div class="result-label">earned</div></div>' +
         '<div class="result-stat"><div class="result-value">' + result.accuracy + '%</div><div class="result-label">right on the first try</div></div>' +
@@ -652,6 +737,7 @@
     }).join('');
     return '<section class="result">' +
       '<h1 class="result-title">Out of hearts</h1>' +
+      resultMascotHtml(result, 'failed') +
       '<p class="result-note">Read through the ones you missed, then try again.</p>' +
       '<ul class="missed">' + missed + '</ul>' +
       newsHtml(result) +
@@ -672,6 +758,7 @@
     var pass = AQ.game.CONSTANTS.TEST_PASS_PERCENT;
     return '<section class="result test-result">' +
       '<h1 class="result-title">Final test</h1>' +
+      resultMascotHtml(result, 'test') +
       '<div class="test-score">' + result.score + '%</div>' +
       '<p class="test-verdict ' + (result.passed ? 'test-passed' : 'test-failed') + '">' +
         (result.passed ? 'Passed' : 'Not passed yet. You need ' + pass + '%.') + '</p>' +
@@ -694,6 +781,8 @@
     homeHtml: homeHtml,
     badgesModel: badgesModel,
     badgesHtml: badgesHtml,
+    mascotHtml: mascotHtml,
+    mascotScreenHtml: mascotScreenHtml,
     messageHtml: messageHtml,
     lessonHtml: lessonHtml,
     graphHtml: graphHtml,

@@ -642,3 +642,83 @@ button:disabled { cursor: not-allowed; }
   .calc-k, .calc-history-item { transition: none; }
   .calc-k:active { transform: none; }
 }
+
+/* ----- Mascot (the axolotl) ----- */
+
+.mascot { display: flex; align-items: center; gap: 12px; }
+.mascot-img { display: block; flex: none; height: auto; }
+.mascot-big .mascot-img { width: 110px; }
+.mascot-small .mascot-img { width: 64px; }
+.mascot-button { flex: none; padding: 0; border: none; border-radius: 50%; background: none; }
+.mascot-bubble {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+/* The bubble's tail points at the mascot. */
+.mascot-bubble::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-bottom: 2px solid var(--line);
+  border-left: 2px solid var(--line);
+  background: var(--card);
+  transform: rotate(45deg);
+}
+
+/* Home: a gentle bob. A tap bounces it, and the cheer pose bounces once when it appears. */
+.mascot-big { margin: 10px 0 6px; }
+.mascot-big .mascot-button .mascot-img { animation: mascot-bob 3s ease-in-out infinite; }
+.mascot.mascot-bounce .mascot-button .mascot-img,
+.mascot-cheer .mascot-img { animation: mascot-bounce 0.6s ease-out 1; }
+
+.feedback .mascot, .teach .mascot { margin-bottom: 12px; }
+.result .mascot { justify-content: center; max-width: 420px; margin: 0 auto 18px; text-align: left; }
+
+@keyframes mascot-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes mascot-bounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-14px) scale(1.05); }
+  60% { transform: translateY(0) scale(0.97); }
+  100% { transform: none; }
+}
+
+/* ----- Mascot screen ----- */
+
+.mascot-screen { display: flex; flex-direction: column; gap: 12px; }
+.mascot-heading { font-size: 16px; color: var(--muted); }
+.mascot-colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.mascot-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 6px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  font-weight: 700;
+}
+.mascot-choice:hover { border-color: var(--accent); }
+.mascot-chosen { border-color: var(--accent); background: var(--accent-soft); }
+.mascot-choice-img { width: 100%; max-width: 110px; height: auto; }
+.mascot-name-row { display: flex; gap: 8px; }
+.mascot-name { flex: 1; min-width: 0; font-size: 18px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-img { animation: none !important; }
+}

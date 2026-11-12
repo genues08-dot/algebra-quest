@@ -8,6 +8,7 @@
     require('./views.js');
     require('./calc.js');
     require('./sound.js');
+    require('./mascot.js');
   }
 
   var views = AQ.views;
@@ -21,7 +22,7 @@
   var CALC_BOX = '[data-role="calc-input"]';
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
-  // 'test-result', 'calculator', or 'badges'. A final test question shows on the 'lesson' screen,
+  // 'test-result', 'calculator', 'badges', or 'mascot'. A final test question shows on the 'lesson' screen,
   // drawn in test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
@@ -38,6 +39,9 @@
     lastResult: null,    // { correct, question } from the answer just checked
     rankAtStart: 1,      // the rank when the running session began
     news: null,          // { rankUp, newBadges } for the result screen, set when a session ends
+    mascotTap: null,     // the line the mascot says after a tap on home, until home is opened again
+    mascotLine: null,    // the mascot's line on the feedback panel, picked when the answer is checked
+    mascotError: null,   // the message on the Mascot screen, such as a missing name
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -119,7 +123,8 @@
       title: card.title,
       text: card.text,
       example: card.example,
-      graph: card.graph
+      graph: card.graph,
+      mascot: mascotSettings()
     };
   }
 
@@ -164,9 +169,22 @@
     };
   }
 
-  // The rank-up and new badges of the session that just ended, for its result screen.
+  function mascotSettings() {
+    return state.save.settings.mascot;
+  }
+
+  // The rank-up and new badges of the session that just ended, and the mascot, for its result screen.
   function withNews(result) {
-    return Object.assign(result, state.news || {});
+    return Object.assign(result, state.news || {}, { mascot: mascotSettings() });
+  }
+
+  function homeHtml() {
+    var model = views.homeModel(state.save, today());
+    if (state.mascotTap !== null) {
+      model.mascot.line = state.mascotTap;
+      model.mascot.bounce = true;
+    }
+    return views.homeHtml(model);
   }
 
   function missedList() {
@@ -190,7 +208,11 @@
         return views.lessonHtml(lessonModel(game.currentQuestion(currentUnit(), session), false));
       case 'feedback':
         return views.lessonHtml(lessonModel(state.lastResult.question, true)) +
-          views.feedbackHtml({ correct: state.lastResult.correct, solution: state.lastResult.question.solution });
+          views.feedbackHtml({
+            correct: state.lastResult.correct,
+            solution: state.lastResult.question.solution,
+            mascot: Object.assign({ line: state.mascotLine }, mascotSettings())
+          });
       case 'complete':
         return views.completeHtml(withNews({ xpEarned: session.xpEarned, accuracy: game.accuracy(session), perfect: session.perfect }));
       case 'failed':
@@ -206,8 +228,10 @@
         return views.calculatorScreenHtml(calculatorModel(false));
       case 'badges':
         return views.badgesHtml(views.badgesModel(state.save));
+      case 'mascot':
+        return views.mascotScreenHtml({ color: mascotSettings().color, name: mascotSettings().name, error: state.mascotError });
       default:
-        return views.homeHtml(views.homeModel(state.save, today()));
+        return homeHtml();
     }
   }
 
@@ -263,6 +287,7 @@
   // With no usable save (the unreadable-save screen was showing), home has nothing to draw.
   function showHome() {
     state.session = null;
+    state.mascotTap = null;
     show(state.save === null ? 'broken' : 'home');
   }
 
@@ -464,6 +489,7 @@
       return;
     }
     state.lastResult = result;
+    state.mascotLine = AQ.mascot.pick(AQ.mascot.LINES[result.correct ? 'correct' : 'wrong'], Math.random());
     state.screen = 'feedback';
     render();
     playSound(result.correct ? 'correct' : 'wrong');
@@ -669,6 +695,25 @@
     'open-badges': function () {
       if (state.screen === 'home') show('badges');
     },
+    // A tap on the mascot on home: a new hype line and a bounce.
+    'mascot-tap': function () {
+      if (state.screen !== 'home') return;
+      state.mascotTap = AQ.mascot.pick(AQ.mascot.LINES.tap, Math.random());
+      render('[data-action="mascot-tap"]');
+    },
+    'open-mascot': function () {
+      if (state.screen !== 'home') return;
+      state.mascotError = null;
+      show('mascot');
+    },
+    'mascot-color': function (target) {
+      var color = target.getAttribute('data-color');
+      if (state.screen !== 'mascot' || AQ.mascot.COLORS.indexOf(color) === -1) return;
+      var next = copyOfSave();
+      next.settings.mascot.color = color;
+      if (commit(next)) render();
+    },
+    'mascot-name': saveMascotName,
     'cycle-goal': function () {
       if (state.screen !== 'home') return;
       var next = copyOfSave();
@@ -818,6 +863,23 @@
     }
   };
 
+  // Saves the name in the Mascot screen's box. An empty name is not saved.
+  function saveMascotName() {
+    if (state.screen !== 'mascot') return;
+    var box = rootEl.querySelector('[data-role="mascot-name"]');
+    var name = AQ.mascot.cleanName(box ? box.value : '');
+    if (name === null) {
+      state.mascotError = 'Type a name for your axolotl (up to ' + AQ.mascot.NAME_MAX + ' letters).';
+      render('[data-role="mascot-name"]');
+      return;
+    }
+    var next = copyOfSave();
+    next.settings.mascot.name = name;
+    if (!commit(next)) return;
+    state.mascotError = null;
+    render();
+  }
+
   function onClick(event) {
     var target = event.target.closest('[data-action]');
     if (!target || target.disabled || target.tagName === 'SELECT') return;
@@ -853,6 +915,9 @@
     } else if (state.screen === 'feedback') {
       event.preventDefault();
       if (!event.repeat) continueLesson();
+    } else if (state.screen === 'mascot' && role === 'mascot-name') {
+      event.preventDefault();
+      if (!event.repeat) saveMascotName();
     }
   }
 

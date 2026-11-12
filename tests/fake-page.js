@@ -32,6 +32,7 @@ function makeEnv(stored, options = {}) {
   // The calculator box also keeps the selection set on it. A redraw puts it back at 0, as Edge
   // reports for a freshly drawn input that has not been focused.
   const answerBox = { value: '', focus() {}, setSelectionRange() {} };
+  const nameBox = { value: '', focus() {}, setSelectionRange() {} };
   const calcBox = {
     value: '',
     selectionStart: 0,
@@ -48,13 +49,14 @@ function makeEnv(stored, options = {}) {
     set innerHTML(text) {
       html = String(text);
       answerBox.value = inputValue(html, 'answer');
+      nameBox.value = inputValue(html, 'mascot-name');
       calcBox.value = inputValue(html, 'calc-input');
       calcBox.selectionStart = 0;
       calcBox.selectionEnd = 0;
     },
     addEventListener: (type, handler) => { handlers[type] = handler; },
     querySelector: selector => {
-      for (const [role, box] of [['answer', answerBox], ['calc-input', calcBox]]) {
+      for (const [role, box] of [['answer', answerBox], ['calc-input', calcBox], ['mascot-name', nameBox]]) {
         const marker = 'data-role="' + role + '"';
         if (selector.includes(marker)) return rootEl.innerHTML.includes(marker) ? box : null;
       }
@@ -99,7 +101,7 @@ function makeEnv(stored, options = {}) {
     preventDefault() {},
     target: { getAttribute: attr => (attr === 'data-role' ? role : null) }
   });
-  return { ls, answerBox, calcBox, confirms, click, key, html: () => rootEl.innerHTML, theme: () => pageAttributes['data-theme'] };
+  return { ls, answerBox, calcBox, nameBox, confirms, click, key, html: () => rootEl.innerHTML, theme: () => pageAttributes['data-theme'] };
 }
 
 module.exports = { makeEnv };

@@ -45,6 +45,7 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
   - **Graphs:** type anything with `x` in it and it draws a graph, with the zeros and turning points marked. Zoom in, zoom out, or reset the view.
 - **Final test:** after you finish every lesson in a unit, the final test unlocks. It has no hints and no feedback while you answer. You need 80% to pass. Passing gives +50 XP. Your best score is kept, and you can retake it. Every question you miss goes into the Review pile.
 - **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the home screen to turn them off. The final test plays no right or wrong sounds.
+- **Your axolotl:** an axolotl mascot cheers you on. It greets you on the home screen, reacts to your answers, explains the teaching cards, and celebrates on the result screens. Tap it on the home screen for a new line. Tap **Mascot** at the bottom of the home screen to pick its color (pink, purple, or blue) and give it a name. It stays quiet during the final test.
 - **Dark mode:** the **Dark mode: on / off** button at the bottom of the home screen switches to a dark theme. The app remembers your choice.
 - **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
 
