@@ -58,6 +58,81 @@ test('keys insert at the caret, delete removes before it, and a stale caret appe
   assert.equal(box(env), '2+5');
 });
 
+test('after Hint, a key still types at the end and ← still deletes', () => {
+  const env = makeEnv(storage.serialize(makeSave(makeRichUnit())));
+  env.click('start-lesson', { 'data-lesson-id': 'a2' });
+  env.click('calc-open');
+  for (const k of ['2', '+', '3']) press(env, k);
+  env.click('hint');
+  press(env, '×');
+  assert.equal(box(env), '2+3×');
+  env.click('hint');
+  env.click('calc-back');
+  assert.equal(box(env), '2+3');
+});
+
+test('after choosing, Notes, or the next question, a key still types at the end', () => {
+  const env = makeEnv(storage.serialize(makeSave(makeRichUnit())));
+  env.click('start-lesson', { 'data-lesson-id': 'a1' });
+  env.click('teach-skip');
+  env.click('calc-open');
+  for (const k of ['1', '2']) press(env, k);
+  env.click('choose', { 'data-index': '1' });
+  press(env, '0');
+  assert.equal(box(env), '120');
+  env.click('notes');
+  env.click('teach-skip');
+  press(env, '4');
+  assert.equal(box(env), '1204');
+  env.click('check');
+  env.click('continue');
+  assert.match(env.html(), /P q2/);
+  press(env, '5');
+  assert.equal(box(env), '12045');
+});
+
+test('after =, an operator key goes on from Ans', () => {
+  const env = calcScreen();
+  for (const k of ['2', '×', '(', '3', '+', '4', ')']) press(env, k);
+  env.click('calc-run');
+  press(env, '+');
+  press(env, '1');
+  assert.equal(box(env), 'Ans+1');
+  env.click('calc-run');
+  assert.match(env.html(), /= 15/);
+});
+
+test('after =, a number key starts a new entry', () => {
+  const env = calcScreen();
+  run(env, '5*2');
+  press(env, '7');
+  assert.equal(box(env), '7');
+});
+
+test('after a graph with no Ans yet, an operator key starts a new entry', () => {
+  const env = calcScreen();
+  run(env, 'x^2');
+  press(env, '+');
+  assert.equal(box(env), '+');
+});
+
+test('after =, typing in the box, ←, or a history tap lets the keys edit as usual', () => {
+  const env = calcScreen();
+  run(env, '5*2');
+  env.calcBox.value = '5*3';
+  env.calcBox.selectionStart = env.calcBox.selectionEnd = 3;
+  press(env, '+');
+  assert.equal(box(env), '5*3+');
+  run(env, '5*2');
+  env.click('calc-back');
+  press(env, '4');
+  assert.equal(box(env), '5*4');
+  run(env, '5*2');
+  env.click('calc-history', { 'data-index': '1' });
+  press(env, '1');
+  assert.equal(box(env), '5*21');
+});
+
 test('Ans keeps the last number when a graph runs', () => {
   const env = calcScreen();
   run(env, '5*2');

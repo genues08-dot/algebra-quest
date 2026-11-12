@@ -43,6 +43,8 @@
     // `ans` is the last number result, which `Ans` stands for (null before the first one).
     // `caret` and `caretEnd` are the selection in the box when a button was pressed, or null
     // when it is not known. They are equal when nothing is selected.
+    // `ranText` is the text of the last run that gave a result, while the next key would start
+    // a new entry. ←, C, a history tap, a key, or a failed run sets it back to null.
     calc: {
       open: false,
       text: '',
@@ -54,7 +56,8 @@
       history: [],
       ans: null,
       caret: null,
-      caretEnd: null
+      caretEnd: null,
+      ranText: null
     }
   };
   var rootEl = null;
@@ -219,9 +222,17 @@
     if (element.setSelectionRange) element.setSelectionRange(at, at);
   }
 
+  // A freshly drawn calculator box reports its caret at 0 in Edge, even when it is not focused.
+  // This puts the caret after its text, without focusing it, so the next key types at the end.
+  function parkCalculatorCaret() {
+    var box = rootEl.querySelector(CALC_BOX);
+    if (box && box.setSelectionRange) box.setSelectionRange(box.value.length, box.value.length);
+  }
+
   // Redraws the current screen in place. `focus` and `caret` are optional, for placeFocus.
   function render(focus, caret) {
     rootEl.innerHTML = screenHtml();
+    parkCalculatorCaret();
     placeFocus(focus, caret);
   }
 
@@ -484,9 +495,11 @@
     var result = calc.run(panel.text, panel.window, calculatorOptions());
     if (result.kind === 'error') {
       panel.error = result.message;
+      panel.ranText = null;
     } else {
       panel.result = result;
       panel.error = null;
+      panel.ranText = panel.text;
       panel.graphText = result.kind === 'graph' ? panel.text : null;
       if (result.kind === 'number') panel.ans = result.value;
       var entry = calc.historyEntry(panel.text, result);
@@ -528,9 +541,29 @@
     render(CALC_BOX, start + insert.length);
   }
 
+  // Keys whose text goes on from the last answer when they start a new entry, like 2 = then + 1.
+  var CONTINUING_KEYS = ['+', '−', '×', '÷', '^', '!'];
+
+  // True right after a run that gave a result, while the box still holds the text that was run.
+  function startsNewEntry() {
+    var panel = state.calc;
+    return panel.ranText !== null && panel.text === panel.ranText;
+  }
+
   // A keypad key types its text at the caret, over any selection.
+  // Right after =, it starts a new entry instead, as on a TI: an operator key goes on from Ans
+  // (when there is one), and any other key replaces the box.
   function typeCalculatorKey(insert) {
     if (!calculatorShowing() || typeof insert !== 'string') return;
+    var panel = state.calc;
+    if (startsNewEntry()) {
+      panel.ranText = null;
+      var fromAns = CONTINUING_KEYS.indexOf(insert.charAt(0)) >= 0 &&
+        typeof panel.ans === 'number' && isFinite(panel.ans);
+      editCalculatorText(0, panel.text.length, fromAns ? 'Ans' + insert : insert);
+      return;
+    }
+    panel.ranText = null;
     var selection = calculatorSelection();
     editCalculatorText(selection.start, selection.end, insert);
   }
@@ -538,6 +571,7 @@
   // ← deletes the selection, or else the character before the caret.
   function deleteCalculatorText() {
     if (!calculatorShowing()) return;
+    state.calc.ranText = null;
     var selection = calculatorSelection();
     var start = selection.start === selection.end ? Math.max(selection.start - 1, 0) : selection.start;
     editCalculatorText(start, selection.end, '');
@@ -627,6 +661,7 @@
       if (!calculatorShowing()) return;
       state.calc.text = '';
       state.calc.error = null;
+      state.calc.ranText = null;
       render(CALC_BOX);
     },
     'calc-mode': switchAngleMode,
@@ -641,6 +676,7 @@
       var entry = state.calc.history[Number(target.getAttribute('data-index'))];
       if (!entry) return;
       state.calc.text = entry.text;
+      state.calc.ranText = null;
       render(CALC_BOX);
     },
     'open-calculator': function () {

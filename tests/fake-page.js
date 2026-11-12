@@ -29,12 +29,13 @@ function makeEnv(stored, options = {}) {
   let keydown = null;
   // The answer box and the calculator box. Each is found only while the page HTML has it.
   // Every redraw resets them to what the new HTML holds, as a real page makes fresh inputs.
-  // The calculator box also keeps the selection set on it, which a redraw clears.
+  // The calculator box also keeps the selection set on it. A redraw puts it back at 0, as Edge
+  // reports for a freshly drawn input that has not been focused.
   const answerBox = { value: '', focus() {}, setSelectionRange() {} };
   const calcBox = {
     value: '',
-    selectionStart: undefined,
-    selectionEnd: undefined,
+    selectionStart: 0,
+    selectionEnd: 0,
     focus() {},
     setSelectionRange(start, end) {
       calcBox.selectionStart = start;
@@ -48,8 +49,8 @@ function makeEnv(stored, options = {}) {
       html = String(text);
       answerBox.value = inputValue(html, 'answer');
       calcBox.value = inputValue(html, 'calc-input');
-      calcBox.selectionStart = undefined;
-      calcBox.selectionEnd = undefined;
+      calcBox.selectionStart = 0;
+      calcBox.selectionEnd = 0;
     },
     addEventListener: (type, handler) => { handlers[type] = handler; },
     querySelector: selector => {
