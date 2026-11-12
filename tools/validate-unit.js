@@ -29,5 +29,7 @@ if (!result.ok) {
 
 const levels = unit.levels.length;
 const lessons = units.lessonIds(unit).length;
-const questions = units.questionIds(unit).length;
-console.log(`OK: ${unit.title} (${levels} levels, ${lessons} lessons, ${questions} questions)`);
+const testCount = units.testQuestions(unit).length;
+const questions = units.questionIds(unit).length - testCount;
+const testNote = unit.test ? `, final test: ${testCount} questions` : '';
+console.log(`OK: ${unit.title} (${levels} levels, ${lessons} lessons, ${questions} questions${testNote})`);

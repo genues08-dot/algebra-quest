@@ -33,6 +33,10 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 - **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets.
 - **Review:** every question you miss goes into the Review pile. Answer it right in a Review lesson and it leaves the pile.
 - **Typing answers:** `x = 4`, `x=4`, `4 = x`, and `4` all count. Fractions, decimals, and mixed numbers with the same value all count, so `5/2`, `2.5`, and `2 1/2` match. For two answers, type them in any order, such as `3, -3` or `x = 3 or x = -3`. Type `<=` and `>=` for ≤ and ≥.
+- **Teaching cards:** each lesson opens on a few short cards that teach the idea with a worked example. Tap **Notes** during a lesson to read them again. You come back to the same question.
+- **Calculator:** each question has a calculator button. It takes numbers and `+ - * /`, `^` for powers, `sqrt`, `abs`, `log`, `ln`, and `pi`. Fractions show a decimal too, such as 11/12 ≈ 0.9166666667. Type anything with `x` in it and it draws a graph, with the zeros and turning points marked. Zoom in, zoom out, or reset the view. Some questions say "without graphing" and turn the calculator off.
+- **Final test:** after you finish every lesson in a unit, the final test unlocks. It has no hints and no feedback while you answer. You need 80% to pass. Passing gives +50 XP. Your best score is kept, and you can retake it. Every question you miss goes into the Review pile.
+- **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the home screen to turn them off. The final test plays no right or wrong sounds.
 - **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
 
 ## Back up and restore

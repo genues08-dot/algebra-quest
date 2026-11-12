@@ -24,3 +24,45 @@ Use multiple choice when:
 - **The answer is an ordered pair, an interval, or a graph feature.** These match only as exact text.
 
 If an expression answer must be typed, list every reasonable form in `answers`. Write accepted answers the way a student types them: `^` for exponents, `sqrt(5)` for roots, `i` for the imaginary unit. Show the proper symbols (x², √5) in the prompt, hint, and solution.
+
+## Teaching cards, graphs, calculator, and final test
+
+Authoring rules:
+
+- Every lesson gets 1 to 3 teaching cards taken from the packet's notes pages, each with a worked example.
+- Questions in a lesson go from checking the idea to full problems.
+- Add a graph only where the problem needs one.
+- "Without graphing" problems get `"calculator": false`.
+- Every unit gets a final test of about 20 new questions that do not repeat lesson questions. Test question ids must not match any lesson question id.
+
+All of these fields are optional. `format` stays `1`.
+
+`teach` on a lesson: 1 to 5 cards, each with a `title`, a `text` list, and an optional `example` and `graph`.
+
+```json
+"teach": [
+  {
+    "title": "Product rule",
+    "text": ["When you multiply powers with the same base, add the exponents."],
+    "example": { "problem": "Simplify x³ · x²", "steps": ["Same base, so add the exponents: 3 + 2 = 5.", "x³ · x² = x⁵"] }
+  }
+]
+```
+
+`graph` on a question or a teaching card: `fn` is required and uses the calculator's syntax (`^`, `*`, `/`, parentheses, `2x`, `sqrt(...)`). `x` and `y` default to `[-10, 10]`. `numbers` defaults to `true`.
+
+```json
+"graph": { "fn": "x^3 - 3x^2 - 3", "x": [-5, 5], "y": [-10, 10], "numbers": true }
+```
+
+`calculator` on a question: `false` hides the calculator for that question.
+
+```json
+"calculator": false
+```
+
+`test` on a unit: `questions` use the same form as lesson questions. Ids are unique across the whole unit.
+
+```json
+"test": { "questions": [ { "id": "t-q1", "type": "input", "prompt": "Solve: 3x − 7 = 11", "answers": ["6"], "hint": "Undo the − 7 first.", "solution": "3x = 18, so x = 6." } ] }
+```

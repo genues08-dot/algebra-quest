@@ -68,18 +68,23 @@ test('sample unit is valid and has the planned shape', () => {
     assert.equal(level.lessons.length, 2);
     for (const lesson of level.lessons) {
       assert.equal(lesson.questions.length, 6);
+      assert.ok(lesson.teach.length >= 1 && lesson.teach.length <= 3);
+      lesson.teach.forEach(card => assert.ok(card.example));
       lesson.questions.forEach(x => types.add(x.type));
     }
   }
   assert.deepEqual([...types].sort(), ['choice', 'input']);
   assert.match(JSON.stringify(sample), /[<>]/);
+  assert.equal(sample.test.questions.length, 5);
+  assert.ok(sample.test.questions.some(q => q.graph));
+  assert.ok(sample.test.questions.some(q => q.calculator === false));
 });
 
 test('validate-unit CLI', () => {
   const run = (...args) => spawnSync(process.execPath, [path.join(__dirname, '../tools/validate-unit.js'), ...args], { encoding: 'utf8' });
   const ok = run(samplePath);
   assert.equal(ok.status, 0);
-  assert.match(ok.stdout, /^OK: .+ \(2 levels, 4 lessons, 24 questions\)/);
+  assert.match(ok.stdout, /^OK: .+ \(2 levels, 4 lessons, 24 questions, final test: 5 questions\)/);
   const tmp = path.join(os.tmpdir(), 'aq-bad-unit.json');
   fs.writeFileSync(tmp, JSON.stringify({ format: 2 }));
   const invalid = run(tmp);
