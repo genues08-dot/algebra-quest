@@ -16,6 +16,8 @@
   // A value more than this many window heights from 0 is treated as undefined. Such a value
   // comes from a sample that landed within rounding error of a pole, not from the graph.
   var HUGE_HEIGHTS = 1e6;
+  // A curve step that moves more than this many pixels up or down is checked for a jump.
+  var JUMP_PIXELS = 16;
 
   function isFinite_(value) {
     return typeof value === 'number' && isFinite(value);
@@ -130,6 +132,15 @@
     return Math.min(max, Math.max(min, value));
   }
 
+  // True when the curve jumps between two neighboring points, as it does across a pole:
+  // the value halfway is undefined or is not between the two ends. Only a long step, or one
+  // with an end outside the window, is checked, because a smooth curve that turns also
+  // leaves that range for a moment.
+  function jumpsBetween(evaluate, x0, y0, x1, y1, limit) {
+    var middle = evaluate((x0 + x1) / 2);
+    return !usable(middle, limit) || middle < Math.min(y0, y1) || middle > Math.max(y0, y1);
+  }
+
   function pixel(value) {
     return Math.round(clamp(value, PIXEL_LIMIT.min, PIXEL_LIMIT.max) * 10) / 10;
   }
@@ -176,6 +187,8 @@
     var d = '';
     var penDown = false;
     var previousSide = 0;
+    var previousX = 0;
+    var previousY = 0;
     var limit = hugeLimit(win);
     for (var i = 0; i <= CURVE_STEPS; i++) {
       var x = win.xMin + xSpan * i / CURVE_STEPS;
@@ -183,9 +196,13 @@
       if (!usable(y, limit)) { penDown = false; previousSide = 0; continue; }
       var side = y > win.yMax ? 1 : y < win.yMin ? -1 : 0;
       if (penDown && side !== 0 && side === -previousSide) penDown = false;
+      var suspect = side !== 0 || previousSide !== 0 || Math.abs(py(y) - py(previousY)) > JUMP_PIXELS;
+      if (penDown && suspect && jumpsBetween(evaluate, previousX, previousY, x, y, limit)) penDown = false;
       d += (penDown ? 'L' : 'M') + pixel(px(x)) + ' ' + pixel(py(y));
       penDown = true;
       previousSide = side;
+      previousX = x;
+      previousY = y;
     }
     if (d) parts.push('<path class="plot-curve" d="' + d + '"/>');
 

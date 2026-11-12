@@ -94,3 +94,13 @@ test('a pole on a sample point is not a zero or a turning point', () => {
   assert.ok(d.match(/M/g).length >= 2, 'the curve should break at the pole');
   assert.doesNotMatch(d, /-1000/);
 });
+
+test('the curve breaks at a jump with one end inside the window', () => {
+  const curve = text => plot.svg({ evaluate: f(text), window: W, numbers: false, marks: [], label: 'Graph' })
+    .match(/<path[^>]*class="plot-curve"[^>]*d="([^"]*)"/)[1];
+  assert.ok(curve('1/(3x-1)').match(/M/g).length >= 2, '1/(3x-1) should break once');
+  assert.ok(curve('1/(x^2-2)').match(/M/g).length >= 3, '1/(x^2-2) should break twice');
+  const steep = curve('x^5');
+  assert.equal(steep.match(/M/g).length, 1);
+  assert.doesNotMatch(steep, /NaN|Infinity/);
+});
