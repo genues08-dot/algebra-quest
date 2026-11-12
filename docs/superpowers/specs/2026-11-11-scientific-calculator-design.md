@@ -195,3 +195,19 @@ Automated, with `node --test "tests/*.test.js"`:
   - the calculator still hidden on a "no calculator" question.
 
 Then a browser check by the controller, and the user's play-through.
+
+## 11. Changes made during the build
+
+These decisions were made while building and reviewing. They override the sections above where they differ.
+
+- **Caret after a redraw (section 8).** Edge reports a cursor position of 0 for a freshly drawn box, never "unknown". So when the calculator box is drawn but does not have focus, its cursor is parked at the end. Keys type at the end after Hint, choosing an answer, the next question, or Notes.
+- **Starting fresh after `=` (section 8).** After a successful run, the box text is selected, so keyboard typing replaces it. The first keypad key also starts a new entry. An operator key (`+ − × ÷ ^ !` or `×10^(`) continues from Ans when Ans holds a number. Any other key replaces the box. ← right after `=` deletes one character.
+- **Rounding noise (section 5).** There is no blanket "tiny values become 0" rule, so `1.6×10^-19` keeps its value. Instead:
+  - a trig result smaller than `1e-12` becomes 0;
+  - a `+` or `−` result smaller than `1e-12` times the larger operand becomes 0, so `0.1+0.2-0.3` is 0.
+  - Degree-mode trig results are rounded to 15 significant digits.
+  - `asin` and `acos` accept arguments that are just past ±1 by rounding noise.
+  - Factorial accepts a number within `1e-9` of a whole number.
+  - Radian `tan` is undefined where `|cos| < 1e-12`.
+- **Display (section 5).** A number that would show in e-notation is shown as `<mantissa>×10^<exponent>` instead, for example `6.02×10^23` or `1.6×10^-19`. Typing that back gives the same value.
+- **History lines (section 7).** A whole-number result shows once: `1+1 = 2`, not `1+1 = = 2`.
