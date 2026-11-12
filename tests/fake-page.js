@@ -63,7 +63,10 @@ function makeEnv(stored, options = {}) {
   };
   const fileInput = { addEventListener() {}, click() {}, files: [], value: '' };
   const confirms = [];
+  // The page's root element. ui.js sets data-theme on it.
+  const pageAttributes = {};
   globalThis.document = {
+    documentElement: { setAttribute: (name, value) => { pageAttributes[name] = String(value); } },
     getElementById: () => fileInput,
     addEventListener: (type, handler) => { if (type === 'keydown') keydown = handler; }
   };
@@ -96,7 +99,7 @@ function makeEnv(stored, options = {}) {
     preventDefault() {},
     target: { getAttribute: attr => (attr === 'data-role' ? role : null) }
   });
-  return { ls, answerBox, calcBox, confirms, click, key, html: () => rootEl.innerHTML };
+  return { ls, answerBox, calcBox, confirms, click, key, html: () => rootEl.innerHTML, theme: () => pageAttributes['data-theme'] };
 }
 
 module.exports = { makeEnv };

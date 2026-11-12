@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const views = require('../js/views.js');
+const TODAY = '2026-11-12';
 const storage = require('../js/storage.js');
 const { makeRichUnit, makeSave } = require('./fixtures.js');
 
@@ -13,28 +14,28 @@ function richSave(change) {
 }
 
 test('homeModel: test entry and sound', () => {
-  assert.deepEqual(views.homeModel(richSave()).test, { state: 'locked', best: null });
+  assert.deepEqual(views.homeModel(richSave(), TODAY).test, { state: 'locked', best: null });
   const done = richSave(save => { save.progress.u1.completedLessons = ['a1', 'a2', 'b1']; save.progress.u1.testBest = 85; });
-  assert.deepEqual(views.homeModel(done).test, { state: 'open', best: 85 });
-  assert.equal(views.homeModel(richSave()).soundOn, true);
-  assert.equal(views.homeModel(richSave(save => { save.settings.sound = false; })).soundOn, false);
-  assert.equal(views.homeModel(storage.newSave()).test, null);
+  assert.deepEqual(views.homeModel(done, TODAY).test, { state: 'open', best: 85 });
+  assert.equal(views.homeModel(richSave(), TODAY).soundOn, true);
+  assert.equal(views.homeModel(richSave(save => { save.settings.sound = false; }), TODAY).soundOn, false);
+  assert.equal(views.homeModel(storage.newSave(), TODAY).test, null);
 });
 
 test('homeHtml: final test entry', () => {
-  const locked = views.homeHtml(views.homeModel(richSave()));
+  const locked = views.homeHtml(views.homeModel(richSave(), TODAY));
   assert.match(locked, /Final test/);
   assert.match(locked, /Not taken yet/);
   assert.match(tag(locked, 'data-action="start-test"'), /disabled/);
-  const open = views.homeHtml(views.homeModel(richSave(save => { save.progress.u1.completedLessons = ['a1', 'a2', 'b1']; save.progress.u1.testBest = 85; })));
+  const open = views.homeHtml(views.homeModel(richSave(save => { save.progress.u1.completedLessons = ['a1', 'a2', 'b1']; save.progress.u1.testBest = 85; }), TODAY));
   assert.doesNotMatch(tag(open, 'data-action="start-test"'), /disabled/);
   assert.match(open, /Best: 85%/);
 });
 
 test('homeHtml: sound button, with and without units', () => {
-  assert.match(views.homeHtml(views.homeModel(richSave())), /data-action="toggle-sound"[^>]*>Sound: on</);
-  assert.match(views.homeHtml(views.homeModel(richSave(save => { save.settings.sound = false; }))), /data-action="toggle-sound"[^>]*>Sound: off</);
-  const empty = views.homeHtml(views.homeModel(storage.newSave()));
+  assert.match(views.homeHtml(views.homeModel(richSave(), TODAY)), /data-action="toggle-sound"[^>]*>Sound: on</);
+  assert.match(views.homeHtml(views.homeModel(richSave(save => { save.settings.sound = false; }), TODAY)), /data-action="toggle-sound"[^>]*>Sound: off</);
+  const empty = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
   assert.equal(has(empty, 'toggle-sound'), true);
   assert.equal(has(empty, 'start-test'), false);
 });

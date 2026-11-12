@@ -21,8 +21,8 @@
   var CALC_BOX = '[data-role="calc-input"]';
 
   // screen is 'home', 'message', 'broken', 'teach', 'lesson', 'feedback', 'complete', 'failed',
-  // 'test-result', or 'calculator'. A final test question shows on the 'lesson' screen, drawn in
-  // test mode. 'calculator' is the full-screen calculator opened from home.
+  // 'test-result', 'calculator', or 'badges'. A final test question shows on the 'lesson' screen,
+  // drawn in test mode. 'calculator' is the full-screen calculator opened from home.
   // `save` is null only on the broken screen. The lesson fields are used only while a session runs.
   var state = {
     screen: 'home',
@@ -36,6 +36,8 @@
     typedText: '',       // what is in the answer box
     hintVisible: false,
     lastResult: null,    // { correct, question } from the answer just checked
+    rankAtStart: 1,      // the rank when the running session began
+    news: null,          // { rankUp, newBadges } for the result screen, set when a session ends
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -162,6 +164,11 @@
     };
   }
 
+  // The rank-up and new badges of the session that just ended, for its result screen.
+  function withNews(result) {
+    return Object.assign(result, state.news || {});
+  }
+
   function missedList() {
     var unit = currentUnit();
     return state.session.missed.map(function (id) {
@@ -185,20 +192,22 @@
         return views.lessonHtml(lessonModel(state.lastResult.question, true)) +
           views.feedbackHtml({ correct: state.lastResult.correct, solution: state.lastResult.question.solution });
       case 'complete':
-        return views.completeHtml({ xpEarned: session.xpEarned, accuracy: game.accuracy(session), perfect: session.perfect });
+        return views.completeHtml(withNews({ xpEarned: session.xpEarned, accuracy: game.accuracy(session), perfect: session.perfect }));
       case 'failed':
-        return views.failedHtml({ missed: missedList() });
+        return views.failedHtml(withNews({ missed: missedList() }));
       case 'test-result':
-        return views.testResultHtml({
+        return views.testResultHtml(withNews({
           score: game.testScore(session),
           passed: game.testPassed(session),
           xpEarned: session.xpEarned,
           missed: missedList()
-        });
+        }));
       case 'calculator':
         return views.calculatorScreenHtml(calculatorModel(false));
+      case 'badges':
+        return views.badgesHtml(views.badgesModel(state.save));
       default:
-        return views.homeHtml(views.homeModel(state.save));
+        return views.homeHtml(views.homeModel(state.save, today()));
     }
   }
 
@@ -229,8 +238,16 @@
     if (box && box.setSelectionRange) box.setSelectionRange(box.value.length, box.value.length);
   }
 
+  // Sets the saved theme on the page's root element, where the CSS reads it.
+  function applyTheme() {
+    var page = root.document && root.document.documentElement;
+    if (!page || typeof page.setAttribute !== 'function') return;
+    page.setAttribute('data-theme', state.save && state.save.settings.theme === 'dark' ? 'dark' : 'light');
+  }
+
   // Redraws the current screen in place. `focus` and `caret` are optional, for placeFocus.
   function render(focus, caret) {
+    applyTheme();
     rootEl.innerHTML = screenHtml();
     parkCalculatorCaret();
     placeFocus(focus, caret);
@@ -271,6 +288,8 @@
     state.save = loaded.save;
     state.rawSave = null;
     game.refreshStreak(state.save, today());
+    // Badges the save has already earned are recorded quietly. The next write saves them.
+    game.earnBadges(state.save, null, today());
     return true;
   }
 
@@ -333,6 +352,7 @@
       if (!root.confirm('Replace all current progress with this backup?')) return;
       next = result.save;
       game.refreshStreak(next, today());
+      game.earnBadges(next, null, today());
     }
     if (commit(next)) showHome();
   }
@@ -392,6 +412,8 @@
     if (!session) return;
     state.session = session;
     state.teach = null;
+    state.news = null;
+    state.rankAtStart = game.rankForXp(state.save.xp);
     if (lessonCards().length > 0) openCards(false);
     else showQuestion();
   }
@@ -410,6 +432,23 @@
     else showQuestion();
   }
 
+  function badgeById(id) {
+    return game.BADGES.filter(function (badge) { return badge.id === id; })[0];
+  }
+
+  // Called once, when an answer or skip ends the session, before it is saved.
+  // Records the badges it earned and notes a rank-up, for the result screen.
+  function noteSessionEnd(session) {
+    if (session.status === 'active') return;
+    var ids = game.earnBadges(state.save, session, today());
+    var rank = game.rankForXp(state.save.xp);
+    var title = game.rankTitle(rank);
+    state.news = {
+      rankUp: rank > state.rankAtStart ? { rank: rank, name: title.name, tier: title.tier } : null,
+      newBadges: ids.map(badgeById)
+    };
+  }
+
   // In a test there is no feedback: the answer is saved and the test moves on at once.
   function checkAnswer() {
     if (state.screen !== 'lesson') return;
@@ -417,7 +456,9 @@
     var question = game.currentQuestion(unit, state.session);
     var response = question.type === 'choice' ? state.selected : state.typedText;
     var result = game.submitAnswer(state.save, unit, state.session, response, today());
-    if (!result || !commit(state.save)) return;
+    if (!result) return;
+    noteSessionEnd(state.session);
+    if (!commit(state.save)) return;
     if (inTest()) {
       afterTestAnswer();
       return;
@@ -467,7 +508,9 @@
   function skipQuestion() {
     if (state.screen !== 'lesson' || !inTest()) return;
     var result = game.skipQuestion(state.save, currentUnit(), state.session, today());
-    if (result && commit(state.save)) afterTestAnswer();
+    if (!result) return;
+    noteSessionEnd(state.session);
+    if (commit(state.save)) afterTestAnswer();
   }
 
   // ----- Calculator -----
@@ -612,6 +655,31 @@
     },
     'start-test': function () {
       beginSession(newTestSession(currentUnit()));
+    },
+    // The Continue button: the next lesson, then the final test, then review.
+    'resume': function () {
+      if (state.screen !== 'home' || state.save.currentUnitId === null) return;
+      var unit = currentUnit();
+      var progress = state.save.progress[unit.id];
+      var next = game.nextStep(unit, progress);
+      if (next.kind === 'lesson') beginSession(game.startLesson(unit, next.lessonId));
+      else if (next.kind === 'test') beginSession(newTestSession(unit));
+      else if (next.kind === 'review') beginSession(game.startReview(unit, progress));
+    },
+    'open-badges': function () {
+      if (state.screen === 'home') show('badges');
+    },
+    'cycle-goal': function () {
+      if (state.screen !== 'home') return;
+      var next = copyOfSave();
+      next.settings.goal = game.nextGoal(next.settings.goal);
+      if (commit(next)) render('[data-action="cycle-goal"]');
+    },
+    'toggle-theme': function () {
+      if (state.screen !== 'home') return;
+      var next = copyOfSave();
+      next.settings.theme = next.settings.theme === 'dark' ? 'light' : 'dark';
+      if (commit(next)) render('[data-action="toggle-theme"]');
     },
     'choose': function (target) {
       state.selected = Number(target.getAttribute('data-index'));
