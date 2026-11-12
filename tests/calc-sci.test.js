@@ -61,6 +61,12 @@ test('undefined results', () => {
   assert.deepEqual(calc.run('tan(90)', W, DEG), UNDEFINED);
 });
 
+test('radian poles are undefined', () => {
+  assert.deepEqual(calc.run('tan(pi/2)', W), UNDEFINED);
+  assert.deepEqual(calc.run('1/sin(pi)', W), UNDEFINED);
+  assert.equal(calc.run('tan(pi/4)', W).display, '= 1');
+});
+
 test('graphs use the angle mode', () => {
   const deg = calc.run('sin(x)', { xMin: -350, xMax: 350, yMin: -2, yMax: 2 }, DEG);
   assert.equal(deg.zerosLine, 'Zeros: x = -180, 0, 180');

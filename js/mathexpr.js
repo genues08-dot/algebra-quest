@@ -52,6 +52,8 @@
   // Trig functions for the chosen angle mode. In degrees, multiples of 90 come out exact.
   function trigFunction(name, degrees) {
     if (!degrees) {
+      // At a pole like pi/2, cos is only float noise away from 0, so tan is undefined there.
+      if (name === 'tan') return function (a) { return Math.abs(Math.cos(a)) < NOISE ? NaN : Math.tan(a); };
       if (name === 'asin' || name === 'acos') return function (v) { return Math[name](clampToUnit(v)); };
       return Math[name];
     }
