@@ -65,7 +65,9 @@ function makeEnv(stored, options = {}) {
   const ui = require('../js/ui.js');
   ui.mount(rootEl, ls);
 
-  const click = (action, attributes = {}) => handlers.click({
+  // `detail` is the click count, as on a real click: 2 is the second click of a double-click.
+  const click = (action, attributes = {}, detail = 1) => handlers.click({
+    detail,
     target: {
       closest: () => ({
         disabled: false,

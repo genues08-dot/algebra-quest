@@ -60,6 +60,15 @@ test('skip counts as wrong, the result lists it, and retake starts over', () => 
   assert.match(env.html(), /Question 1 of 5/);
 });
 
+test('a double-click on skip skips only one question', () => {
+  const env = ready();
+  env.click('start-test');
+  env.click('skip', {}, 1);
+  env.click('skip', {}, 2);
+  assert.match(env.html(), /Question 2 of 5/);
+  assert.equal(stored(env).progress.u1.review.length, 1);
+});
+
 test('quitting the test asks with its own wording', () => {
   const env = ready(null, { confirm: false });
   env.click('start-test');

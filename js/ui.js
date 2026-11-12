@@ -474,7 +474,12 @@
       render();
     },
     'check': checkAnswer,
-    'skip': skipQuestion,
+    // The second click of a double-click (detail 2 or more) is ignored, so it cannot skip
+    // a second question. A key press on the button gives detail 0 and still skips.
+    'skip': function (target, event) {
+      if (event && event.detail > 1) return;
+      skipQuestion();
+    },
     'continue': continueLesson,
     'teach-next': function () {
       if (state.screen !== 'teach') return;
@@ -571,7 +576,7 @@
     var handler = actions[target.getAttribute('data-action')];
     if (!handler) return;
     readBoxes();
-    handler(target);
+    handler(target, event);
   }
 
   function onChange(event) {
