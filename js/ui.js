@@ -44,6 +44,7 @@
     mascotLine: null,    // the mascot's line on the feedback panel, picked when the answer is checked
     mascotError: null,   // the message on the Mascot screen, such as a missing name
     guide: null,         // { level, index } while a level's guide shows
+    mascotDraft: null,   // the text in the Mascot screen's name box, kept across redraws until saved
     // The calculator panel. It lasts until the app closes: starting a lesson does not reset it.
     // The lesson panel and the calculator screen share it.
     // `graphText` is the last text that gave a graph, which the zoom buttons draw again.
@@ -258,7 +259,11 @@
       case 'badges':
         return views.badgesHtml(views.badgesModel(state.save));
       case 'mascot':
-        return views.mascotScreenHtml({ color: mascotSettings().color, name: mascotSettings().name, error: state.mascotError });
+        return views.mascotScreenHtml({
+          color: mascotSettings().color,
+          name: state.mascotDraft !== null ? state.mascotDraft : mascotSettings().name,
+          error: state.mascotError
+        });
       case 'practice':
         return views.practiceHtml(views.homeModel(state.save, today()));
       case 'profile':
@@ -336,7 +341,8 @@
     var spot = rootEl.querySelector('[data-current]');
     if (!spot || typeof spot.scrollIntoView !== 'function') return;
     if (!always && spot.getBoundingClientRect().bottom <= (root.innerHeight || 0)) return;
-    spot.scrollIntoView({ block: 'center', behavior: always ? 'smooth' : 'auto' });
+    var still = typeof root.matchMedia === 'function' && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    spot.scrollIntoView({ block: 'center', behavior: always && !still ? 'smooth' : 'auto' });
   }
 
   function showMessage(title, lines) {
@@ -458,6 +464,11 @@
   // the feedback screen still shows the old answer in a disabled box, which must not carry into
   // the next question.
   function readBoxes() {
+    if (state.screen === 'mascot') {
+      var nameBox = rootEl.querySelector('[data-role="mascot-name"]');
+      if (nameBox) state.mascotDraft = nameBox.value;
+      return;
+    }
     if (state.screen !== 'lesson' && state.screen !== 'calculator') return;
     var answer = rootEl.querySelector(ANSWER_BOX);
     if (answer) state.typedText = answer.value;
@@ -785,6 +796,7 @@
     'open-mascot': function () {
       if (!onTabScreen()) return;
       state.mascotError = null;
+      state.mascotDraft = null;
       show('mascot');
     },
     'mascot-color': function (target) {
@@ -947,8 +959,7 @@
   // Saves the name in the Mascot screen's box. An empty name is not saved.
   function saveMascotName() {
     if (state.screen !== 'mascot') return;
-    var box = rootEl.querySelector('[data-role="mascot-name"]');
-    var name = AQ.mascot.cleanName(box ? box.value : '');
+    var name = AQ.mascot.cleanName(state.mascotDraft !== null ? state.mascotDraft : mascotSettings().name);
     if (name === null) {
       state.mascotError = 'Type a name for your axolotl (up to ' + AQ.mascot.NAME_MAX + ' letters).';
       render('[data-role="mascot-name"]');
@@ -958,6 +969,7 @@
     next.settings.mascot.name = name;
     if (!commit(next)) return;
     state.mascotError = null;
+    state.mascotDraft = null;
     render();
   }
 

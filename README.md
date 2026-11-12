@@ -34,11 +34,11 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 - **Daily goal:** the ring at the top fills with the XP you earn today. The goal starts at 100 XP, about one lesson. Tap **Goal** to change it to 50, 100, 200, or 300 XP.
 - **Hearts:** each lesson starts with 5. A wrong answer costs 1 and shows you the worked solution. At 0 the lesson ends and you can retry it.
 - **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets. The seven dots next to it show the last seven days. A filled dot is a day you finished a lesson, review, or test, and the ringed dot is today.
-- **Badges:** there are 12 to earn, such as finishing a lesson with no mistakes or keeping a 7-day streak. New ones show on the result screen. Tap **Badges** at the bottom of the home screen to see them all and how to earn the rest.
+- **Badges:** there are 12 to earn, such as finishing a lesson with no mistakes or keeping a 7-day streak. New ones show on the result screen. Tap the **Badges** tab to see them all and how to earn the rest.
 - **Review:** every question you miss goes into the Review pile. Answer it right in a Review lesson and it leaves the pile.
 - **Typing answers:** `x = 4`, `x=4`, `4 = x`, and `4` all count. Fractions, decimals, and mixed numbers with the same value all count, so `5/2`, `2.5`, and `2 1/2` match. For two answers, type them in any order, such as `3, -3` or `x = 3 or x = -3`. Type `<=` and `>=` for ≤ and ≥.
 - **Teaching cards:** each lesson opens on a few short cards that teach the idea with a worked example. Tap **Notes** during a lesson to read them again. You come back to the same question.
-- **Calculator:** each question has a calculator button. The **Calculator** button at the bottom of the home screen opens it on its own screen, and **Home** goes back. Some questions say "without graphing" and turn the calculator off.
+- **Calculator:** each question has a calculator button. The **Calculator** card on the **Practice** tab opens it on its own screen, and **Home** goes back. Some questions say "without graphing" and turn the calculator off.
   - **Keys:** type in the box or tap the keys. A key types where the cursor is. **←** deletes and **C** clears the box. **Hide keys** hides the keypad and **Show keys** brings it back. After **=**, typing or a key starts a new calculation, but an operator key such as **+** goes on from `Ans`.
   - **What it takes:** numbers and `+ - * /` (or `× ÷ −`), `^` for powers, `x²`, `√` or `sqrt`, `root(n, x)` for an nth root (such as `root(3, 8)`), `abs`, `log`, `ln`, `!` for factorial, `pi` or `π`, `e`, and `sin cos tan` with their inverses `asin acos atan`. Fractions show a decimal too, such as 11/12 ≈ 0.9166666667.
   - **DEG/RAD:** switches trig between degrees and radians. The line above the keys shows which one is on. It starts in degrees, and the app remembers your choice.
@@ -46,8 +46,8 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
   - **Graphs:** type anything with `x` in it and it draws a graph, with the zeros and turning points marked. Zoom in, zoom out, or reset the view.
 - **Final test:** after you finish every lesson in a unit, the final test unlocks. It has no hints and no feedback while you answer. You need 80% to pass. Passing gives +50 XP. Your best score is kept, and you can retake it. Every question you miss goes into the Review pile.
 - **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the home screen to turn them off. The final test plays no right or wrong sounds.
-- **Your axolotl:** an axolotl mascot cheers you on. It greets you on the home screen, reacts to your answers, explains the teaching cards, and celebrates on the result screens. Tap it on the home screen for a new line. Tap **Mascot** at the bottom of the home screen to pick its color (pink, purple, or blue) and give it a name. It stays quiet during the final test.
-- **Dark mode:** the **Dark mode: on / off** button at the bottom of the home screen switches to a dark theme. The app remembers your choice.
+- **Your axolotl:** an axolotl mascot cheers you on. It greets you on the home screen, reacts to your answers, explains the teaching cards, and celebrates on the result screens. Tap it on the home screen for a new line. On the **Profile** tab, tap **Change color or name** to pick its color (pink, purple, or blue) and give it a name. It stays quiet during the final test.
+- **Dark mode:** the **Dark mode: on / off** button on the **More** tab switches to a dark theme. The app remembers your choice.
 - **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
 
 ## Back up and restore

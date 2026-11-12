@@ -352,9 +352,14 @@ button:disabled { cursor: not-allowed; }
 .level-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.92; }
 .level-title { font-size: 19px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
 .level-notes {
+  display: flex;
   flex: none;
-  width: 44px;
+  align-items: center;
+  gap: 4px;
   height: 44px;
+  padding: 0 10px;
+  color: inherit;
+  font-weight: 800;
   border: 2px solid rgba(255, 255, 255, 0.55);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.18);
@@ -418,7 +423,8 @@ button:disabled { cursor: not-allowed; }
   white-space: nowrap;
 }
 .node-stars { display: flex; gap: 1px; margin-top: 10px; font-size: 17px; line-height: 1; }
-.node-star { color: var(--line-dark); }
+.node-star { color: var(--muted); opacity: 0.45; }
+.node-star-on { opacity: 1; }
 .node-star-on { color: var(--gold-dark); }
 .node-trophy { width: 92px; height: 92px; background: var(--gold); box-shadow: 0 6px 0 var(--gold-dark); font-size: 44px; }
 .node-trophy:active:not(:disabled) { box-shadow: 0 1px 0 var(--gold-dark); }
@@ -432,24 +438,27 @@ button:disabled { cursor: not-allowed; }
   50% { box-shadow: 0 6px 0 var(--lc-dark, var(--accent-dark)), 0 0 0 14px var(--accent-soft); }
 }
 
-/* The mascot beside the current circle, with its line above it. */
-.path-row-axl { margin-top: 76px; }
-.path-axl {
-  position: absolute;
-  bottom: 0;
+/* The mascot beside the current circle, with its line above it. The circle and the mascot share
+   one grid cell and sit on its bottom edge, so the row grows to fit the speech bubble.
+   The selectors carry .mascot so they win over the general mascot rules later in this file. */
+.path-row.path-row-axl { display: grid; grid-template-columns: 100%; justify-content: stretch; align-items: end; }
+.path-row-axl > .path-spot, .path-row-axl > .path-axl { grid-area: 1 / 1; align-self: end; }
+.path-row-axl > .path-spot { justify-self: center; }
+.mascot.path-axl {
+  position: static;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  width: 150px;
+  width: 140px;
   margin: 0;
 }
-.path-axl-left { left: 0; }
-.path-axl-right { right: 0; }
-.path-axl .mascot-img { width: 88px; }
-.path-bubble { flex: none; width: 100%; padding: 8px 10px; font-size: 14px; text-align: center; }
+.mascot.path-axl-left { justify-self: start; }
+.mascot.path-axl-right { justify-self: end; }
+.mascot.path-axl .mascot-img { width: 88px; }
+.mascot-bubble.path-bubble { flex: none; width: 100%; padding: 8px 10px; font-size: 14px; text-align: center; }
 /* The bubble's tail points down at the mascot. */
-.path-bubble::before {
+.mascot-bubble.path-bubble::before {
   top: auto;
   bottom: -9px;
   left: 50%;

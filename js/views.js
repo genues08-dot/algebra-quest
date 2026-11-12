@@ -334,7 +334,7 @@
         '<h2 class="level-title">' + escapeHtml(level.title) + '</h2>' +
       '</div>' +
       (level.hasNotes ? '<button type="button" class="level-notes" data-action="open-guide" data-level="' + index + '"' +
-        ' aria-label="Notes for level ' + (index + 1) + '"><span aria-hidden="true">&#128214;</span></button>' : '') +
+        ' aria-label="Notes for level ' + (index + 1) + '"><span aria-hidden="true">&#128214;</span><span class="level-notes-label" aria-hidden="true">Notes</span></button>' : '') +
     '</div>';
   }
 

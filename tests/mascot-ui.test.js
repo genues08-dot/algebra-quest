@@ -154,3 +154,23 @@ test('result screens show the mascot', () => {
   assert.match(env.html(), /pink-cheer\.png/);
   assert.match(env.html(), /PERFECT! Not a single mistake!/);
 });
+
+test('the name box keeps what was typed when a color is picked or the name is refused', () => {
+  const env = envWith(makeUnit());
+  env.click('open-mascot');
+  env.nameBox.value = 'Bubbles';
+  env.click('mascot-color', { 'data-color': 'purple' });
+  assert.match(env.html(), /data-role="mascot-name"[^>]*value="Bubbles"/);
+  env.click('mascot-name');
+  assert.equal(stored(env).settings.mascot.name, 'Bubbles');
+
+  env.nameBox.value = '';
+  env.key('Enter', 'mascot-name');
+  assert.match(env.html(), /Type a name/);
+  assert.match(env.html(), /data-role="mascot-name"[^>]*value=""/);
+  assert.equal(stored(env).settings.mascot.name, 'Bubbles');
+
+  env.click('home');
+  env.click('open-mascot');
+  assert.match(env.html(), /data-role="mascot-name"[^>]*value="Bubbles"/);
+});
