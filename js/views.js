@@ -126,7 +126,7 @@
     var days = model.streak === 1 ? 'day' : 'days';
     var dots = model.week.map(function (day) {
       return '<span class="day' + (day.studied ? ' day-studied' : '') + (day.today ? ' day-today' : '') + '"' +
-        ' role="img" aria-label="' + weekdayName(day.date) + ': ' + (day.studied ? 'studied' : 'not studied') + '">' +
+        ' role="img" aria-label="' + weekdayName(day.date) + (day.today ? ', today' : '') + ': ' + (day.studied ? 'studied' : 'not studied') + '">' +
         '<span class="day-dot"></span><span class="day-letter">' + day.letter + '</span>' +
       '</span>';
     }).join('');

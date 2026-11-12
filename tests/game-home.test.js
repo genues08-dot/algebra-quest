@@ -44,7 +44,8 @@ test('only today and the 13 days before it are kept', () => {
   save.days = {
     '2026-10-29': { xp: 5, studied: true },
     '2026-10-30': { xp: 7, studied: true },
-    '2026-11-11': { xp: 9, studied: false }
+    '2026-11-11': { xp: 9, studied: false },
+    '2026-12-01': { xp: 200, studied: true }
   };
   playLesson(save, unit, 'a2', ['1/2'], TODAY);
   assert.deepEqual(Object.keys(save.days).sort(), ['2026-10-30', '2026-11-11', TODAY]);

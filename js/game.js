@@ -111,11 +111,13 @@
     return Boolean(save.days) && Object.prototype.hasOwnProperty.call(save.days, date);
   }
 
-  // Today's entry, made if needed. Days older than DAYS_KEPT are dropped whenever a day is written.
+  // Today's entry, made if needed. Whenever a day is written, days older than DAYS_KEPT are dropped,
+  // and so are days after today (left by a PC clock that was set ahead).
   function dayEntry(save, today) {
     if (!save.days) save.days = {};
     Object.keys(save.days).forEach(function (date) {
-      if (dayDiff(date, today) >= CONSTANTS.DAYS_KEPT) delete save.days[date];
+      var age = dayDiff(date, today);
+      if (age >= CONSTANTS.DAYS_KEPT || age < 0) delete save.days[date];
     });
     if (!hasDay(save, today)) save.days[today] = { xp: 0, studied: false };
     return save.days[today];

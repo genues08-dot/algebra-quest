@@ -49,7 +49,7 @@ test('week strip: seven days with letters, studied days filled, today marked', (
   assert.equal(count(html, 'day-studied'), 2);
   assert.equal(count(html, 'day-today'), 1);
   assert.match(html, /<span class="day-letter">F<\/span>/);
-  assert.match(html, /aria-label="Thursday: studied"/);
+  assert.match(html, /aria-label="Thursday, today: studied"/);
   assert.match(html, /aria-label="Friday: not studied"/);
 });
 
