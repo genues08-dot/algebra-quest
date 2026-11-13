@@ -1,4 +1,4 @@
-// Startup for the online app (index.html). It replaces main.js:
+// Startup for the online app (index.html):
 // - The login screen comes first. After login the app (ui.js) runs unchanged on the storage
 //   object from js/cloud-sync.js, which keeps the save in the cloud with a copy on this device
 //   and keeps the player's leaderboard row up to date.

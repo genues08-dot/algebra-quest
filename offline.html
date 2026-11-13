@@ -2,27 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Algebra Quest (offline)</title>
+  <title>Algebra Quest</title>
   <link rel="icon" href="icon.ico">
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- The offline PC version was retired on 2026-11-13; the player moved to the online app with a new
+       account. The pinned PC shortcut still opens this page from file://, so here it erases the old
+       PC progress (only Algebra Quest's own keys) and opens the online app. On the website it just
+       goes to the app. -->
+  <script>
+    (function () {
+      var ONLINE = 'https://genues08-dot.github.io/algebra-quest/';
+      if (location.protocol !== 'file:') {
+        location.replace('./');
+        return;
+      }
+      try {
+        Object.keys(localStorage).forEach(function (key) {
+          if (key.indexOf('algebraQuest.') === 0) localStorage.removeItem(key);
+        });
+      } catch (e) { /* storage blocked: nothing to erase */ }
+      location.replace(ONLINE);
+    })();
+  </script>
 </head>
 <body>
-  <div id="app"></div>
-
-  <!-- Classic scripts, in dependency order. Module scripts do not load from file:// URLs. -->
-  <script src="js/checker.js"></script>
-  <script src="js/mathexpr.js"></script>
-  <script src="js/units.js"></script>
-  <script src="js/plot.js"></script>
-  <script src="js/calc.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/rewards.js"></script>
-  <script src="js/mascot.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/sound.js"></script>
-  <script src="js/views.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/main.js"></script>
+  <p>Opening Algebra Quest&hellip; If nothing happens, <a href="https://genues08-dot.github.io/algebra-quest/">open it here</a>.</p>
 </body>
 </html>

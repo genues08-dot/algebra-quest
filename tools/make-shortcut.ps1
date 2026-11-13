@@ -1,5 +1,6 @@
 # Creates "Algebra Quest.lnk" in the project root.
-# The shortcut opens offline.html (the PC app, which needs no internet) in its own Edge window, with no tabs or address bar.
+# The shortcut opens offline.html in its own Edge window, with no tabs or address bar. Since the offline
+# version was retired, offline.html erases the old PC progress and opens the online app.
 # Run this again if the project folder moves: the paths are rebuilt from this script's location.
 $root = Split-Path -Parent $PSScriptRoot
 

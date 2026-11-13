@@ -1,11 +1,8 @@
 # Algebra Quest
 
-A study app for algebra that works like Duolingo. You give it a unit, and it turns the unit into levels with XP, hearts, a daily streak, and a review pile.
+A study app for Algebra 2 that works like Duolingo. Units 1 to 5 of the course are built in, each turned into levels with XP, hearts, a daily streak, and a review pile.
 
-It comes in two versions:
-
-- **Online:** https://genues08-dot.github.io/algebra-quest/. Log in with a username and password, keep your progress on any device, and race your friends on the leaderboard. Install it to your home screen like an app.
-- **Offline:** `offline.html` in this folder runs on this PC with no internet and no account. Its progress stays on this PC.
+Play it at https://genues08-dot.github.io/algebra-quest/. Log in with a username and password, keep your progress on any device, and race your friends on the leaderboard. Install it to your home screen like an app.
 
 ## Play online
 
@@ -21,7 +18,7 @@ It comes in two versions:
 - **Leaderboard:** the **Leaders** tab ranks everyone by XP. **This week** starts over every Monday. **All time** counts all your XP. Your row is highlighted. On the online app, **Badges** open from your **Profile**.
 - **Account:** **More** shows who is logged in, with **Log out** and **Delete my account**. Deleting removes your progress, your leaderboard spot, and your login for good. If it asks you to log in again first, log out, log back in, and delete within a few minutes.
 - **Forgot your password?** It can't be reset by email, because there is no email. Ask the owner (see below).
-- **Moving your PC progress online:** in the offline app, open **More**, then **Backup**. Then in the online app, open **More**, then **Import**, and pick that backup file.
+- **Units:** every player gets Units 1 to 5, and new players start on Unit 5. Pick a unit from the **Unit** list at the top of Home. When a unit is added or updated, everyone gets it the next time they open the app, and their progress stays.
 
 ## Run the online app (owner)
 
@@ -31,12 +28,13 @@ The website is this folder, served by GitHub Pages from the `main` branch of `ge
 - **Remove a player from the leaderboard:** in the Firebase console, open **Firestore Database**, then `players`, and delete their row. Delete their login under **Authentication** too, or the row comes back when they play.
 - **Database rules:** `firestore.rules` holds them. After changing the file, paste it into the console under **Firestore Database**, then **Rules**, then click **Publish**.
 - **Publish a change:** commit it to `main` and push. GitHub Pages updates the site within a few minutes, and players get it the next time they open the app online.
-- **Add a unit for everyone:** make the unit file as below, then run `node tools/make-phone-units.js units/<every unit>.json` to rebuild `js/phone-units.js`, and publish.
+- **Add a unit for everyone:** make the unit file as below, then run `node tools/make-phone-units.js` with every unit file, Unit 1 first, to rebuild `js/phone-units.js`, and publish. New players start on the last unit listed.
 
-## Open and pin the offline version
+## The PC shortcut
 
-1. Open this folder and double-click **Algebra Quest** (the purple icon with a white x). It opens `offline.html`.
-2. To pin it, right-click that shortcut and pick **Pin to taskbar**.
+The **Algebra Quest** shortcut in this folder (the purple icon with a white x, pinned to the taskbar) opens the online app in its own Edge window. It goes through `offline.html`, which also erases the progress of the old offline version, retired on 2026-11-13.
+
+To pin it, right-click that shortcut and pick **Pin to taskbar**.
 
 If the shortcut ever stops working, rebuild it. Right-click `tools\make-shortcut.ps1` and pick **Run with PowerShell**, or run this in the folder:
 
@@ -51,21 +49,19 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
 1. Take photos of every page of your packet. Lay each page flat, use good light, and get the whole page in the shot.
 2. Put the photos in a new folder inside `packets`, for example `packets\unit-3\`.
 3. Open Claude Code in this folder and say: `make a unit from packets/unit-3`.
-4. Claude writes a unit file into the `units` folder and tells you its name.
-5. In the app, click **Import** and pick that file. The unit shows up in the Unit list.
-
-`units\sample-unit.json` is a practice unit on one-step and two-step equations. Import it to try the app.
+4. Claude writes a unit file into the `units` folder, checks it, and builds it into the app.
+5. Once you say so, Claude publishes it. Everyone gets the unit the next time they open the app.
 
 ## How it works
 
-- **Getting around:** the bar at the bottom switches between **Home**, **Quests** (daily quests, week rewards, and the weekly challenge), **Practice** (your missed questions, the final test, Unit Rewind, Speed Round, and the calculator), **Badges** (**Leaders** in the online app), **Profile** (your axolotl, rank, daily goal, week, stats, the Shop, and Badges), and **More** (Import, Backup, Sound, Dark mode, Remove this unit, and your account in the online app). The bar at the top of Home shows your rank, streak, XP today, gems, and questions to review. Tap any of them for more. A red dot on Quests means a reward is waiting.
+- **Getting around:** the bar at the bottom switches between **Home**, **Quests** (daily quests, week rewards, and the weekly challenge), **Practice** (your missed questions, the final test, Unit Rewind, Speed Round, and the calculator), **Leaders** (the leaderboard), **Profile** (your axolotl, rank, daily goal, week, stats, the Shop, and Badges), and **More** (Sound, Dark mode, and your account). The bar at the top of Home shows your rank, streak, XP today, gems, and questions to review. Tap any of them for more. A red dot on Quests means a reward is waiting.
 - **Levels and lessons:** each unit is a winding path of lesson circles, grouped under a colored banner for each level. Tap 📖 on a banner to read that level's notes. A finished lesson shows 1 to 3 stars: 3 for no mistakes, 2 for at least 70% right the first time. Finish every lesson in a level to unlock the next one. You can replay any finished lesson. The glowing circle marked **Start** is your next lesson, and the trophy at the end is the final test.
 - **Continue:** the big **Continue** button starts your next lesson. When every lesson is done, it starts the final test, and after you pass, it starts a review of the questions you missed.
 - **XP and rank:** each correct answer is 10 XP. Finishing a lesson adds 20, and a lesson with no mistakes adds 10 more. Every 100 XP raises your rank. Ranks have titles, from Rookie (ranks 1–2) up to Algebra Legend (rank 30 and up). When a lesson raises your rank, its result screen says so.
 - **Daily goal:** the ring at the top fills with the XP you earn today. The goal starts at 100 XP, about one lesson. Tap **Goal** to change it to 50, 100, 200, or 300 XP.
 - **Hearts:** each lesson starts with 5. A wrong answer costs 1 and shows you the worked solution. At 0 the lesson ends and you can retry it.
 - **Streak:** finish at least one lesson a day to keep it going. Miss a whole day and it resets. The seven dots next to it show the last seven days. A filled dot is a day you finished a lesson, review, or test, and the ringed dot is today.
-- **Badges:** there are 12 to earn, such as finishing a lesson with no mistakes or keeping a 7-day streak. New ones show on the result screen. Tap the **Badges** tab, or **Badges** on Profile, to see them all and how to earn the rest.
+- **Badges:** there are 12 to earn, such as finishing a lesson with no mistakes or keeping a 7-day streak. New ones show on the result screen. Tap **Badges** on Profile to see them all and how to earn the rest.
 - **Review:** every question you miss goes into the Review pile. Answer it right in a Review lesson and it leaves the pile.
 - **Gems:** earn 💎 by opening the chest on each level's path (after its second lesson), finishing daily quests, claiming a week reward each day you study, and beating last week's XP. Spend them in the **Shop** (tap 💎 at the top of Home, or **Shop** on Profile).
 - **Shop:** a streak freeze (50 💎, hold up to 2) saves your streak on a day you miss. Hats (party hat, beanie, bow, grad cap, wizard hat, crown) go on your axolotl everywhere. Tap **Wear** or **Take off**.
@@ -81,24 +77,10 @@ If you move this folder, rebuild the shortcut, then unpin the old taskbar icon a
   - **Ans and history:** `Ans` stands for your last number answer, so `Ans + 1` adds 1 to it. History lists your last 10 results, newest first. Tap one to put it back in the box without running it.
   - **Graphs:** type anything with `x` in it and it draws a graph, with the zeros and turning points marked. Zoom in, zoom out, or reset the view.
 - **Final test:** after you finish every lesson in a unit, the final test unlocks. It has no hints and no feedback while you answer. You need 80% to pass. Passing gives +50 XP. Your best score is kept, and you can retake it. Every question you miss goes into the Review pile.
-- **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the home screen to turn them off. The final test plays no right or wrong sounds.
+- **Sound:** short sounds play for right and wrong answers and when you finish. Use the **Sound: on / off** button on the **More** tab to turn them off. The final test plays no right or wrong sounds.
 - **Your axolotl:** an axolotl mascot cheers you on. It greets you on the home screen, reacts to your answers, explains the teaching cards, and celebrates on the result screens. Tap it on the home screen for a new line. On the **Profile** tab, tap **Change color or name** to pick its color (pink, purple, or blue) and give it a name. It stays quiet during the final test.
 - **Dark mode:** the **Dark mode: on / off** button on the **More** tab switches to a dark theme. The app remembers your choice.
 - **One window at a time:** keep only one Algebra Quest window open. If two are open, the app notices and loads the newer progress instead of saving over it.
-
-## Back up and restore
-
-- **Back up:** click **Backup**. A file named `algebra-quest-backup-YYYY-MM-DD.json` lands in your Downloads folder. It holds your units and all your progress.
-- **Restore:** click **Import** and pick a backup file. The app asks first, because restoring replaces everything you have now.
-
-## What resets your progress
-
-In the online app, your progress is in your account, so none of the below erases it. These are about the offline version.
-
-- **Clearing Edge's browsing data.** The app saves your progress inside Microsoft Edge. If you clear "Cookies and other site data" in Edge, your progress is erased. Make a backup first.
-- **A different PC or Windows account.** Progress does not follow you. Make a backup on the old one and import it on the new one.
-
-Moving this folder does not reset your progress.
 
 ## For developers
 

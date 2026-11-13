@@ -1,5 +1,7 @@
 # Online play: accounts, cloud save, leaderboard, and home-screen install: design
 
+**Update 2026-11-13:** the offline version was retired, and Import and Backup were removed. Units 1 to 5 are built in (`js/phone-units.js`, `storage.syncUnits`). `offline.html` now erases the old PC progress and opens this app.
+
 On 2026-11-12 the user asked to turn Algebra Quest into something they can add to their home screen and share with friends, with a leaderboard and accounts that use a username and password. They chose:
 
 - **Hosting:** GitHub Pages, from the public repo `genues08-dot/algebra-quest`.

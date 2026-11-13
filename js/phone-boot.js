@@ -1,6 +1,6 @@
 // Startup for the phone build (phone.html), which runs as a page on claude.ai.
 // That page frame refuses confirm() and downloads, and its localStorage may be missing,
-// so this file replaces main.js:
+// so this file starts the app:
 // - The save is kept in the viewer's private claude.ai storage (the `db` capability),
 //   with a localStorage copy when the browser allows one.
 // - confirm() becomes "tap again to confirm".

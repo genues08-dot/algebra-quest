@@ -1,9 +1,10 @@
 # Algebra Quest
 
-Offline Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-11-algebra-quest-design.md
+Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-11-algebra-quest-design.md
 
 - Tests: `node --test "tests/*.test.js"`
-- No npm packages, no build step, no ES modules. `offline.html` runs from file://.
+- No npm packages, no build step, no ES modules (classic scripts on a global `AQ`).
+- The offline PC version was retired on 2026-11-13. `offline.html`, which the pinned PC shortcut opens, only erases the old PC progress and opens the online app.
 - `index.html` is the online app, served by GitHub Pages from `main` (`genues08-dot/algebra-quest`), with Firebase (project `algebra-quest1`) for logins, saves, and the leaderboard. Spec: docs/superpowers/specs/2026-11-12-online-design.md
 - The repo is public. Never commit packet photos (`packets/` is ignored), passwords, or personal details.
 - Units are built into the app; there is no Import or Backup button. When a unit is added or changed, rebuild `js/phone-units.js` with `node tools/make-phone-units.js` and every unit file in unit order (Unit 1 first). New players start on the last file listed, so it should be the unit the class is on now. On its next start, every save gets missing units and the new version of changed ones, keeping progress (`storage.syncUnits`).
