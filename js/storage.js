@@ -182,7 +182,7 @@
   }
 
   function serialize(save) {
-    return JSON.stringify(save, null, 2);
+    return JSON.stringify(save);
   }
 
   // Never writes. Data that cannot be used is handed back as `raw` so the user can keep a copy.
@@ -213,11 +213,11 @@
     return has(save.units, unitId);
   }
 
-  // Adds or replaces a unit and makes it current.
-  // Replacing keeps completed lessons, stars, and review entries whose ids still exist in the new unit.
-  function addUnit(save, unit) {
+  // The progress a unit keeps when its content changes: completed lessons, stars, and review entries
+  // whose ids still exist in the unit, the test score, chests for levels that still exist, and the
+  // speed round best. old is the unit's progress so far, or null.
+  function keptProgress(old, unit) {
     var kept = { completedLessons: [], review: [], testBest: null, stars: {}, chests: [] };
-    var old = hasUnit(save, unit.id) ? save.progress[unit.id] : null;
     if (old) {
       var lessonIds = AQ.units.lessonIds(unit);
       var questionIds = AQ.units.questionIds(unit);
@@ -230,23 +230,33 @@
       kept.chests = (old.chests || []).filter(function (index) { return Number(index) < unit.levels.length; });
       if (typeof old.speedBest === 'number') kept.speedBest = old.speedBest;
     }
+    return kept;
+  }
+
+  // Adds or replaces a unit and makes it current. Progress the save already has for the unit is
+  // kept, even while the unit itself is missing: a page with older built-in units drops the ones it
+  // does not know, and their progress waits in the save until a newer page adds them back.
+  function addUnit(save, unit) {
+    save.progress[unit.id] = keptProgress(has(save.progress, unit.id) ? save.progress[unit.id] : null, unit);
     save.units[unit.id] = unit;
-    save.progress[unit.id] = kept;
     save.currentUnitId = unit.id;
   }
 
   // Puts the units built into the app (js/phone-units.js) into a save. A missing unit is added, and
-  // a changed one is replaced the way addUnit does, keeping progress. The current unit stays; a
-  // save with none starts on the last built-in unit, the one the class is on now.
-  // Returns true when the save changed.
+  // a changed one is replaced the way addUnit does, keeping progress. Every built-in unit's progress
+  // is trimmed to ids the unit still has: the online app swaps in new unit content before this runs,
+  // so a change can't be told apart from no change here. The current unit stays; a save with none
+  // starts on the last built-in unit, the one the class is on now. Returns true when the save changed.
   function syncUnits(save, builtIn) {
     var current = save.currentUnitId;
     var changed = false;
     builtIn.forEach(function (unit) {
-      if (hasUnit(save, unit.id) && JSON.stringify(save.units[unit.id]) === JSON.stringify(unit)) return;
-      if (!AQ.units.validate(unit).ok) return;
-      addUnit(save, unit);
-      changed = true;
+      var same = hasUnit(save, unit.id) && JSON.stringify(save.units[unit.id]) === JSON.stringify(unit);
+      if (!same && !AQ.units.validate(unit).ok) return;
+      var before = JSON.stringify(save.progress[unit.id]);
+      if (same) save.progress[unit.id] = keptProgress(save.progress[unit.id], unit);
+      else addUnit(save, unit);
+      if (!same || JSON.stringify(save.progress[unit.id]) !== before) changed = true;
     });
     if (current === null || !hasUnit(save, current)) {
       var present = builtIn.filter(function (unit) { return hasUnit(save, unit.id); });

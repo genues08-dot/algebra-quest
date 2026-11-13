@@ -73,6 +73,11 @@
           if (unit) save.units[id] = unit;
           else delete save.units[id];
         });
+        // A unit this page does not have is dropped for now; its progress stays for a newer page.
+        if (save.currentUnitId != null && !save.units[save.currentUnitId]) {
+          var left = Object.keys(save.units);
+          save.currentUnitId = left.length > 0 ? left[left.length - 1] : null;
+        }
       }
       return JSON.stringify(save);
     } catch (e) {

@@ -248,7 +248,8 @@
   }
 
   // Right after an update on a weak signal, the page can hold files from two versions.
-  if (!AQ.cloudSync || !AQ.online || !AQ.ui) {
+  // A ui.js with importText is from before the units were built in, and expects the old page.
+  if (!AQ.cloudSync || !AQ.online || !AQ.ui || !AQ.storage.syncUnits || AQ.ui.importText) {
     showProblem('Algebra Quest is updating', 'Close it and open it again to finish.');
     return;
   }

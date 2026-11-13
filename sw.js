@@ -3,7 +3,7 @@
 // - The Firebase scripts: from the cache first, since their URLs name the version.
 // - Everything else, such as Firebase's own requests, is left alone.
 // tests/sw.test.js checks that FILES lists every file index.html loads.
-var CACHE = 'algebra-quest-v2';
+var CACHE = 'algebra-quest-v3';
 var FIREBASE = 'https://www.gstatic.com/firebasejs/13.3.0/';
 var FILES = [
   './',

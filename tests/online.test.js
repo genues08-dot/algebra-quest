@@ -153,3 +153,26 @@ test('bundled units are packed to a marker and unpacked to the newest copy', () 
   assert.equal(JSON.parse(online.unpackSave(packed, [])).units.u1, undefined);
   assert.equal(online.packSave('not json', [unit]), 'not json');
 });
+
+test('a page without a built-in unit drops it, keeps its progress, and moves off it', () => {
+  const storage = require('../js/storage.js');
+  const named = (id, title) => { const unit = makeUnit(); unit.id = id; unit.title = title; return unit; };
+  const u1 = named('u1', 'Unit 1');
+  const u5 = named('u5', 'Unit 5');
+  const save = makeSave(u5);
+  storage.addUnit(save, u1);
+  save.progress.u1.completedLessons = ['a1'];
+  const packed = online.packSave(JSON.stringify(save), [u1, u5]);
+
+  // An older page that only knows Unit 5.
+  const old = JSON.parse(online.unpackSave(packed, [u5]));
+  assert.equal(old.units.u1, undefined);
+  assert.deepEqual(old.progress.u1.completedLessons, ['a1']);
+  assert.equal(old.currentUnitId, 'u5');
+  assert.equal(storage.isValidSave(old), true);
+
+  // A newer page adds Unit 1 back with its progress.
+  storage.syncUnits(old, [u1, u5]);
+  assert.deepEqual(old.progress.u1.completedLessons, ['a1']);
+  assert.equal(old.currentUnitId, 'u5');
+});

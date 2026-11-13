@@ -103,6 +103,26 @@ test('syncUnits: a changed unit is replaced, keeping progress for lessons that s
   assert.equal(save.currentUnitId, 'u5');
 });
 
+test('syncUnits: progress ids an unchanged unit no longer has are dropped', () => {
+  const unit = named('u5', 'Unit 5');
+  const save = makeSave(unit);
+  save.progress.u5.review = ['q1', 'gone'];
+  save.progress.u5.completedLessons = ['a1', 'old-lesson'];
+  assert.equal(storage.syncUnits(save, [unit]), true);
+  assert.deepEqual(save.progress.u5.review, ['q1']);
+  assert.deepEqual(save.progress.u5.completedLessons, ['a1']);
+  assert.equal(storage.syncUnits(save, [unit]), false);
+});
+
+test('addUnit keeps progress the save already has for a unit that is missing', () => {
+  const save = storage.newSave();
+  save.progress.u1 = { completedLessons: ['a1'], review: [], testBest: 80, stars: { a1: 3 }, chests: [] };
+  storage.addUnit(save, makeUnit());
+  assert.deepEqual(save.progress.u1.completedLessons, ['a1']);
+  assert.equal(save.progress.u1.testBest, 80);
+  assert.deepEqual(save.progress.u1.stars, { a1: 3 });
+});
+
 test('syncUnits: units that are not built in stay, and a broken built-in unit is skipped', () => {
   const save = makeSave(named('mine', 'My unit'));
   const broken = named('bad', 'Broken');

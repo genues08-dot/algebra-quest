@@ -145,7 +145,7 @@
       queued = null;
       if (save === cloudSave) return;
       if (byteLength(save) > MAX_BYTES) {
-        warn('size', 'Your progress is too big to save online. Remove a unit you imported (More, then Remove this unit).');
+        warn('size', 'Your progress is too big to save online, so it is saved on this device only.');
         return;
       }
       var doc = { save: save, rev: newRev(), base: cloudRev };
