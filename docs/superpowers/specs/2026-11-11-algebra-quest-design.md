@@ -234,6 +234,8 @@ The app keeps one `localStorage` key, `algebraQuest.v1`:
 
 The output is `units/<unit-id>.json`, which the user imports with the Import button.
 
+**Update 2026-11-12:** the Import and Backup buttons were removed. Units are built into the app through `js/phone-units.js` (see CLAUDE.md), and `storage.syncUnits` adds or updates them in every save when the app starts.
+
 ## 11. Error handling
 
 - **Import file that is not valid JSON:** "This file isn't a valid unit or backup." The save is unchanged.

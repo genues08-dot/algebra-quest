@@ -1,6 +1,7 @@
 // Writes js/phone-units.js, the units built into the online app (index.html) and the phone page
 // (phone.html).
 // Usage: node tools/make-phone-units.js units/<unit>.json [more unit files...]
+// List the units in order. A new save starts on the last one, the unit the class is on now.
 'use strict';
 
 const fs = require('node:fs');

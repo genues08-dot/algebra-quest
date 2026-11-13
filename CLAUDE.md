@@ -6,9 +6,9 @@ Offline Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-1
 - No npm packages, no build step, no ES modules. `offline.html` runs from file://.
 - `index.html` is the online app, served by GitHub Pages from `main` (`genues08-dot/algebra-quest`), with Firebase (project `algebra-quest1`) for logins, saves, and the leaderboard. Spec: docs/superpowers/specs/2026-11-12-online-design.md
 - The repo is public. Never commit packet photos (`packets/` is ignored), passwords, or personal details.
-- When a unit is added or changed, rebuild `js/phone-units.js` with `node tools/make-phone-units.js` and every unit file, so the online app gets it.
+- Units are built into the app; there is no Import or Backup button. When a unit is added or changed, rebuild `js/phone-units.js` with `node tools/make-phone-units.js` and every unit file in unit order (Unit 1 first). New players start on the last file listed, so it should be the unit the class is on now. On its next start, every save gets missing units and the new version of changed ones, keeping progress (`storage.syncUnits`).
 - When the online app gains or renames a file, add it to `FILES` in `sw.js` and raise `CACHE`. `tests/sw.test.js` checks the list.
-- Making a unit from packet photos: follow spec section 10 and write `units/<unit-id>.json`. Then run `node tools/validate-unit.js units/<unit-id>.json` and fix every error before telling the user to import it.
+- Making a unit from packet photos: follow spec section 10 and write `units/<unit-id>.json`. Then run `node tools/validate-unit.js units/<unit-id>.json` and fix every error before adding it to `js/phone-units.js`.
 - The student is in Algebra 2. Their packets set the content and level.
 
 ## Choosing typed or multiple choice
