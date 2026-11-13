@@ -65,10 +65,11 @@ test('Axl stands by the next lesson, else the trophy, else the last lesson', () 
   assert.match(noTest, /data-action="jump"/);
 });
 
-test('home with no unit shows Axl and a big Import button', () => {
+test('home with no unit shows Axl and a note, with no Import button', () => {
   const html = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
   assert.match(html, /data-action="mascot-tap"/);
-  assert.match(html, /data-action="import"[^>]*>Import a unit to start</);
+  assert.match(html, /No units yet./);
+  assert.doesNotMatch(html, /data-action="import"/);
   assert.doesNotMatch(html, /data-action="jump"/);
 });
 
@@ -80,7 +81,7 @@ test('the tab buttons switch screens, and Home comes back', () => {
   env.click('open-profile');
   assert.match(env.html(), /class="profile-stats"/);
   env.click('open-more');
-  assert.match(env.html(), /Remove this unit/);
+  assert.match(env.html(), /Dark mode:/);
   env.click('open-badges');
   assert.match(env.html(), /badges-screen/);
   env.click('home');

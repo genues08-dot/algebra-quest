@@ -136,15 +136,7 @@
     if (raw) memory[KEY] = raw;
     if (docRef && raw) lastWritten = pack(raw);
     app.innerHTML = '';
-    AQ.ui.mount(app, store);
-
-    var saved = null;
-    try { saved = JSON.parse(store.getItem(KEY)); } catch (e) { saved = null; }
-    if (saved && saved.units) {
-      BUNDLED.forEach(function (unit) {
-        if (!saved.units[unit.id]) AQ.ui.importText(JSON.stringify(unit));
-      });
-    }
+    AQ.ui.mount(app, store, { units: BUNDLED });
     if (note) toast(note, 8000);
   }
 

@@ -48,7 +48,7 @@ test('homeModel', () => {
     units: [], currentUnitId: null, reviewCount: 0, levels: [], test: null, next: null,
     soundOn: true, darkOn: false, badgeCount: 0, badgeTotal: 12,
     gems: 0, freezes: 0, bestCombo: 0, claimable: 0, finishedLessons: 0, speedBest: null,
-    mascot: { color: 'pink', name: 'Axl', line: "Hi, I'm Axl! Import a unit and let's crush some algebra!", hat: null }
+    mascot: { color: 'pink', name: 'Axl', line: "Hi, I'm Axl! Let's crush some algebra!", hat: null }
   });
 });
 
@@ -65,13 +65,13 @@ test('homeHtml with a unit', () => {
   assert.doesNotMatch(tag(html, 'data-lesson-id="a2"'), /disabled/);
   assert.match(tag(html, 'data-lesson-id="b1"'), /disabled/);
   assert.doesNotMatch(tag(views.practiceHtml(model), 'data-action="start-review"'), /disabled/);
-  for (const action of ['import', 'backup', 'remove-unit']) assert.match(views.moreHtml(model), new RegExp('data-action="' + action + '"'));
+  for (const action of ['import', 'backup', 'remove-unit']) assert.doesNotMatch(views.moreHtml(model), new RegExp('data-action="' + action + '"'));
 });
 
 test('homeHtml with no units and with an empty review pile', () => {
   const empty = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
-  assert.match(empty, /Import a unit to start/);
-  assert.match(empty, /data-action="import"/);
+  assert.match(empty, /No units yet./);
+  assert.doesNotMatch(empty, /data-action="import"/);
   assert.doesNotMatch(empty, /data-action="start-review"/);
   assert.doesNotMatch(views.practiceHtml(views.homeModel(storage.newSave(), TODAY)), /data-action="start-review"/);
   assert.doesNotMatch(views.moreHtml(views.homeModel(storage.newSave(), TODAY)), /remove-unit/);

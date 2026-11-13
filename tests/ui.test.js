@@ -81,3 +81,34 @@ test('progress saved by another window is not overwritten', () => {
   env.click('home');
   assert.match(env.html(), /Rank 10/);
 });
+
+test('the built-in units are added when the app opens, in unit order, starting on the last one', () => {
+  const named = (id, title) => { const unit = makeUnit(); unit.id = id; unit.title = title; return unit; };
+  const builtIn = [named('u1', 'Unit 1: Equations'), named('u2', 'Unit 2: Lines'), named('u10', 'Unit 10: Trig')];
+  const env = makeEnv(null, { units: builtIn });
+  const options = [...env.html().matchAll(/<option value="([^"]+)"( selected)?>/g)].map(m => m[1] + (m[2] ? '*' : ''));
+  assert.deepEqual(options, ['u1', 'u2', 'u10*']);
+  const saved = JSON.parse(env.ls.data[KEY]);
+  assert.deepEqual(Object.keys(saved.units), ['u1', 'u2', 'u10']);
+  assert.doesNotMatch(env.html(), /data-action="import"/);
+});
+
+test('opening the app keeps the current unit and adds new built-in ones', () => {
+  const named = (id, title) => { const unit = makeUnit(); unit.id = id; unit.title = title; return unit; };
+  const save = makeSave(named('u5', 'Unit 5: Polynomials'));
+  save.progress.u5.completedLessons = ['a1'];
+  const env = makeEnv(storage.serialize(save), { units: [named('u1', 'Unit 1: Equations'), named('u5', 'Unit 5: Polynomials')] });
+  const saved = JSON.parse(env.ls.data[KEY]);
+  assert.equal(saved.currentUnitId, 'u5');
+  assert.deepEqual(saved.progress.u5.completedLessons, ['a1']);
+  assert.ok(saved.units.u1);
+  assert.match(env.html(), /<option value="u5" selected>/);
+});
+
+test('Start fresh gives a save with the built-in units', () => {
+  const env = makeEnv('{}', { units: [makeUnit()] });
+  env.click('start-fresh');
+  const saved = JSON.parse(env.ls.data[KEY]);
+  assert.deepEqual(Object.keys(saved.units), ['u1']);
+  assert.equal(saved.xp, 0);
+});

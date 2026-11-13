@@ -128,7 +128,7 @@ test('Profile counts badges, and More has the dark mode button', () => {
   assert.match(more(richSave()), /data-action="toggle-theme"[^]*?Dark mode: off</);
   assert.match(more(richSave(save => { save.settings.theme = 'dark'; })), /data-action="toggle-theme"[^]*?Dark mode: on</);
   const empty = home(storage.newSave());
-  for (const action of ['open-badges', 'open-profile', 'open-more', 'import']) {
+  for (const action of ['open-badges', 'open-profile', 'open-more']) {
     assert.match(empty, new RegExp('data-action="' + action + '"'));
   }
   assert.doesNotMatch(empty, /data-action="resume"/);

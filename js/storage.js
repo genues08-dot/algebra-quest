@@ -1,4 +1,4 @@
-// Save data: its shape, loading, saving, importing units and backups.
+// Save data: its shape, loading, saving, and the units built into the app.
 // The storage object (localStorage in the app, a fake in tests) is always passed in.
 (function (root) {
   'use strict';
@@ -11,8 +11,6 @@
   }
 
   var KEY = 'algebraQuest.v1';
-  var BAD_FILE_MESSAGE = "This file isn't a valid unit or backup.";
-  var MAX_IMPORT_ERRORS = 5;
   var THEMES = ['light', 'dark'];
   var DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -237,40 +235,28 @@
     save.currentUnitId = unit.id;
   }
 
-  // Deletes a unit and its progress. XP and streak stay.
-  function removeUnit(save, unitId) {
-    delete save.units[unitId];
-    delete save.progress[unitId];
-    if (save.currentUnitId === unitId) {
-      var remaining = Object.keys(save.units);
-      save.currentUnitId = remaining.length > 0 ? remaining[0] : null;
+  // Puts the units built into the app (js/phone-units.js) into a save. A missing unit is added, and
+  // a changed one is replaced the way addUnit does, keeping progress. The current unit stays; a
+  // save with none starts on the last built-in unit, the one the class is on now.
+  // Returns true when the save changed.
+  function syncUnits(save, builtIn) {
+    var current = save.currentUnitId;
+    var changed = false;
+    builtIn.forEach(function (unit) {
+      if (hasUnit(save, unit.id) && JSON.stringify(save.units[unit.id]) === JSON.stringify(unit)) return;
+      if (!AQ.units.validate(unit).ok) return;
+      addUnit(save, unit);
+      changed = true;
+    });
+    if (current === null || !hasUnit(save, current)) {
+      var present = builtIn.filter(function (unit) { return hasUnit(save, unit.id); });
+      current = present.length > 0 ? present[present.length - 1].id : null;
     }
-  }
-
-  // Works out whether imported text is a unit file or a backup, and checks it.
-  function parseImportText(text) {
-    var badFile = { kind: 'error', messages: [BAD_FILE_MESSAGE] };
-    var parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch (error) {
-      return badFile;
+    if (save.currentUnitId !== current) {
+      save.currentUnitId = current;
+      changed = true;
     }
-    if (!isPlainObject(parsed)) return badFile;
-
-    if (has(parsed, 'format') && has(parsed, 'levels')) {
-      var result = AQ.units.validate(parsed);
-      if (result.ok) return { kind: 'unit', unit: parsed };
-      return { kind: 'error', messages: result.errors.slice(0, MAX_IMPORT_ERRORS) };
-    }
-    if (has(parsed, 'version') && has(parsed, 'xp')) {
-      return isValidSave(parsed) ? { kind: 'backup', save: fillDefaults(parsed) } : badFile;
-    }
-    return badFile;
-  }
-
-  function backupFilename(today) {
-    return 'algebra-quest-backup-' + today + '.json';
+    return changed;
   }
 
   var api = {
@@ -282,9 +268,7 @@
     persist: persist,
     hasUnit: hasUnit,
     addUnit: addUnit,
-    removeUnit: removeUnit,
-    parseImportText: parseImportText,
-    backupFilename: backupFilename
+    syncUnits: syncUnits
   };
   AQ.storage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

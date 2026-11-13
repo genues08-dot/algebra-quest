@@ -23,15 +23,6 @@ test('an older save gets the home screen fields when it loads', () => {
   assert.equal(loaded.save.settings.theme, 'light');
 });
 
-test('an older backup gets the home screen fields when it is imported', () => {
-  const old = makeSave(makeUnit());
-  delete old.settings;
-  const result = storage.parseImportText(JSON.stringify(old));
-  assert.equal(result.kind, 'backup');
-  assert.deepEqual(result.save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } });
-  assert.deepEqual(result.save.days, {});
-});
-
 test('valid home screen fields are accepted and kept', () => {
   const save = makeSave(makeUnit());
   save.days = { '2026-11-12': { xp: 40, studied: true }, '2026-11-11': { xp: 0, studied: false } };

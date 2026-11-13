@@ -5,7 +5,6 @@ const units = require('../js/units.js');
 const { makeUnit, makeSave } = require('./fixtures.js');
 
 const KEY = 'algebraQuest.v1';
-const BAD = "This file isn't a valid unit or backup.";
 function fakeLs(initial) {
   const data = Object.assign({}, initial);
   return { data, getItem: k => (k in data ? data[k] : null), setItem: (k, v) => { data[k] = String(v); } };
@@ -69,40 +68,51 @@ test('addUnit: replacing keeps progress only for ids that still exist', () => {
   assert.equal(save.xp, 70);
 });
 
-test('removeUnit: deletes the unit and its progress, keeps XP and streak', () => {
-  const save = makeSave(makeUnit());
-  const second = makeUnit();
-  second.id = 'u2';
-  storage.addUnit(save, second);
-  save.xp = 70;
-  save.streak = 3;
-  storage.removeUnit(save, 'u2');
-  assert.deepEqual([Object.keys(save.units), Object.keys(save.progress), save.currentUnitId], [['u1'], ['u1'], 'u1']);
-  storage.removeUnit(save, 'u1');
-  assert.deepEqual([save.units, save.progress, save.currentUnitId, save.xp, save.streak], [{}, {}, null, 70, 3]);
+const named = (id, title) => { const unit = makeUnit(); unit.id = id; unit.title = title; return unit; };
+
+test('syncUnits: a new save gets every built-in unit and starts on the last one', () => {
+  const save = storage.newSave();
+  const builtIn = [named('u1', 'Unit 1'), named('u5', 'Unit 5')];
+  assert.equal(storage.syncUnits(save, builtIn), true);
+  assert.deepEqual(Object.keys(save.units), ['u1', 'u5']);
+  assert.equal(save.currentUnitId, 'u5');
+  assert.deepEqual(save.progress.u1.completedLessons, []);
+  assert.equal(storage.isValidSave(save), true);
+  assert.equal(storage.syncUnits(save, builtIn), false);
 });
 
-test('parseImportText', () => {
-  const unit = makeUnit();
-  const save = makeSave(unit);
-  assert.deepEqual(storage.parseImportText(JSON.stringify(unit)), { kind: 'unit', unit });
-  assert.deepEqual(storage.parseImportText(storage.serialize(save)), { kind: 'backup', save });
-  for (const text of ['nope{', '{"hello":1}', '[]', 'null', '42']) {
-    assert.deepEqual(storage.parseImportText(text), { kind: 'error', messages: [BAD] });
-  }
-  const brokenBackup = JSON.stringify({ ...save, units: { u1: { format: 1 } } });
-  assert.deepEqual(storage.parseImportText(brokenBackup), { kind: 'error', messages: [BAD] });
-  const messy = makeUnit();
-  messy.format = 3;
-  messy.id = '';
-  messy.title = '';
-  messy.levels[0].title = '';
-  messy.levels[1].title = '';
-  messy.levels[0].lessons[0].questions[0].hint = '';
-  messy.levels[0].lessons[0].questions[0].solution = '';
-  const all = units.validate(messy).errors;
-  assert.equal(all.length, 7);
-  assert.deepEqual(storage.parseImportText(JSON.stringify(messy)), { kind: 'error', messages: all.slice(0, 5) });
+test('syncUnits: adds missing units and keeps the current unit and its progress', () => {
+  const save = makeSave(named('u5', 'Unit 5'));
+  save.progress.u5.completedLessons = ['a1'];
+  save.xp = 40;
+  assert.equal(storage.syncUnits(save, [named('u1', 'Unit 1'), named('u5', 'Unit 5')]), true);
+  assert.equal(save.currentUnitId, 'u5');
+  assert.deepEqual(save.progress.u5.completedLessons, ['a1']);
+  assert.deepEqual(save.progress.u1.completedLessons, []);
+  assert.equal(save.xp, 40);
+});
+
+test('syncUnits: a changed unit is replaced, keeping progress for lessons that still exist', () => {
+  const save = makeSave(named('u5', 'Unit 5'));
+  save.progress.u5.completedLessons = ['a1', 'a2'];
+  const changed = named('u5', 'Unit 5: Polynomials');
+  changed.levels[0].lessons = changed.levels[0].lessons.filter(lesson => lesson.id !== 'a2');
+  assert.equal(storage.syncUnits(save, [changed]), true);
+  assert.equal(save.units.u5.title, 'Unit 5: Polynomials');
+  assert.deepEqual(save.progress.u5.completedLessons, ['a1']);
+  assert.equal(save.currentUnitId, 'u5');
+});
+
+test('syncUnits: units that are not built in stay, and a broken built-in unit is skipped', () => {
+  const save = makeSave(named('mine', 'My unit'));
+  const broken = named('bad', 'Broken');
+  broken.levels = [];
+  assert.equal(storage.syncUnits(save, [broken]), false);
+  assert.deepEqual(Object.keys(save.units), ['mine']);
+  assert.equal(save.currentUnitId, 'mine');
+  const empty = storage.newSave();
+  assert.equal(storage.syncUnits(empty, []), false);
+  assert.equal(empty.currentUnitId, null);
 });
 
 test('load: a v1 save is valid and gets the new fields', () => {
@@ -132,19 +142,7 @@ test('settings.angle is filled in and checked', () => {
   delete noAngle.settings.angle;
   const loaded = storage.load(fakeLs({ [KEY]: JSON.stringify(noAngle) }));
   assert.deepEqual(loaded.save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } });
-  assert.deepEqual(storage.parseImportText(JSON.stringify(noAngle)).save.settings, { sound: true, angle: 'deg', goal: 100, theme: 'light', mascot: { color: 'pink', name: 'Axl' } });
   const withAngle = value => { const save = makeSave(makeUnit()); save.settings.angle = value; return save; };
   assert.equal(storage.isValidSave(withAngle('rad')), true);
   for (const bad of ['grad', 5, null, '']) assert.equal(storage.isValidSave(withAngle(bad)), false, String(bad));
-});
-
-test('a backup with the new fields restores', () => {
-  const save = makeSave(makeUnit());
-  save.settings.sound = false;
-  save.progress.u1.testBest = 90;
-  assert.deepEqual(storage.parseImportText(storage.serialize(save)), { kind: 'backup', save });
-});
-
-test('backupFilename', () => {
-  assert.equal(storage.backupFilename('2026-11-11'), 'algebra-quest-backup-2026-11-11.json');
 });

@@ -34,7 +34,7 @@ test('home line: the first situation that applies', () => {
   const base = { name: 'Axl', hasUnit: true, goalMet: false, streak: 0, studiedToday: false, todayXp: 0, goal: 100,
     next: { kind: 'lesson', levelTitle: 'Factoring' } };
   const line = change => mascot.homeLine(Object.assign({}, base, change));
-  assert.equal(line({ hasUnit: false, next: null }), "Hi, I'm Axl! Import a unit and let's crush some algebra!");
+  assert.equal(line({ hasUnit: false, next: null }), "Hi, I'm Axl! Let's crush some algebra!");
   assert.equal(line({ goalMet: true, streak: 4 }), "Goal smashed today! You're unstoppable!");
   assert.equal(line({ streak: 4 }), '4-day streak! One lesson keeps it alive!');
   assert.equal(line({ streak: 4, studiedToday: true, todayXp: 40 }), '60 XP to your goal! LET\'S GO!');

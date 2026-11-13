@@ -3,6 +3,7 @@
 // Options: `failWrites` makes every write fail, like full storage.
 // `confirm` is the answer every confirm() dialog gives (default true).
 // `online` is passed to mount as the online app's account and leaderboard.
+// `units` is passed to mount as the units built into the app.
 const KEY = 'algebraQuest.v1';
 const UNESCAPES = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" };
 
@@ -64,13 +65,12 @@ function makeEnv(stored, options = {}) {
       return null;
     }
   };
-  const fileInput = { addEventListener() {}, click() {}, files: [], value: '' };
   const confirms = [];
   // The page's root element. ui.js sets data-theme on it.
   const pageAttributes = {};
   globalThis.document = {
     documentElement: { setAttribute: (name, value) => { pageAttributes[name] = String(value); } },
-    getElementById: () => fileInput,
+    getElementById: () => null,
     addEventListener: (type, handler) => { if (type === 'keydown') keydown = handler; }
   };
   globalThis.scrollTo = () => {};
@@ -82,7 +82,7 @@ function makeEnv(stored, options = {}) {
   // ui.js keeps its state in the module, so each test loads a fresh copy.
   delete require.cache[require.resolve('../js/ui.js')];
   const ui = require('../js/ui.js');
-  ui.mount(rootEl, ls, options.online ? { online: options.online } : undefined);
+  ui.mount(rootEl, ls, { online: options.online || null, units: options.units || [] });
 
   // `detail` is the click count, as on a real click: 2 is the second click of a double-click.
   const click = (action, attributes = {}, detail = 1) => handlers.click({

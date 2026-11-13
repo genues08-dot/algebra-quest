@@ -8,7 +8,6 @@
   var AQ = root.AQ;
   var online = AQ.online;
   var cloud = AQ.cloud;
-  var KEY = AQ.storage.KEY;
   var BUNDLED = root.AQ_PHONE_UNITS || [];
   var WAIT_MS = 10000;       // longest wait for the cloud save at start
   var IDLE_WAIT_MS = 4000;   // longest wait for the last save to reach the cloud before logging out
@@ -230,16 +229,9 @@
         leaderboard: function () { return cloud.listPlayers(); },
         logOut: logOut,
         deleteAccount: deleteAccount
-      }
+      },
+      units: BUNDLED
     });
-    // The bundled units are added to a new save, so nothing has to be imported.
-    var saved = null;
-    try { saved = JSON.parse(sync.store.getItem(KEY)); } catch (e) { saved = null; }
-    if (saved && saved.units) {
-      BUNDLED.forEach(function (unit) {
-        if (!saved.units[unit.id]) AQ.ui.importText(JSON.stringify(unit));
-      });
-    }
     if (note) toast(note, 8000);
   }
 

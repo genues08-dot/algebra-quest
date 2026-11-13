@@ -133,8 +133,11 @@
       todayXp: AQ.game.todayXp(save, today),
       goal: AQ.game.goalOf(save),
       week: AQ.game.weekStrip(save, today),
+      // In unit order: "Unit 2" comes before "Unit 10".
       units: Object.keys(save.units).map(function (id) {
         return { id: id, title: save.units[id].title };
+      }).sort(function (a, b) {
+        return a.title.localeCompare(b.title, 'en', { numeric: true });
       }),
       currentUnitId: save.currentUnitId,
       lessonsDone: Object.keys(save.progress).reduce(function (sum, id) {
@@ -499,7 +502,7 @@
       return statsBarHtml(model) +
         '<section class="empty">' +
           mascotHtml(Object.assign({ mood: 'happy', size: 'big', tap: true }, model.mascot)) +
-          '<button type="button" class="btn btn-primary btn-big" data-action="import">Import a unit to start</button>' +
+          '<p class="empty-note">No units yet.</p>' +
         '</section>' + tabs;
     }
     return statsBarHtml(model) +
@@ -692,11 +695,8 @@
   function moreHtml(model) {
     return '<section class="tab-screen">' + screenHeadHtml('More') +
       '<div class="more-list">' +
-        moreRowHtml('import', '&#128229;', 'Import') +
-        moreRowHtml('backup', '&#128190;', 'Backup') +
         moreRowHtml('toggle-sound', model.soundOn ? '&#128264;' : '&#128263;', 'Sound: ' + (model.soundOn ? 'on' : 'off')) +
         moreRowHtml('toggle-theme', '&#127769;', 'Dark mode: ' + (model.darkOn ? 'on' : 'off')) +
-        (model.currentUnitId !== null ? moreRowHtml('remove-unit', '&#128465;', 'Remove this unit') : '') +
       '</div>' +
       (model.account ? accountHtml(model.account) : '') +
     '</section>' + tabBarHtml('more', model.mascot.color, model.claimable);

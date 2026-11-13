@@ -56,7 +56,7 @@
   // `info`: name, hasUnit, goalMet, streak, studiedToday, todayXp, goal, and next (a game.nextStep
   // result plus levelTitle, or null with no unit).
   function homeLine(info) {
-    if (!info.hasUnit) return "Hi, I'm " + info.name + "! Import a unit and let's crush some algebra!";
+    if (!info.hasUnit) return "Hi, I'm " + info.name + "! Let's crush some algebra!";
     if (info.goalMet) return "Goal smashed today! You're unstoppable!";
     if (info.streak > 0 && !info.studiedToday) return info.streak + '-day streak! One lesson keeps it alive!';
     if (info.todayXp > 0) return (info.goal - info.todayXp) + " XP to your goal! LET'S GO!";

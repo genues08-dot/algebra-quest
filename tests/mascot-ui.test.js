@@ -41,7 +41,7 @@ test('home shows the mascot with its home line, and Profile has the Mascot butto
   assert.match(views.profileHtml(model), /data-action="open-mascot"/);
   assert.match(views.profileHtml(model), /Gilly/);
   const empty = views.homeHtml(views.homeModel(storage.newSave(), TODAY));
-  assert.match(empty, /Hi, I&#39;m Axl! Import a unit/);
+  assert.match(empty, /Hi, I&#39;m Axl! Let&#39;s crush some algebra!/);
 });
 
 test('feedback, teaching cards, and result screens show the mascot when given one', () => {

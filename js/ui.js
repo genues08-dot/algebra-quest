@@ -86,7 +86,7 @@
   var boardRequest = 0;
   var rootEl = null;
   var ls = null;
-  var fileInput = null;
+  var builtInUnits = []; // the units built into the app, from options.units
   // The stored text this window last read or wrote. A different value in storage means
   // another window has saved since then.
   var lastRaw = null;
@@ -483,7 +483,7 @@
       state.save = save;
       return true;
     }
-    showMessage('Storage is full', ['Make a backup, then remove old units.']);
+    showMessage('Storage is full', ['Your progress could not be saved on this device.', 'Clear some space in your browser, then try again.']);
     return false;
   }
 
@@ -500,47 +500,6 @@
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-  }
-
-  // ----- Import -----
-
-  // Takes the text of a unit file or a backup file. The file picker and tests both call this.
-  function importText(text) {
-    if (state.save === null) return;
-    var result = storage.parseImportText(text);
-    if (result.kind === 'error') {
-      showMessage('Import failed', result.messages);
-      return;
-    }
-
-    var next;
-    if (result.kind === 'unit') {
-      var unit = result.unit;
-      if (storage.hasUnit(state.save, unit.id) && !root.confirm('Replace "' + unit.title + '"?')) return;
-      next = copyOfSave();
-      storage.addUnit(next, unit);
-    } else {
-      if (!root.confirm('Replace all current progress with this backup?')) return;
-      next = result.save;
-      game.refreshStreak(next, today());
-      game.earnBadges(next, null, today());
-    }
-    if (commit(next)) showHome();
-  }
-
-  function onFilePicked() {
-    var file = fileInput.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      fileInput.value = '';
-      importText(String(reader.result));
-    };
-    reader.onerror = function () {
-      fileInput.value = '';
-      showMessage('Import failed', ['The file could not be read.']);
-    };
-    reader.readAsText(file);
   }
 
   // ----- Lesson flow -----
@@ -1144,25 +1103,14 @@
       next.settings.sound = !next.settings.sound;
       if (commit(next)) render('[data-action="toggle-sound"]');
     },
-    'import': function () {
-      fileInput.click();
-    },
-    'backup': function () {
-      download(storage.backupFilename(today()), storage.serialize(state.save));
-    },
-    'remove-unit': function () {
-      var unit = state.save.units[state.save.currentUnitId];
-      if (!unit || !root.confirm('Remove "' + unit.title + '" and its progress?')) return;
-      var next = copyOfSave();
-      storage.removeUnit(next, unit.id);
-      if (commit(next)) showHome();
-    },
     'download-raw': function () {
       download(RAW_SAVE_FILENAME, state.rawSave);
     },
     'start-fresh': function () {
       if (!root.confirm('Start over with no progress?')) return;
-      if (commit(storage.newSave())) {
+      var fresh = storage.newSave();
+      storage.syncUnits(fresh, builtInUnits);
+      if (commit(fresh)) {
         state.rawSave = null;
         showHome();
       }
@@ -1278,15 +1226,17 @@
     rootEl = rootElement;
     ls = storageObject;
     online = options && options.online ? options.online : null;
+    builtInUnits = options && options.units ? options.units : [];
     views.useLeadersTab(online !== null);
-    fileInput = document.getElementById('import-file');
     rootEl.addEventListener('click', onClick);
     rootEl.addEventListener('change', onChange);
     document.addEventListener('keydown', onKeyDown);
-    fileInput.addEventListener('change', onFilePicked);
 
     // The save is in memory before the first write, so a failed write still leaves a usable app.
-    if (loadFromStorage() && commit(state.save)) {
+    if (!loadFromStorage()) return;
+    // The built-in units are added or updated before the first write.
+    storage.syncUnits(state.save, builtInUnits);
+    if (commit(state.save)) {
       showHome();
       if (state.freezeNotice) {
         showMessage('\u2744 Streak freeze used!', [
@@ -1299,7 +1249,7 @@
     }
   }
 
-  var api = { mount: mount, importText: importText };
+  var api = { mount: mount };
   AQ.ui = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
