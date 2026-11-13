@@ -971,8 +971,12 @@
       var look = target.getAttribute('data-color');
       if (state.screen !== 'mascot' || !AQ.mascot.lookInfo(look)) return;
       var next = copyOfSave();
+      var oldName = next.settings.mascot.name;
       next.settings.mascot = AQ.mascot.choose(next.settings.mascot, look);
-      if (commit(next)) render();
+      if (!commit(next)) return;
+      // An untouched name box shows the new pet's starting name; a name being typed stays.
+      if (state.mascotDraft === oldName) state.mascotDraft = null;
+      render();
     },
     'mascot-name': saveMascotName,
     'cycle-goal': function () {

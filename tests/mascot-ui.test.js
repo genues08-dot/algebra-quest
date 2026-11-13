@@ -195,6 +195,7 @@ test('picking a pet saves its look, gives it its starting name, and keeps a chos
   env.click('mascot-color', { 'data-color': 'fox-red' });
   assert.deepEqual(stored(env).settings.mascot, { color: 'pink', look: 'fox-red', name: 'Foxy' });
   assert.match(env.html(), /data-color="fox-silver"/);
+  assert.match(env.html(), /data-role="mascot-name"[^>]*value="Foxy"/);
   env.click('mascot-color', { 'data-color': 'fox-arctic' });
   assert.equal(stored(env).settings.mascot.look, 'fox-arctic');
   env.nameBox.value = 'Blaze';
