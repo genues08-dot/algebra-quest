@@ -1,0 +1,5227 @@
+{
+  "format": 1,
+  "id": "unit-4-quadratics-complex-numbers",
+  "title": "Unit 4: Quadratic Equations and Complex Numbers",
+  "levels": [
+    {
+      "id": "vertex-form",
+      "title": "Quadratics in vertex form",
+      "lessons": [
+        {
+          "id": "vertex-form-1",
+          "teach": [
+            {
+              "title": "Reading vertex form",
+              "text": [
+                "Vertex form is y = a(x − h)² + k.",
+                "The vertex is (h, k). The axis of symmetry is the vertical line x = h.",
+                "If a > 0 the parabola opens up and the vertex is a minimum. If a < 0 it opens down and the vertex is a maximum."
+              ],
+              "example": {
+                "problem": "Describe y = −2(x − 3)² + 5",
+                "steps": [
+                  "h = 3 and k = 5, so the vertex is (3, 5).",
+                  "The axis is x = 3.",
+                  "a = −2 < 0, so it opens down. The maximum value is 5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-vf1-q1",
+              "type": "choice",
+              "prompt": "What is the vertex of y = (x − 4)² + 7?",
+              "choices": [
+                "(−4, 7)",
+                "(4, 7)",
+                "(4, −7)",
+                "(7, 4)"
+              ],
+              "answer": 1,
+              "hint": "In (x − h), the vertex uses h. Watch the sign.",
+              "solution": "The form is (x − h), so x − 4 gives h = 4. k = 7. Vertex: (4, 7)."
+            },
+            {
+              "id": "u4-vf1-q2",
+              "type": "input",
+              "prompt": "The axis of symmetry of y = (x − 6)² − 2 is x = h. What is h?",
+              "answers": [
+                "6"
+              ],
+              "hint": "The axis passes through the vertex.",
+              "solution": "x − 6 means h = 6. The axis is x = 6."
+            },
+            {
+              "id": "u4-vf1-q3",
+              "type": "choice",
+              "prompt": "What is the vertex of y = −3(x + 2)² + 1?",
+              "choices": [
+                "(−2, 1)",
+                "(2, 1)",
+                "(−2, −1)",
+                "(−3, 1)"
+              ],
+              "answer": 0,
+              "hint": "Write x + 2 as x − (−2).",
+              "solution": "x + 2 = x − (−2), so h = −2. k = 1. Vertex: (−2, 1)."
+            },
+            {
+              "id": "u4-vf1-q4",
+              "type": "input",
+              "prompt": "What is the minimum value of y = 2(x − 5)² + 9?",
+              "answers": [
+                "9"
+              ],
+              "hint": "a is positive, so the vertex is the lowest point. Its y-value is k.",
+              "solution": "a = 2 > 0, so the parabola opens up. The minimum is k = 9."
+            },
+            {
+              "id": "u4-vf1-q5",
+              "type": "choice",
+              "prompt": "Which describes y = −½(x − 1)² + 4?",
+              "choices": [
+                "Opens up, has a maximum",
+                "Opens down, has a minimum",
+                "Opens up, has a minimum",
+                "Opens down, has a maximum"
+              ],
+              "answer": 3,
+              "hint": "Look at the sign of a only.",
+              "solution": "a = −½ < 0. The parabola opens down, so the vertex is a maximum."
+            },
+            {
+              "id": "u4-vf1-q6",
+              "type": "input",
+              "prompt": "The vertex of y = (x + 3)² − 8 has x-coordinate h. What is h?",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Write x + 3 as x − (−3).",
+              "solution": "x + 3 = x − (−3), so h = −3."
+            },
+            {
+              "id": "u4-vf1-q7",
+              "type": "choice",
+              "prompt": "Which parabola has vertex (−1, 6) and opens up?",
+              "choices": [
+                "y = 2(x − 1)² + 6",
+                "y = −2(x + 1)² + 6",
+                "y = 2(x + 1)² + 6",
+                "y = 2(x + 1)² − 6"
+              ],
+              "answer": 2,
+              "hint": "Check the sign of h, the sign of k, and the sign of a.",
+              "solution": "h = −1 gives (x + 1). k = 6 is added. Opening up needs a > 0. So y = 2(x + 1)² + 6."
+            },
+            {
+              "id": "u4-vf1-q8",
+              "type": "input",
+              "prompt": "What is the maximum value of y = −4(x − 2)² + 11?",
+              "answers": [
+                "11"
+              ],
+              "hint": "a is negative, so the vertex is the highest point.",
+              "solution": "a = −4 < 0, so it opens down. The maximum is k = 11."
+            }
+          ]
+        },
+        {
+          "id": "vertex-form-2",
+          "teach": [
+            {
+              "title": "Transformations of y = x²",
+              "text": [
+                "In y = a(x − h)² + k, h slides the graph right (positive h) or left (negative h). k slides it up or down.",
+                "If |a| > 1 the graph is narrower. If 0 < |a| < 1 it is wider. If a < 0 it is flipped upside down."
+              ],
+              "example": {
+                "problem": "Describe y = −½(x + 4)² − 3 compared to y = x²",
+                "steps": [
+                  "x + 4 = x − (−4): shift left 4.",
+                  "− 3: shift down 3.",
+                  "a = −½: reflect over the x-axis, and the graph is wider because ½ < 1."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-vf2-q1",
+              "type": "choice",
+              "prompt": "How does y = (x − 5)² compare to y = x²?",
+              "choices": [
+                "Shifted left 5",
+                "Shifted right 5",
+                "Shifted up 5",
+                "Shifted down 5"
+              ],
+              "answer": 1,
+              "hint": "A number inside the parentheses moves the graph sideways.",
+              "solution": "x − 5 shifts the graph right 5 units."
+            },
+            {
+              "id": "u4-vf2-q2",
+              "type": "choice",
+              "prompt": "How does y = x² − 6 compare to y = x²?",
+              "choices": [
+                "Shifted down 6",
+                "Shifted up 6",
+                "Shifted left 6",
+                "Shifted right 6"
+              ],
+              "answer": 0,
+              "hint": "A number added outside moves the graph up or down.",
+              "solution": "− 6 moves every point down 6 units."
+            },
+            {
+              "id": "u4-vf2-q3",
+              "type": "choice",
+              "prompt": "Which parabola is the narrowest?",
+              "choices": [
+                "y = 0.5x²",
+                "y = −x²",
+                "y = 0.25x²",
+                "y = 2x²"
+              ],
+              "answer": 3,
+              "hint": "Compare the size of |a|. Bigger |a| is narrower.",
+              "solution": "|a| is 2, 0.5, 1, and 0.25. The largest is 2, so y = 2x² is narrowest."
+            },
+            {
+              "id": "u4-vf2-q4",
+              "type": "choice",
+              "prompt": "Describe y = −(x + 2)² + 1 compared to y = x².",
+              "choices": [
+                "Flipped, right 2, up 1",
+                "Flipped, left 2, down 1",
+                "Flipped, left 2, up 1",
+                "Not flipped, left 2, up 1"
+              ],
+              "answer": 2,
+              "hint": "a = −1 flips it. x + 2 and + 1 shift it.",
+              "solution": "a = −1: reflect over the x-axis. x + 2: left 2. + 1: up 1."
+            },
+            {
+              "id": "u4-vf2-q5",
+              "type": "choice",
+              "prompt": "Which equation is y = x² shifted right 3 and up 4?",
+              "choices": [
+                "y = (x + 3)² + 4",
+                "y = (x − 3)² + 4",
+                "y = (x − 3)² − 4",
+                "y = (x − 4)² + 3"
+              ],
+              "answer": 1,
+              "hint": "Right 3 goes inside as x − 3. Up 4 goes outside as + 4.",
+              "solution": "Right 3: (x − 3). Up 4: + 4. So y = (x − 3)² + 4."
+            },
+            {
+              "id": "u4-vf2-q6",
+              "type": "input",
+              "prompt": "The parabola y = a(x − 1)² + 2 passes through (2, 5). What is a?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Substitute x = 2 and y = 5, then solve for a.",
+              "solution": "5 = a(2 − 1)² + 2 = a + 2, so a = 3."
+            },
+            {
+              "id": "u4-vf2-q7",
+              "type": "input",
+              "prompt": "A parabola has vertex (3, −1) and passes through (5, 7). Its equation is y = a(x − 3)² − 1. What is a?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Put x = 5 and y = 7 into the equation.",
+              "solution": "7 = a(5 − 3)² − 1 = 4a − 1. So 4a = 8 and a = 2."
+            },
+            {
+              "id": "u4-vf2-q8",
+              "type": "choice",
+              "prompt": "What is the vertex of the graph?",
+              "choices": [
+                "(2, 3)",
+                "(−2, 3)",
+                "(3, 2)",
+                "(2, −3)"
+              ],
+              "answer": 0,
+              "hint": "Read the x-coordinate of the top point first.",
+              "solution": "The highest point is at x = 2 and y = 3. Vertex: (2, 3).",
+              "graph": {
+                "fn": "-(x-2)^2+3",
+                "x": [
+                  -4,
+                  8
+                ],
+                "y": [
+                  -5,
+                  5
+                ],
+                "numbers": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "vertex-form-3",
+          "teach": [
+            {
+              "title": "Writing an equation from a graph",
+              "text": [
+                "Read the vertex (h, k) off the graph and put it in y = a(x − h)² + k.",
+                "Then pick one other point on the graph, substitute it, and solve for a."
+              ],
+              "example": {
+                "problem": "A parabola has vertex (1, −2) and passes through (3, 2). Write its equation.",
+                "steps": [
+                  "y = a(x − 1)² − 2.",
+                  "Substitute (3, 2): 2 = a(3 − 1)² − 2 = 4a − 2.",
+                  "4a = 4, so a = 1.",
+                  "y = (x − 1)² − 2"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-vf3-q1",
+              "type": "choice",
+              "prompt": "Read the graph. What is its vertex?",
+              "choices": [
+                "(2, −3)",
+                "(−2, 3)",
+                "(−3, −2)",
+                "(−2, −3)"
+              ],
+              "answer": 3,
+              "hint": "The graph opens up, so the vertex is the lowest point.",
+              "solution": "The lowest point is at x = −2, y = −3. Vertex: (−2, −3).",
+              "graph": {
+                "fn": "(x+2)^2-3",
+                "x": [
+                  -6,
+                  2
+                ],
+                "y": [
+                  -5,
+                  5
+                ],
+                "numbers": true
+              }
+            },
+            {
+              "id": "u4-vf3-q2",
+              "type": "input",
+              "prompt": "The graph shows a parabola. Its axis of symmetry is x = h. What is h?",
+              "answers": [
+                "1"
+              ],
+              "hint": "The axis goes straight through the vertex.",
+              "solution": "The vertex is (1, 4), so the axis is x = 1.",
+              "graph": {
+                "fn": "-(x-1)^2+4",
+                "x": [
+                  -4,
+                  6
+                ],
+                "y": [
+                  -4,
+                  6
+                ],
+                "numbers": true
+              }
+            },
+            {
+              "id": "u4-vf3-q3",
+              "type": "input",
+              "prompt": "What is the maximum value of the graphed function?",
+              "answers": [
+                "5"
+              ],
+              "hint": "The maximum is the y-value of the top point.",
+              "solution": "The top point is (3, 5). The maximum value is 5.",
+              "graph": {
+                "fn": "-2*(x-3)^2+5",
+                "x": [
+                  0,
+                  6
+                ],
+                "y": [
+                  -3,
+                  7
+                ],
+                "numbers": true
+              }
+            },
+            {
+              "id": "u4-vf3-q4",
+              "type": "choice",
+              "prompt": "Which equation matches the graph? Check the point (3, −2).",
+              "choices": [
+                "y = ½(x + 1)² − 4",
+                "y = 2(x − 1)² − 4",
+                "y = ½(x − 1)² − 4",
+                "y = ½(x − 1)² + 4"
+              ],
+              "answer": 2,
+              "hint": "The vertex is (1, −4). Then test the point (3, −2) in each choice.",
+              "solution": "Vertex (1, −4) gives (x − 1)² − 4. At x = 3: a(2)² − 4 = −2, so 4a = 2 and a = ½. y = ½(x − 1)² − 4.",
+              "graph": {
+                "fn": "0.5*(x-1)^2-4",
+                "x": [
+                  -5,
+                  7
+                ],
+                "y": [
+                  -6,
+                  6
+                ],
+                "numbers": true
+              }
+            },
+            {
+              "id": "u4-vf3-q5",
+              "type": "input",
+              "prompt": "A parabola has vertex (−1, −3) and passes through (1, 5). Its equation is y = a(x + 1)² − 3. What is a?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Substitute x = 1 and y = 5.",
+              "solution": "5 = a(1 + 1)² − 3 = 4a − 3. So 4a = 8 and a = 2."
+            },
+            {
+              "id": "u4-vf3-q6",
+              "type": "choice",
+              "prompt": "Which equation has vertex (4, −1) and passes through (6, −5)?",
+              "choices": [
+                "y = (x − 4)² − 1",
+                "y = −(x − 4)² − 1",
+                "y = −(x + 4)² − 1",
+                "y = −(x − 4)² + 1"
+              ],
+              "answer": 1,
+              "hint": "Find a from the point: substitute x = 6, y = −5 into y = a(x − 4)² − 1.",
+              "solution": "−5 = a(2)² − 1 = 4a − 1. So 4a = −4 and a = −1. y = −(x − 4)² − 1."
+            },
+            {
+              "id": "u4-vf3-q7",
+              "type": "input",
+              "prompt": "What is the y-intercept of y = −(x + 3)² + 8?",
+              "answers": [
+                "-1"
+              ],
+              "hint": "The y-intercept is the value of y when x = 0.",
+              "solution": "y = −(0 + 3)² + 8 = −9 + 8 = −1."
+            },
+            {
+              "id": "u4-vf3-q8",
+              "type": "input",
+              "prompt": "What is the y-intercept of y = 2(x − 1)² − 5?",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Put x = 0 into the equation.",
+              "solution": "y = 2(0 − 1)² − 5 = 2 − 5 = −3."
+            }
+          ]
+        },
+        {
+          "id": "vertex-form-4",
+          "teach": [
+            {
+              "title": "Putting it together",
+              "text": [
+                "Vertex form gives the vertex, axis, direction, and max or min at a glance.",
+                "To find x-intercepts, set y = 0, isolate (x − h)², and take square roots."
+              ],
+              "example": {
+                "problem": "Find the x-intercepts of y = −2(x − 3)² + 8",
+                "steps": [
+                  "Set y = 0: −2(x − 3)² + 8 = 0.",
+                  "(x − 3)² = 4, so x − 3 = ±2.",
+                  "x = 5 or x = 1."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-vf4-q1",
+              "type": "choice",
+              "prompt": "Which statement is true about y = 3(x − 2)² − 7?",
+              "choices": [
+                "Opens up, minimum value −7 at x = 2",
+                "Opens up, minimum value 2 at x = −7",
+                "Opens down, maximum value −7 at x = 2",
+                "Opens up, minimum value −7 at x = −2"
+              ],
+              "answer": 0,
+              "hint": "Find the vertex, then look at the sign of a.",
+              "solution": "Vertex (2, −7). a = 3 > 0, so it opens up and the minimum is −7 at x = 2."
+            },
+            {
+              "id": "u4-vf4-q2",
+              "type": "input",
+              "prompt": "What is the minimum value of y = 5(x + 4)² + 13?",
+              "answers": [
+                "13"
+              ],
+              "hint": "The minimum is the y-value of the vertex.",
+              "solution": "The vertex is (−4, 13) and a > 0. The minimum value is 13."
+            },
+            {
+              "id": "u4-vf4-q3",
+              "type": "input",
+              "prompt": "The function y = −(x − 3)² + k has a maximum value of 6. What is k?",
+              "answers": [
+                "6"
+              ],
+              "hint": "The maximum of this form is k.",
+              "solution": "The vertex is (3, k) and the maximum is k. So k = 6."
+            },
+            {
+              "id": "u4-vf4-q4",
+              "type": "choice",
+              "prompt": "Which function has the greatest maximum value?",
+              "choices": [
+                "y = −(x − 1)² + 3",
+                "y = −½(x − 7)² + 4",
+                "y = (x − 2)² + 9",
+                "y = −2(x + 4)² + 5"
+              ],
+              "answer": 3,
+              "hint": "Only parabolas that open down have a maximum. Compare their k values.",
+              "solution": "The last one opens up, so it has no maximum. The maxima of the others are 3, 5, and 4. The greatest is 5."
+            },
+            {
+              "id": "u4-vf4-q5",
+              "type": "input",
+              "prompt": "A parabola has vertex (2, 3) and passes through (4, −5). Its equation is y = a(x − 2)² + 3. What is a?",
+              "answers": [
+                "-2"
+              ],
+              "hint": "Substitute x = 4 and y = −5.",
+              "solution": "−5 = a(2)² + 3 = 4a + 3. So 4a = −8 and a = −2."
+            },
+            {
+              "id": "u4-vf4-q6",
+              "type": "input",
+              "prompt": "Find the x-intercepts of y = −2(x − 3)² + 8. Give both values.",
+              "answers": [
+                "1, 5"
+              ],
+              "hint": "Set y = 0 and isolate (x − 3)² first.",
+              "solution": "−2(x − 3)² + 8 = 0, so (x − 3)² = 4. Then x − 3 = ±2, so x = 1 or x = 5.",
+              "calculator": false
+            },
+            {
+              "id": "u4-vf4-q7",
+              "type": "input",
+              "prompt": "y = 3(x − 2)² + k passes through (4, 10). What is k?",
+              "answers": [
+                "-2"
+              ],
+              "hint": "Substitute x = 4 and y = 10.",
+              "solution": "10 = 3(4 − 2)² + k = 12 + k. So k = −2."
+            },
+            {
+              "id": "u4-vf4-q8",
+              "type": "choice",
+              "prompt": "Which equation has vertex (−2, 5) and opens down?",
+              "choices": [
+                "y = −3(x − 2)² + 5",
+                "y = 3(x + 2)² + 5",
+                "y = −3(x + 2)² + 5",
+                "y = −3(x + 2)² − 5"
+              ],
+              "answer": 2,
+              "hint": "Opens down means a < 0. Then fix the signs for h and k.",
+              "solution": "h = −2 gives (x + 2). k = 5. Opening down needs a < 0. So y = −3(x + 2)² + 5."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "standard-form",
+      "title": "Quadratics in standard form",
+      "lessons": [
+        {
+          "id": "standard-form-1",
+          "teach": [
+            {
+              "title": "Axis and vertex from standard form",
+              "text": [
+                "Standard form is y = ax² + bx + c. The y-intercept is c.",
+                "The axis of symmetry is x = −b / (2a).",
+                "The vertex is on the axis. Put the axis value into the equation to find its y-coordinate."
+              ],
+              "example": {
+                "problem": "Find the vertex of y = 2x² − 8x + 3",
+                "steps": [
+                  "a = 2, b = −8. Axis: x = 8 / 4 = 2.",
+                  "y = 2(2)² − 8(2) + 3 = 8 − 16 + 3 = −5.",
+                  "Vertex: (2, −5)."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sf1-q1",
+              "type": "input",
+              "prompt": "The axis of symmetry of y = x² + 6x + 1 is x = ? Type the number.",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Use −b / (2a) with a = 1 and b = 6.",
+              "solution": "x = −6 / (2 · 1) = −3."
+            },
+            {
+              "id": "u4-sf1-q2",
+              "type": "input",
+              "prompt": "The axis of symmetry of y = x² − 10x + 4 is x = ? Type the number.",
+              "answers": [
+                "5"
+              ],
+              "hint": "b is −10. Use −b / (2a).",
+              "solution": "x = −(−10) / (2 · 1) = 5."
+            },
+            {
+              "id": "u4-sf1-q3",
+              "type": "input",
+              "prompt": "The axis of symmetry of y = 2x² + 8x − 1 is x = ? Type the number.",
+              "answers": [
+                "-2"
+              ],
+              "hint": "a = 2, so the denominator is 4.",
+              "solution": "x = −8 / (2 · 2) = −8 / 4 = −2."
+            },
+            {
+              "id": "u4-sf1-q4",
+              "type": "choice",
+              "prompt": "What is the axis of symmetry of y = −x² + 4x + 3?",
+              "choices": [
+                "x = −2",
+                "x = 2",
+                "x = 4",
+                "x = −4"
+              ],
+              "answer": 1,
+              "hint": "a is negative here. Keep the signs when you use −b / (2a).",
+              "solution": "a = −1, b = 4. x = −4 / (2 · (−1)) = −4 / −2 = 2."
+            },
+            {
+              "id": "u4-sf1-q5",
+              "type": "input",
+              "prompt": "The vertex of y = 3x² − 12x + 5 is (2, k). What is k?",
+              "answers": [
+                "-7"
+              ],
+              "hint": "Substitute x = 2 into the equation.",
+              "solution": "y = 3(4) − 12(2) + 5 = 12 − 24 + 5 = −7."
+            },
+            {
+              "id": "u4-sf1-q6",
+              "type": "choice",
+              "prompt": "What is the vertex of y = x² − 4x + 1?",
+              "choices": [
+                "(2, −3)",
+                "(−2, −3)",
+                "(2, 3)",
+                "(4, 1)"
+              ],
+              "answer": 0,
+              "hint": "Find the axis first, then the y-value.",
+              "solution": "Axis: x = 4 / 2 = 2. y = 4 − 8 + 1 = −3. Vertex: (2, −3)."
+            },
+            {
+              "id": "u4-sf1-q7",
+              "type": "input",
+              "prompt": "What is the y-intercept of y = x² + 2x − 8? Type the y-value.",
+              "answers": [
+                "-8"
+              ],
+              "hint": "The y-intercept is c.",
+              "solution": "At x = 0, y = c = −8."
+            },
+            {
+              "id": "u4-sf1-q8",
+              "type": "choice",
+              "prompt": "What is the y-intercept (as a point) of y = −2x² + 5x + 9?",
+              "choices": [
+                "(9, 0)",
+                "(0, 5)",
+                "(0, −2)",
+                "(0, 9)"
+              ],
+              "answer": 3,
+              "hint": "Put x = 0 in. Only c is left.",
+              "solution": "At x = 0, y = 9. The point is (0, 9)."
+            }
+          ]
+        },
+        {
+          "id": "standard-form-2",
+          "teach": [
+            {
+              "title": "Maximum, minimum, domain, and range",
+              "text": [
+                "If a > 0 the vertex is the minimum. If a < 0 it is the maximum.",
+                "The domain of every quadratic is all real numbers.",
+                "The range depends on the vertex y-value k: y ≥ k if it opens up, y ≤ k if it opens down."
+              ],
+              "example": {
+                "problem": "Find the range of y = −x² + 6x − 5",
+                "steps": [
+                  "Axis: x = −6 / (2 · −1) = 3.",
+                  "y = −9 + 18 − 5 = 4. The vertex is (3, 4).",
+                  "a < 0, so it opens down: range y ≤ 4."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sf2-q1",
+              "type": "choice",
+              "prompt": "Does y = −3x² + 6x + 1 have a maximum or a minimum?",
+              "choices": [
+                "Minimum, because a < 0",
+                "Maximum, because b > 0",
+                "Maximum, because a < 0",
+                "Minimum, because c > 0"
+              ],
+              "answer": 2,
+              "hint": "Only the sign of a decides the direction.",
+              "solution": "a = −3 < 0, so it opens down and the vertex is a maximum."
+            },
+            {
+              "id": "u4-sf2-q2",
+              "type": "input",
+              "prompt": "What is the minimum value of y = x² − 6x + 11?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Axis first: x = −b / (2a). Then find y there.",
+              "solution": "Axis x = 3. y = 9 − 18 + 11 = 2. Minimum value: 2."
+            },
+            {
+              "id": "u4-sf2-q3",
+              "type": "input",
+              "prompt": "What is the maximum value of y = −x² + 8x − 3?",
+              "answers": [
+                "13"
+              ],
+              "hint": "Axis first: x = −b / (2a).",
+              "solution": "Axis x = −8 / (−2) = 4. y = −16 + 32 − 3 = 13."
+            },
+            {
+              "id": "u4-sf2-q4",
+              "type": "choice",
+              "prompt": "What is the domain of y = 2x² + 3x − 5?",
+              "choices": [
+                "y ≥ 0",
+                "All real numbers",
+                "x ≥ 0",
+                "x ≥ −5"
+              ],
+              "answer": 1,
+              "hint": "Can you put any x into a quadratic?",
+              "solution": "You can substitute any real number for x. The domain is all real numbers."
+            },
+            {
+              "id": "u4-sf2-q5",
+              "type": "choice",
+              "prompt": "What is the range of y = x² − 4x + 7?",
+              "choices": [
+                "y ≥ 3",
+                "y ≤ 3",
+                "y ≥ 2",
+                "y ≥ 7"
+              ],
+              "answer": 0,
+              "hint": "Find the vertex y-value. Then check which way it opens.",
+              "solution": "Axis x = 2. y = 4 − 8 + 7 = 3. a > 0, so the range is y ≥ 3."
+            },
+            {
+              "id": "u4-sf2-q6",
+              "type": "choice",
+              "prompt": "What is the range of y = −2x² + 12x − 5?",
+              "choices": [
+                "y ≥ 13",
+                "y ≤ 3",
+                "y ≤ −5",
+                "y ≤ 13"
+              ],
+              "answer": 3,
+              "hint": "Axis is x = −12 / (2 · −2).",
+              "solution": "Axis x = 3. y = −18 + 36 − 5 = 13. a < 0, so the range is y ≤ 13."
+            },
+            {
+              "id": "u4-sf2-q7",
+              "type": "input",
+              "prompt": "What is the minimum value of y = 2x² − 12x + 20?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Axis: x = 12 / 4.",
+              "solution": "Axis x = 3. y = 18 − 36 + 20 = 2."
+            },
+            {
+              "id": "u4-sf2-q8",
+              "type": "input",
+              "prompt": "What is the maximum value of y = −x² − 6x − 2?",
+              "answers": [
+                "7"
+              ],
+              "hint": "Axis: x = −(−6) / (2 · −1).",
+              "solution": "Axis x = 6 / (−2) = −3. y = −9 + 18 − 2 = 7."
+            }
+          ]
+        },
+        {
+          "id": "standard-form-3",
+          "teach": [
+            {
+              "title": "Working backward",
+              "text": [
+                "The axis formula is an equation. If you know the axis, you can solve for a missing a or b.",
+                "Parabolas are symmetric: two points with the same y-value are the same distance from the axis."
+              ],
+              "example": {
+                "problem": "y = x² + bx + 1 has axis x = 3. Find b.",
+                "steps": [
+                  "−b / (2 · 1) = 3.",
+                  "−b = 6, so b = −6."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sf3-q1",
+              "type": "input",
+              "prompt": "y = x² + bx + 5 has axis x = 2. What is b?",
+              "answers": [
+                "-4"
+              ],
+              "hint": "Set −b / 2 equal to 2.",
+              "solution": "−b / 2 = 2, so −b = 4 and b = −4."
+            },
+            {
+              "id": "u4-sf3-q2",
+              "type": "input",
+              "prompt": "y = 2x² + bx − 3 has axis x = 3. What is b?",
+              "answers": [
+                "-12"
+              ],
+              "hint": "Set −b / 4 equal to 3.",
+              "solution": "−b / 4 = 3, so −b = 12 and b = −12."
+            },
+            {
+              "id": "u4-sf3-q3",
+              "type": "input",
+              "prompt": "y = −x² + bx has axis x = 5. What is b?",
+              "answers": [
+                "10"
+              ],
+              "hint": "a is −1, so 2a = −2.",
+              "solution": "−b / (−2) = 5, so b / 2 = 5 and b = 10."
+            },
+            {
+              "id": "u4-sf3-q4",
+              "type": "input",
+              "prompt": "y = ax² − 12x + 1 has axis x = 3. What is a?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Put b = −12 into −b / (2a) = 3.",
+              "solution": "12 / (2a) = 3, so 2a = 4 and a = 2."
+            },
+            {
+              "id": "u4-sf3-q5",
+              "type": "choice",
+              "prompt": "Which parabola has axis of symmetry x = 1?",
+              "choices": [
+                "y = x² + 2x + 5",
+                "y = 2x² − 2x",
+                "y = x² − 2x + 5",
+                "y = x² − x + 1"
+              ],
+              "answer": 2,
+              "hint": "Compute −b / (2a) for each choice.",
+              "solution": "The axes are 1, −1, ½, and ½. Only y = x² − 2x + 5 has x = 1."
+            },
+            {
+              "id": "u4-sf3-q6",
+              "type": "input",
+              "prompt": "y = x² − 8x + c has a minimum value of 3. What is c?",
+              "answers": [
+                "19"
+              ],
+              "hint": "The minimum is at the axis x = 4.",
+              "solution": "At x = 4: 16 − 32 + c = 3, so c = 19."
+            },
+            {
+              "id": "u4-sf3-q7",
+              "type": "choice",
+              "prompt": "What is the vertex of y = −2x² + 4x + 1?",
+              "choices": [
+                "(−1, −5)",
+                "(1, 3)",
+                "(1, −1)",
+                "(2, 1)"
+              ],
+              "answer": 1,
+              "hint": "Axis first, then substitute.",
+              "solution": "Axis x = −4 / (−4) = 1. y = −2 + 4 + 1 = 3. Vertex: (1, 3)."
+            },
+            {
+              "id": "u4-sf3-q8",
+              "type": "input",
+              "prompt": "y = x² − 6x + 4 has y-intercept (0, 4). Another point with y = 4 is (n, 4). What is n?",
+              "answers": [
+                "6"
+              ],
+              "hint": "The axis is x = 3. The point (0, 4) is 3 units from it.",
+              "solution": "Axis x = 3. (0, 4) is 3 left of the axis, so the mirror point is 3 right: x = 6."
+            }
+          ]
+        },
+        {
+          "id": "standard-form-4",
+          "teach": [
+            {
+              "title": "Full problems",
+              "text": [
+                "Use the axis to find the vertex. Then compare vertices to compare parabolas.",
+                "To find x-intercepts, set y = 0 and solve."
+              ],
+              "example": {
+                "problem": "Find the minimum value of y = x² + 4x + 9",
+                "steps": [
+                  "Axis x = −4 / 2 = −2.",
+                  "y = 4 − 8 + 9 = 5.",
+                  "The minimum value is 5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sf4-q1",
+              "type": "choice",
+              "prompt": "Which statement is true about y = 3x² − 6x + 2?",
+              "choices": [
+                "Vertex (1, −1), minimum value −1",
+                "Vertex (−1, −1), minimum value −1",
+                "Vertex (1, −1), maximum value −1",
+                "Vertex (1, 2), minimum value 2"
+              ],
+              "answer": 0,
+              "hint": "Axis, then y-value, then the sign of a.",
+              "solution": "Axis x = 6 / 6 = 1. y = 3 − 6 + 2 = −1. a > 0, so it is a minimum."
+            },
+            {
+              "id": "u4-sf4-q2",
+              "type": "input",
+              "prompt": "What is the minimum value of y = ½x² − 2x + 5?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Axis is x = 2 / (2 · ½).",
+              "solution": "Axis x = 2. y = ½(4) − 4 + 5 = 2 − 4 + 5 = 3."
+            },
+            {
+              "id": "u4-sf4-q3",
+              "type": "choice",
+              "prompt": "What is the range of y = −x² + 2x + 8?",
+              "choices": [
+                "y ≥ 9",
+                "y ≤ 8",
+                "y ≤ 1",
+                "y ≤ 9"
+              ],
+              "answer": 3,
+              "hint": "It opens down. Find the vertex y-value.",
+              "solution": "Axis x = 1. y = −1 + 2 + 8 = 9. It opens down, so y ≤ 9."
+            },
+            {
+              "id": "u4-sf4-q4",
+              "type": "input",
+              "prompt": "y = x² + 4x + k has a minimum value of −1. What is k?",
+              "answers": [
+                "3"
+              ],
+              "hint": "The minimum occurs at x = −2.",
+              "solution": "At x = −2: 4 − 8 + k = −1, so k = 3."
+            },
+            {
+              "id": "u4-sf4-q5",
+              "type": "input",
+              "prompt": "y = −3x² + bx + 2 has axis x = 2. What is b?",
+              "answers": [
+                "12"
+              ],
+              "hint": "Use −b / (2a) with a = −3.",
+              "solution": "−b / (−6) = 2, so b / 6 = 2 and b = 12."
+            },
+            {
+              "id": "u4-sf4-q6",
+              "type": "choice",
+              "prompt": "Which function has the lowest minimum value?",
+              "choices": [
+                "y = x² − 2x + 3",
+                "y = 2x² − 8x + 10",
+                "y = x² + 4x + 5",
+                "y = x² − 6x + 12"
+              ],
+              "answer": 2,
+              "hint": "Find the vertex y-value of each.",
+              "solution": "The minima are 2, 2, 1, and 3. The lowest is 1, from y = x² + 4x + 5."
+            },
+            {
+              "id": "u4-sf4-q7",
+              "type": "input",
+              "prompt": "Find the x-intercepts of y = x² − 6x + 5. Give both values.",
+              "answers": [
+                "1, 5"
+              ],
+              "hint": "Set y = 0 and factor.",
+              "solution": "x² − 6x + 5 = (x − 1)(x − 5) = 0, so x = 1 or x = 5."
+            },
+            {
+              "id": "u4-sf4-q8",
+              "type": "input",
+              "prompt": "What is the minimum value of y = 2x² − 8x + 6?",
+              "answers": [
+                "-2"
+              ],
+              "hint": "Axis is x = 8 / 4.",
+              "solution": "Axis x = 2. y = 8 − 16 + 6 = −2."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "factoring",
+      "title": "Factoring quadratics",
+      "lessons": [
+        {
+          "id": "factoring-1",
+          "teach": [
+            {
+              "title": "GCF and trinomials with a = 1",
+              "text": [
+                "Always pull out the greatest common factor first.",
+                "To factor x² + bx + c, find two numbers that multiply to c and add to b. Then write (x + m)(x + n)."
+              ],
+              "example": {
+                "problem": "Factor x² + 7x + 12",
+                "steps": [
+                  "Two numbers that multiply to 12 and add to 7: 3 and 4.",
+                  "(x + 3)(x + 4)",
+                  "Check: x² + 4x + 3x + 12 = x² + 7x + 12."
+                ]
+              }
+            },
+            {
+              "title": "GCF example",
+              "text": [
+                "The GCF is the biggest number and the highest power of x that divides every term."
+              ],
+              "example": {
+                "problem": "Factor 6x² + 9x",
+                "steps": [
+                  "GCF of 6 and 9 is 3. Both terms have x.",
+                  "GCF = 3x.",
+                  "6x² + 9x = 3x(2x + 3)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-fa1-q1",
+              "type": "choice",
+              "prompt": "Factor 8x² + 12x.",
+              "choices": [
+                "4(2x² + 3x)",
+                "4x(2x + 3)",
+                "2x(4x + 6)",
+                "4x(2x + 12)"
+              ],
+              "answer": 1,
+              "hint": "Find the GCF of both the numbers and the x parts. Take out all of it.",
+              "solution": "GCF of 8 and 12 is 4, and both have x, so the GCF is 4x. 8x² / 4x = 2x and 12x / 4x = 3. Answer: 4x(2x + 3)."
+            },
+            {
+              "id": "u4-fa1-q2",
+              "type": "input",
+              "prompt": "x² + 7x + 12 = (x + m)(x + n). Type m and n.",
+              "answers": [
+                "3, 4"
+              ],
+              "hint": "Find two numbers that multiply to 12 and add to 7.",
+              "solution": "3 · 4 = 12 and 3 + 4 = 7. So m and n are 3 and 4.",
+              "calculator": false
+            },
+            {
+              "id": "u4-fa1-q3",
+              "type": "choice",
+              "prompt": "Factor x² + 9x + 20.",
+              "choices": [
+                "(x + 4)(x + 5)",
+                "(x + 2)(x + 10)",
+                "(x − 4)(x − 5)",
+                "(x + 3)(x + 6)"
+              ],
+              "answer": 0,
+              "hint": "Which pair multiplies to 20 and adds to 9?",
+              "solution": "4 · 5 = 20 and 4 + 5 = 9. So (x + 4)(x + 5)."
+            },
+            {
+              "id": "u4-fa1-q4",
+              "type": "choice",
+              "prompt": "Factor x² − 5x + 6.",
+              "choices": [
+                "(x + 2)(x + 3)",
+                "(x − 1)(x − 6)",
+                "(x − 2)(x + 3)",
+                "(x − 2)(x − 3)"
+              ],
+              "answer": 3,
+              "hint": "The middle term is negative and the last term is positive, so both numbers are negative.",
+              "solution": "(−2)(−3) = 6 and −2 + −3 = −5. So (x − 2)(x − 3)."
+            },
+            {
+              "id": "u4-fa1-q5",
+              "type": "choice",
+              "prompt": "Factor x² + 2x − 15.",
+              "choices": [
+                "(x − 5)(x + 3)",
+                "(x + 5)(x + 3)",
+                "(x + 5)(x − 3)",
+                "(x + 15)(x − 1)"
+              ],
+              "answer": 2,
+              "hint": "The last term is negative, so one number is positive and one is negative. The bigger one is positive.",
+              "solution": "5 · (−3) = −15 and 5 + (−3) = 2. So (x + 5)(x − 3)."
+            },
+            {
+              "id": "u4-fa1-q6",
+              "type": "input",
+              "prompt": "x² − x − 12 = (x + m)(x + n). Type m and n (they can be negative).",
+              "answers": [
+                "3, -4"
+              ],
+              "hint": "Multiply to −12, add to −1.",
+              "solution": "3 · (−4) = −12 and 3 + (−4) = −1. So m and n are 3 and −4."
+            },
+            {
+              "id": "u4-fa1-q7",
+              "type": "choice",
+              "prompt": "Factor x² − 10x + 16.",
+              "choices": [
+                "(x + 2)(x + 8)",
+                "(x − 2)(x − 8)",
+                "(x − 4)(x − 4)",
+                "(x − 1)(x − 16)"
+              ],
+              "answer": 1,
+              "hint": "Both numbers are negative. List the pairs that multiply to 16.",
+              "solution": "(−2)(−8) = 16 and −2 + −8 = −10. So (x − 2)(x − 8)."
+            },
+            {
+              "id": "u4-fa1-q8",
+              "type": "choice",
+              "prompt": "Factor 5x³ − 15x².",
+              "choices": [
+                "5x²(x − 3)",
+                "5x(x − 3)",
+                "5x²(x + 3)",
+                "5(x³ − 3x²)"
+              ],
+              "answer": 0,
+              "hint": "Both terms share x², not just x.",
+              "solution": "GCF = 5x². 5x³ / 5x² = x and −15x² / 5x² = −3. Answer: 5x²(x − 3)."
+            }
+          ]
+        },
+        {
+          "id": "factoring-2",
+          "teach": [
+            {
+              "title": "Trinomials with a ≠ 1",
+              "text": [
+                "Multiply a · c. Find two numbers that multiply to ac and add to b.",
+                "Use them to split the middle term, then factor by grouping."
+              ],
+              "example": {
+                "problem": "Factor 2x² + 7x + 3",
+                "steps": [
+                  "a · c = 6. Numbers that multiply to 6 and add to 7: 1 and 6.",
+                  "Split: 2x² + x + 6x + 3.",
+                  "Group: x(2x + 1) + 3(2x + 1).",
+                  "(2x + 1)(x + 3)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-fa2-q1",
+              "type": "choice",
+              "prompt": "Factor 2x² + 5x + 2.",
+              "choices": [
+                "(2x − 1)(x − 2)",
+                "(2x + 2)(x + 1)",
+                "(x + 1)(2x + 4)",
+                "(2x + 1)(x + 2)"
+              ],
+              "answer": 3,
+              "hint": "ac = 4. Which two numbers multiply to 4 and add to 5?",
+              "solution": "ac = 4, and 1 + 4 = 5. Split: 2x² + x + 4x + 2 = x(2x + 1) + 2(2x + 1) = (2x + 1)(x + 2)."
+            },
+            {
+              "id": "u4-fa2-q2",
+              "type": "input",
+              "prompt": "To factor 3x² + 10x + 8, find two numbers that multiply to ac = 24 and add to 10. Type both.",
+              "answers": [
+                "4, 6"
+              ],
+              "hint": "List the pairs that multiply to 24.",
+              "solution": "4 · 6 = 24 and 4 + 6 = 10. The numbers are 4 and 6.",
+              "calculator": false
+            },
+            {
+              "id": "u4-fa2-q3",
+              "type": "choice",
+              "prompt": "Factor 3x² + 11x + 6.",
+              "choices": [
+                "(3x + 3)(x + 2)",
+                "(3x + 6)(x + 1)",
+                "(3x + 2)(x + 3)",
+                "(3x + 1)(x + 6)"
+              ],
+              "answer": 2,
+              "hint": "ac = 18. Which pair multiplies to 18 and adds to 11?",
+              "solution": "2 · 9 = 18 and 2 + 9 = 11. 3x² + 2x + 9x + 6 = x(3x + 2) + 3(3x + 2) = (3x + 2)(x + 3)."
+            },
+            {
+              "id": "u4-fa2-q4",
+              "type": "choice",
+              "prompt": "Factor 2x² − 7x + 3.",
+              "choices": [
+                "(2x + 1)(x + 3)",
+                "(2x − 1)(x − 3)",
+                "(2x − 3)(x − 1)",
+                "(2x − 1)(x + 3)"
+              ],
+              "answer": 1,
+              "hint": "Middle term negative, last term positive: both signs are negative.",
+              "solution": "ac = 6. −1 and −6 add to −7. 2x² − x − 6x + 3 = x(2x − 1) − 3(2x − 1) = (2x − 1)(x − 3)."
+            },
+            {
+              "id": "u4-fa2-q5",
+              "type": "choice",
+              "prompt": "Factor 4x² + 4x − 3.",
+              "choices": [
+                "(2x − 1)(2x + 3)",
+                "(2x + 1)(2x − 3)",
+                "(4x − 1)(x + 3)",
+                "(4x + 3)(x − 1)"
+              ],
+              "answer": 0,
+              "hint": "ac = −12. Find two numbers that multiply to −12 and add to 4.",
+              "solution": "−2 · 6 = −12 and −2 + 6 = 4. 4x² − 2x + 6x − 3 = 2x(2x − 1) + 3(2x − 1) = (2x − 1)(2x + 3)."
+            },
+            {
+              "id": "u4-fa2-q6",
+              "type": "choice",
+              "prompt": "Factor 6x² − x − 2.",
+              "choices": [
+                "(3x + 2)(2x − 1)",
+                "(6x − 1)(x + 2)",
+                "(3x − 1)(2x + 2)",
+                "(3x − 2)(2x + 1)"
+              ],
+              "answer": 3,
+              "hint": "ac = −12. Find two numbers that multiply to −12 and add to −1.",
+              "solution": "−4 · 3 = −12 and −4 + 3 = −1. 6x² − 4x + 3x − 2 = 2x(3x − 2) + 1(3x − 2) = (3x − 2)(2x + 1)."
+            },
+            {
+              "id": "u4-fa2-q7",
+              "type": "input",
+              "prompt": "To factor 5x² + 13x + 6, find two numbers that multiply to ac = 30 and add to 13. Type both.",
+              "answers": [
+                "3, 10"
+              ],
+              "hint": "List the pairs that multiply to 30.",
+              "solution": "3 · 10 = 30 and 3 + 10 = 13. (Then 5x² + 3x + 10x + 6 = (5x + 3)(x + 2).)",
+              "calculator": false
+            },
+            {
+              "id": "u4-fa2-q8",
+              "type": "choice",
+              "prompt": "Factor completely: 12x² + 10x − 12.",
+              "choices": [
+                "(3x − 2)(2x + 3)",
+                "2(3x + 2)(2x − 3)",
+                "2(3x − 2)(2x + 3)",
+                "2(6x − 2)(x + 3)"
+              ],
+              "answer": 2,
+              "hint": "Take out the GCF of 2 first. Then factor 6x² + 5x − 6.",
+              "solution": "12x² + 10x − 12 = 2(6x² + 5x − 6). For 6x² + 5x − 6, ac = −36 and 9 + (−4) = 5. So 6x² + 9x − 4x − 6 = 3x(2x + 3) − 2(2x + 3) = (3x − 2)(2x + 3). Answer: 2(3x − 2)(2x + 3)."
+            }
+          ]
+        },
+        {
+          "id": "factoring-3",
+          "teach": [
+            {
+              "title": "Special patterns",
+              "text": [
+                "Difference of squares: a² − b² = (a − b)(a + b). A sum of squares like x² + 9 does not factor.",
+                "Perfect square trinomials: a² + 2ab + b² = (a + b)² and a² − 2ab + b² = (a − b)²."
+              ],
+              "example": {
+                "problem": "Factor 9x² − 16",
+                "steps": [
+                  "9x² = (3x)² and 16 = 4².",
+                  "It is a difference of squares.",
+                  "(3x − 4)(3x + 4)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-fa3-q1",
+              "type": "choice",
+              "prompt": "Factor x² − 49.",
+              "choices": [
+                "(x − 7)²",
+                "(x − 7)(x + 7)",
+                "(x + 7)²",
+                "(x − 49)(x + 1)"
+              ],
+              "answer": 1,
+              "hint": "Difference of squares: 49 = 7².",
+              "solution": "x² − 49 = x² − 7² = (x − 7)(x + 7)."
+            },
+            {
+              "id": "u4-fa3-q2",
+              "type": "choice",
+              "prompt": "Factor 9x² − 16.",
+              "choices": [
+                "(3x − 4)(3x + 4)",
+                "(3x − 4)²",
+                "(9x − 4)(9x + 4)",
+                "(9x − 16)(x + 1)"
+              ],
+              "answer": 0,
+              "hint": "Take the square root of each term first.",
+              "solution": "9x² = (3x)² and 16 = 4². So (3x − 4)(3x + 4)."
+            },
+            {
+              "id": "u4-fa3-q3",
+              "type": "choice",
+              "prompt": "Factor x² + 10x + 25.",
+              "choices": [
+                "(x + 5)(x − 5)",
+                "(x + 25)(x + 1)",
+                "(x − 5)²",
+                "(x + 5)²"
+              ],
+              "answer": 3,
+              "hint": "Is the first term a square, the last term a square, and the middle twice their product?",
+              "solution": "x² = x², 25 = 5², and 2 · x · 5 = 10x. So (x + 5)²."
+            },
+            {
+              "id": "u4-fa3-q4",
+              "type": "choice",
+              "prompt": "Factor x² − 12x + 36.",
+              "choices": [
+                "(x + 6)²",
+                "(x − 6)(x + 6)",
+                "(x − 6)²",
+                "(x − 12)(x − 3)"
+              ],
+              "answer": 2,
+              "hint": "The middle term is negative.",
+              "solution": "36 = 6² and 2 · 6 = 12. With the − sign: (x − 6)²."
+            },
+            {
+              "id": "u4-fa3-q5",
+              "type": "choice",
+              "prompt": "Factor 4x² + 12x + 9.",
+              "choices": [
+                "(2x + 9)(2x + 1)",
+                "(2x + 3)²",
+                "(4x + 3)(x + 3)",
+                "(2x − 3)²"
+              ],
+              "answer": 1,
+              "hint": "Is the middle term 2 · 2x · 3?",
+              "solution": "4x² = (2x)², 9 = 3², and 2 · 2x · 3 = 12x. So (2x + 3)²."
+            },
+            {
+              "id": "u4-fa3-q6",
+              "type": "input",
+              "prompt": "x² + kx + 49 is a perfect square trinomial, and k is positive. What is k?",
+              "answers": [
+                "14"
+              ],
+              "hint": "The middle term is 2 times the square roots of the first and last terms.",
+              "solution": "49 = 7², so k = 2 · 7 = 14. Then x² + 14x + 49 = (x + 7)²."
+            },
+            {
+              "id": "u4-fa3-q7",
+              "type": "choice",
+              "prompt": "Factor x² + 36.",
+              "choices": [
+                "It does not factor (prime)",
+                "(x + 6)(x − 6)",
+                "(x + 6)²",
+                "(x − 6)²"
+              ],
+              "answer": 0,
+              "hint": "Is it a difference or a sum of squares? Multiply your guesses to check.",
+              "solution": "A sum of squares does not factor over the real numbers. (x + 6)(x − 6) = x² − 36, which is not it."
+            },
+            {
+              "id": "u4-fa3-q8",
+              "type": "choice",
+              "prompt": "Factor 2x² − 50.",
+              "choices": [
+                "2(x − 5)²",
+                "(2x − 5)(x + 10)",
+                "2(x² − 25)",
+                "2(x − 5)(x + 5)"
+              ],
+              "answer": 3,
+              "hint": "Take out the GCF first. What is left?",
+              "solution": "GCF = 2: 2(x² − 25). Then x² − 25 = (x − 5)(x + 5). Answer: 2(x − 5)(x + 5)."
+            }
+          ]
+        },
+        {
+          "id": "factoring-4",
+          "teach": [
+            {
+              "title": "Choosing a method",
+              "text": [
+                "Order of steps: GCF first. Then count terms. Two terms: difference of squares? Three terms: trinomial.",
+                "Check by multiplying back. Keep factoring until no factor can be broken down more."
+              ],
+              "example": {
+                "problem": "Factor x⁴ − 16",
+                "steps": [
+                  "x⁴ = (x²)² and 16 = 4².",
+                  "x⁴ − 16 = (x² − 4)(x² + 4).",
+                  "x² − 4 factors again: (x − 2)(x + 2).",
+                  "(x − 2)(x + 2)(x² + 4)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-fa4-q1",
+              "type": "choice",
+              "prompt": "Factor 3x² − 27.",
+              "choices": [
+                "3(x − 3)²",
+                "(3x − 9)(x + 3)",
+                "3(x − 3)(x + 3)",
+                "3(x² − 9)"
+              ],
+              "answer": 2,
+              "hint": "GCF first, then a difference of squares.",
+              "solution": "3x² − 27 = 3(x² − 9) = 3(x − 3)(x + 3)."
+            },
+            {
+              "id": "u4-fa4-q2",
+              "type": "choice",
+              "prompt": "Factor completely: x⁴ − 16.",
+              "choices": [
+                "(x² − 4)(x² + 4)",
+                "(x − 2)(x + 2)(x² + 4)",
+                "(x − 2)⁴",
+                "(x² + 4)²"
+              ],
+              "answer": 1,
+              "hint": "After the first split, one factor is still a difference of squares.",
+              "solution": "(x² − 4)(x² + 4). Then x² − 4 = (x − 2)(x + 2). Answer: (x − 2)(x + 2)(x² + 4)."
+            },
+            {
+              "id": "u4-fa4-q3",
+              "type": "choice",
+              "prompt": "Factor 2x² + 12x + 18.",
+              "choices": [
+                "2(x + 3)²",
+                "2(x + 9)(x + 1)",
+                "(2x + 6)(x + 3)",
+                "2(x + 3)(x − 3)"
+              ],
+              "answer": 0,
+              "hint": "GCF first. The trinomial left is a perfect square.",
+              "solution": "2(x² + 6x + 9) = 2(x + 3)²."
+            },
+            {
+              "id": "u4-fa4-q4",
+              "type": "choice",
+              "prompt": "Factor 6x² + 7x − 3.",
+              "choices": [
+                "(3x + 1)(2x − 3)",
+                "(6x − 1)(x + 3)",
+                "(3x + 3)(2x − 1)",
+                "(3x − 1)(2x + 3)"
+              ],
+              "answer": 3,
+              "hint": "ac = −18. Find two numbers that multiply to −18 and add to 7.",
+              "solution": "9 + (−2) = 7. 6x² + 9x − 2x − 3 = 3x(2x + 3) − 1(2x + 3) = (3x − 1)(2x + 3)."
+            },
+            {
+              "id": "u4-fa4-q5",
+              "type": "choice",
+              "prompt": "Factor x³ − 5x² − 14x.",
+              "choices": [
+                "x(x + 7)(x − 2)",
+                "(x − 7)(x + 2)",
+                "x(x − 7)(x + 2)",
+                "x(x − 14)(x + 1)"
+              ],
+              "answer": 2,
+              "hint": "Take out x first. Then factor the trinomial.",
+              "solution": "x(x² − 5x − 14). −7 · 2 = −14 and −7 + 2 = −5. So x(x − 7)(x + 2)."
+            },
+            {
+              "id": "u4-fa4-q6",
+              "type": "input",
+              "prompt": "(x + 8)(x − 3) = x² + bx − 24. What is b?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Multiply out and combine the x terms: 8x and −3x.",
+              "solution": "(x + 8)(x − 3) = x² − 3x + 8x − 24 = x² + 5x − 24. So b = 5."
+            },
+            {
+              "id": "u4-fa4-q7",
+              "type": "choice",
+              "prompt": "Factor x² − 6x − 16.",
+              "choices": [
+                "(x + 8)(x − 2)",
+                "(x − 8)(x + 2)",
+                "(x − 8)(x − 2)",
+                "(x − 4)(x + 4)"
+              ],
+              "answer": 1,
+              "hint": "Multiply to −16, add to −6.",
+              "solution": "−8 · 2 = −16 and −8 + 2 = −6. So (x − 8)(x + 2)."
+            },
+            {
+              "id": "u4-fa4-q8",
+              "type": "choice",
+              "prompt": "Factor 20x² − 45.",
+              "choices": [
+                "5(2x − 3)(2x + 3)",
+                "5(2x − 3)²",
+                "(10x − 15)(2x + 3)",
+                "5(4x² − 9)"
+              ],
+              "answer": 0,
+              "hint": "GCF first, then 4x² − 9.",
+              "solution": "20x² − 45 = 5(4x² − 9) = 5(2x − 3)(2x + 3)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solve-factoring",
+      "title": "Solving by factoring",
+      "lessons": [
+        {
+          "id": "solve-factoring-1",
+          "teach": [
+            {
+              "title": "Zero product property",
+              "text": [
+                "If A · B = 0, then A = 0 or B = 0. A product is zero only when one of its factors is zero.",
+                "So when an equation is already factored and equals 0, set each factor equal to 0 and solve."
+              ],
+              "example": {
+                "problem": "Solve (x − 3)(x + 5) = 0",
+                "steps": [
+                  "x − 3 = 0 gives x = 3.",
+                  "x + 5 = 0 gives x = −5.",
+                  "Solutions: x = 3 and x = −5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sv1-q1",
+              "type": "input",
+              "prompt": "Solve (x − 2)(x + 7) = 0. Give both solutions.",
+              "answers": [
+                "2, -7"
+              ],
+              "hint": "Set each factor equal to 0.",
+              "solution": "x − 2 = 0 gives x = 2. x + 7 = 0 gives x = −7."
+            },
+            {
+              "id": "u4-sv1-q2",
+              "type": "input",
+              "prompt": "Solve (x + 4)(x + 1) = 0. Give both solutions.",
+              "answers": [
+                "-4, -1"
+              ],
+              "hint": "Each factor equals 0 separately. Watch the signs.",
+              "solution": "x + 4 = 0 gives x = −4. x + 1 = 0 gives x = −1."
+            },
+            {
+              "id": "u4-sv1-q3",
+              "type": "input",
+              "prompt": "Solve x(x − 9) = 0. Give both solutions.",
+              "answers": [
+                "0, 9"
+              ],
+              "hint": "The factor x is also a factor.",
+              "solution": "x = 0 or x − 9 = 0. So x = 0 or x = 9."
+            },
+            {
+              "id": "u4-sv1-q4",
+              "type": "choice",
+              "prompt": "Solve (2x − 1)(x + 6) = 0.",
+              "choices": [
+                "x = 2 or x = −6",
+                "x = −½ or x = 6",
+                "x = ½ or x = 6",
+                "x = ½ or x = −6"
+              ],
+              "answer": 3,
+              "hint": "For 2x − 1 = 0, add 1 and then divide by 2.",
+              "solution": "2x − 1 = 0 gives x = ½. x + 6 = 0 gives x = −6."
+            },
+            {
+              "id": "u4-sv1-q5",
+              "type": "input",
+              "prompt": "Solve (3x + 5)(x − 4) = 0. Give both solutions (use a fraction).",
+              "answers": [
+                "-5/3, 4"
+              ],
+              "hint": "Solve 3x + 5 = 0 by subtracting 5 and then dividing by 3.",
+              "solution": "3x + 5 = 0 gives x = −5/3. x − 4 = 0 gives x = 4."
+            },
+            {
+              "id": "u4-sv1-q6",
+              "type": "choice",
+              "prompt": "Why can you set each factor equal to 0 in (x − 1)(x + 2) = 0?",
+              "choices": [
+                "The factors must be equal to each other",
+                "The sum of the factors must be 0",
+                "A product is 0 only when at least one factor is 0",
+                "Every factor must be positive"
+              ],
+              "answer": 2,
+              "hint": "Think about what multiplying by 0 does.",
+              "solution": "If neither factor is 0, the product cannot be 0. So at least one factor must be 0."
+            },
+            {
+              "id": "u4-sv1-q7",
+              "type": "input",
+              "prompt": "Solve (x − 8)² = 0.",
+              "answers": [
+                "8"
+              ],
+              "hint": "Both factors are the same: (x − 8)(x − 8).",
+              "solution": "x − 8 = 0, so x = 8. It is a double solution."
+            },
+            {
+              "id": "u4-sv1-q8",
+              "type": "input",
+              "prompt": "Solve 5x(x + 3)(x − 2) = 0. Give all three solutions.",
+              "answers": [
+                "0, -3, 2"
+              ],
+              "hint": "Each factor with x in it can be 0. The 5 cannot.",
+              "solution": "5x = 0 gives x = 0. x + 3 = 0 gives x = −3. x − 2 = 0 gives x = 2."
+            }
+          ]
+        },
+        {
+          "id": "solve-factoring-2",
+          "teach": [
+            {
+              "title": "Set it equal to 0 first",
+              "text": [
+                "The zero product property only works when one side is 0.",
+                "Move every term to one side, factor, then set each factor to 0.",
+                "Never divide both sides by x: you will lose the solution x = 0."
+              ],
+              "example": {
+                "problem": "Solve x² = 7x − 12",
+                "steps": [
+                  "Move everything to one side: x² − 7x + 12 = 0.",
+                  "Factor: (x − 3)(x − 4) = 0.",
+                  "x = 3 or x = 4."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sv2-q1",
+              "type": "input",
+              "prompt": "Solve x² − 5x + 6 = 0. Give both solutions.",
+              "answers": [
+                "2, 3"
+              ],
+              "hint": "Factor into (x − m)(x − n).",
+              "solution": "(x − 2)(x − 3) = 0, so x = 2 or x = 3."
+            },
+            {
+              "id": "u4-sv2-q2",
+              "type": "input",
+              "prompt": "Solve x² + 3x − 10 = 0. Give both solutions.",
+              "answers": [
+                "-5, 2"
+              ],
+              "hint": "Two numbers that multiply to −10 and add to 3.",
+              "solution": "(x + 5)(x − 2) = 0, so x = −5 or x = 2."
+            },
+            {
+              "id": "u4-sv2-q3",
+              "type": "input",
+              "prompt": "Solve x² − 9 = 0. Give both solutions.",
+              "answers": [
+                "3, -3"
+              ],
+              "hint": "Difference of squares.",
+              "solution": "(x − 3)(x + 3) = 0, so x = 3 or x = −3."
+            },
+            {
+              "id": "u4-sv2-q4",
+              "type": "input",
+              "prompt": "Solve x² + 8x = 0. Give both solutions.",
+              "answers": [
+                "0, -8"
+              ],
+              "hint": "Factor out x.",
+              "solution": "x(x + 8) = 0, so x = 0 or x = −8."
+            },
+            {
+              "id": "u4-sv2-q5",
+              "type": "input",
+              "prompt": "Solve 2x² − 8x = 0. Give both solutions.",
+              "answers": [
+                "0, 4"
+              ],
+              "hint": "The GCF is 2x.",
+              "solution": "2x(x − 4) = 0, so x = 0 or x = 4."
+            },
+            {
+              "id": "u4-sv2-q6",
+              "type": "input",
+              "prompt": "Solve x² = 7x − 12. Give both solutions.",
+              "answers": [
+                "3, 4"
+              ],
+              "hint": "Move everything to the left side first.",
+              "solution": "x² − 7x + 12 = 0, so (x − 3)(x − 4) = 0. x = 3 or x = 4."
+            },
+            {
+              "id": "u4-sv2-q7",
+              "type": "input",
+              "prompt": "Solve x² + 14x + 49 = 0.",
+              "answers": [
+                "-7"
+              ],
+              "hint": "Perfect square trinomial.",
+              "solution": "(x + 7)² = 0, so x = −7."
+            },
+            {
+              "id": "u4-sv2-q8",
+              "type": "choice",
+              "prompt": "Solve x² − 4x = 5.",
+              "choices": [
+                "x = 5 or x = 9",
+                "x = 5 or x = −1",
+                "x = −5 or x = 1",
+                "x = 4 or x = 5"
+              ],
+              "answer": 1,
+              "hint": "Do not factor x(x − 4) = 5. Move the 5 first.",
+              "solution": "x² − 4x − 5 = 0, so (x − 5)(x + 1) = 0. x = 5 or x = −1."
+            }
+          ]
+        },
+        {
+          "id": "solve-factoring-3",
+          "teach": [
+            {
+              "title": "Harder equations to factor",
+              "text": [
+                "Use all your factoring tools: GCF, a ≠ 1, difference of squares, perfect squares.",
+                "A GCF that is just a number never gives a solution. It does not change the answers."
+              ],
+              "example": {
+                "problem": "Solve 2x² + 5x − 3 = 0",
+                "steps": [
+                  "ac = −6, and 6 + (−1) = 5.",
+                  "2x² + 6x − x − 3 = 2x(x + 3) − 1(x + 3) = (2x − 1)(x + 3).",
+                  "x = ½ or x = −3."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sv3-q1",
+              "type": "input",
+              "prompt": "Solve 2x² + 5x − 3 = 0. Give both solutions (use a fraction).",
+              "answers": [
+                "1/2, -3"
+              ],
+              "hint": "Factor into (2x − 1)(x + 3).",
+              "solution": "(2x − 1)(x + 3) = 0. x = ½ or x = −3."
+            },
+            {
+              "id": "u4-sv3-q2",
+              "type": "input",
+              "prompt": "Solve 3x² − 10x + 8 = 0. Give both solutions.",
+              "answers": [
+                "4/3, 2"
+              ],
+              "hint": "ac = 24. Find two numbers that multiply to 24 and add to −10.",
+              "solution": "3x² − 6x − 4x + 8 = 3x(x − 2) − 4(x − 2) = (3x − 4)(x − 2). x = 4/3 or x = 2."
+            },
+            {
+              "id": "u4-sv3-q3",
+              "type": "input",
+              "prompt": "Solve 6x² + x − 2 = 0. Give both solutions.",
+              "answers": [
+                "-2/3, 1/2"
+              ],
+              "hint": "The factors are (3x + 2)(2x − 1).",
+              "solution": "(3x + 2)(2x − 1) = 0. x = −2/3 or x = 1/2."
+            },
+            {
+              "id": "u4-sv3-q4",
+              "type": "input",
+              "prompt": "Solve 4x² − 25 = 0. Give both solutions.",
+              "answers": [
+                "5/2, -5/2"
+              ],
+              "hint": "Difference of squares: (2x)² − 5².",
+              "solution": "(2x − 5)(2x + 5) = 0. x = 5/2 or x = −5/2."
+            },
+            {
+              "id": "u4-sv3-q5",
+              "type": "input",
+              "prompt": "Solve 3x² + 12x + 12 = 0.",
+              "answers": [
+                "-2"
+              ],
+              "hint": "Take out the 3 first.",
+              "solution": "3(x² + 4x + 4) = 3(x + 2)² = 0. So x = −2."
+            },
+            {
+              "id": "u4-sv3-q6",
+              "type": "input",
+              "prompt": "Solve 2x² − 18 = 0. Give both solutions.",
+              "answers": [
+                "3, -3"
+              ],
+              "hint": "GCF of 2 first.",
+              "solution": "2(x² − 9) = 2(x − 3)(x + 3) = 0. x = 3 or x = −3."
+            },
+            {
+              "id": "u4-sv3-q7",
+              "type": "input",
+              "prompt": "Solve 5x² = 20x. Give both solutions.",
+              "answers": [
+                "0, 4"
+              ],
+              "hint": "Do not divide by x. Move 20x to the left.",
+              "solution": "5x² − 20x = 0, so 5x(x − 4) = 0. x = 0 or x = 4."
+            },
+            {
+              "id": "u4-sv3-q8",
+              "type": "input",
+              "prompt": "Solve x³ − 4x = 0. Give all three solutions.",
+              "answers": [
+                "0, 2, -2"
+              ],
+              "hint": "Factor out x. Then use difference of squares.",
+              "solution": "x(x² − 4) = x(x − 2)(x + 2) = 0. x = 0, 2, or −2."
+            }
+          ]
+        },
+        {
+          "id": "solve-factoring-4",
+          "teach": [
+            {
+              "title": "Word problems",
+              "text": [
+                "Define a variable, write an equation, set it equal to 0, and factor.",
+                "Check each answer in the story. A length cannot be negative, so some solutions get thrown out."
+              ],
+              "example": {
+                "problem": "A rectangle is 3 cm longer than it is wide. Its area is 40 cm². Find the width.",
+                "steps": [
+                  "Let w = width. Length is w + 3. w(w + 3) = 40.",
+                  "w² + 3w − 40 = 0, so (w + 8)(w − 5) = 0.",
+                  "w = −8 or w = 5. A width cannot be negative, so w = 5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sv4-q1",
+              "type": "input",
+              "prompt": "The product of two consecutive positive integers is 56. What is the smaller integer?",
+              "answers": [
+                "7"
+              ],
+              "hint": "Let n and n + 1 be the integers. Write n(n + 1) = 56.",
+              "solution": "n² + n − 56 = 0, so (n + 8)(n − 7) = 0. n = 7 (n = −8 is not positive). Check: 7 · 8 = 56."
+            },
+            {
+              "id": "u4-sv4-q2",
+              "type": "input",
+              "prompt": "A number squared equals 4 times the number plus 12. Find both numbers.",
+              "answers": [
+                "6, -2"
+              ],
+              "hint": "Write x² = 4x + 12, then move everything to one side.",
+              "solution": "x² − 4x − 12 = 0, so (x − 6)(x + 2) = 0. x = 6 or x = −2."
+            },
+            {
+              "id": "u4-sv4-q3",
+              "type": "input",
+              "prompt": "A rectangle is 3 cm longer than it is wide. Its area is 40 cm². What is the width in cm?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Width w, length w + 3. Area = w(w + 3).",
+              "solution": "w² + 3w − 40 = 0, so (w + 8)(w − 5) = 0. w = 5 (not −8)."
+            },
+            {
+              "id": "u4-sv4-q4",
+              "type": "input",
+              "prompt": "A ball is thrown so that its height is h = −16t² + 48t feet after t seconds. When does it land (t > 0)? Type the number of seconds.",
+              "answers": [
+                "3"
+              ],
+              "hint": "It lands when h = 0.",
+              "solution": "−16t² + 48t = 0, so −16t(t − 3) = 0. t = 0 (the throw) or t = 3. It lands at t = 3."
+            },
+            {
+              "id": "u4-sv4-q5",
+              "type": "input",
+              "prompt": "Solve (x + 3)(x − 1) = 12. Give both solutions.",
+              "answers": [
+                "-5, 3"
+              ],
+              "hint": "Do not set each factor equal to 12. Multiply out and move the 12 first.",
+              "solution": "x² + 2x − 3 = 12, so x² + 2x − 15 = 0. (x + 5)(x − 3) = 0. x = −5 or x = 3."
+            },
+            {
+              "id": "u4-sv4-q6",
+              "type": "choice",
+              "prompt": "What is the right first step to solve x² + x = 20?",
+              "choices": [
+                "Rewrite as x² + x − 20 = 0",
+                "Factor x(x + 1) = 20 and set x = 20",
+                "Divide both sides by x",
+                "Take the square root of both sides"
+              ],
+              "answer": 0,
+              "hint": "The zero product property needs 0 on one side.",
+              "solution": "Subtract 20 from both sides to get x² + x − 20 = 0. Then factor."
+            },
+            {
+              "id": "u4-sv4-q7",
+              "type": "input",
+              "prompt": "Solve 2x² + 7x = 15. Give both solutions (use a fraction).",
+              "answers": [
+                "3/2, -5"
+              ],
+              "hint": "Move 15 first, then use ac = −30.",
+              "solution": "2x² + 7x − 15 = 0. 10 + (−3) = 7: 2x² + 10x − 3x − 15 = (2x − 3)(x + 5). x = 3/2 or x = −5."
+            },
+            {
+              "id": "u4-sv4-q8",
+              "type": "input",
+              "prompt": "A square has side length x + 2 cm and area 49 cm². What is x?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Write (x + 2)² = 49, multiply out, and move 49 over.",
+              "solution": "x² + 4x + 4 = 49, so x² + 4x − 45 = 0. (x + 9)(x − 5) = 0. x = 5 (x = −9 would make a negative side)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "square-roots",
+      "title": "Solving by square roots",
+      "lessons": [
+        {
+          "id": "square-roots-1",
+          "teach": [
+            {
+              "title": "Solving x² = k",
+              "text": [
+                "If x² = k and k > 0, then x = ±√k: two solutions, one positive and one negative.",
+                "If k = 0, then x = 0. If k < 0, there is no real solution, because a real number squared is never negative."
+              ],
+              "example": {
+                "problem": "Solve x² = 20",
+                "steps": [
+                  "x = ±√20.",
+                  "√20 = √(4 · 5) = 2√5.",
+                  "x = ±2√5"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sr1-q1",
+              "type": "input",
+              "prompt": "Solve x² = 49. Give both solutions.",
+              "answers": [
+                "7, -7"
+              ],
+              "hint": "Take the square root of both sides. Remember ±.",
+              "solution": "x = ±√49 = ±7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q2",
+              "type": "input",
+              "prompt": "Solve x² = 25/4. Give both solutions.",
+              "answers": [
+                "5/2, -5/2"
+              ],
+              "hint": "Take the root of the top and the bottom.",
+              "solution": "x = ±√(25/4) = ±5/2.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q3",
+              "type": "input",
+              "prompt": "Solve x² − 36 = 0. Give both solutions.",
+              "answers": [
+                "6, -6"
+              ],
+              "hint": "Add 36 to both sides first.",
+              "solution": "x² = 36, so x = ±6.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q4",
+              "type": "choice",
+              "prompt": "Solve x² = 20.",
+              "choices": [
+                "x = ±10",
+                "x = ±4√5",
+                "x = ±5√2",
+                "x = ±2√5"
+              ],
+              "answer": 3,
+              "hint": "Simplify √20 by pulling out the perfect square 4.",
+              "solution": "x = ±√20 = ±√(4 · 5) = ±2√5.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q5",
+              "type": "choice",
+              "prompt": "Solve x² = −36.",
+              "choices": [
+                "x = ±3",
+                "x = 3",
+                "No real solution",
+                "x = −3"
+              ],
+              "answer": 2,
+              "hint": "Can a real number squared be negative?",
+              "solution": "A real number squared is never negative. So there is no real solution."
+            },
+            {
+              "id": "u4-sr1-q6",
+              "type": "input",
+              "prompt": "Solve 3x² = 75. Give both solutions.",
+              "answers": [
+                "5, -5"
+              ],
+              "hint": "Divide both sides by 3 before taking the root.",
+              "solution": "x² = 25, so x = ±5.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q7",
+              "type": "choice",
+              "prompt": "Solve x² = 18.",
+              "choices": [
+                "x = ±9",
+                "x = ±3√2",
+                "x = ±2√3",
+                "x = ±3√6"
+              ],
+              "answer": 1,
+              "hint": "The perfect square inside 18 is 9.",
+              "solution": "x = ±√18 = ±√(9 · 2) = ±3√2.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr1-q8",
+              "type": "input",
+              "prompt": "Solve 2x² + 1 = 33. Give both solutions.",
+              "answers": [
+                "4, -4"
+              ],
+              "hint": "Subtract 1, divide by 2, then take the root.",
+              "solution": "2x² = 32, x² = 16, so x = ±4.",
+              "calculator": false
+            }
+          ]
+        },
+        {
+          "id": "square-roots-2",
+          "teach": [
+            {
+              "title": "Simplifying radicals",
+              "text": [
+                "Look for the biggest perfect square factor: 4, 9, 16, 25, 36, 49, ...",
+                "Use √(a · b) = √a · √b. The square root of the perfect square comes out front."
+              ],
+              "example": {
+                "problem": "Simplify √72",
+                "steps": [
+                  "72 = 36 · 2, and 36 is a perfect square.",
+                  "√72 = √36 · √2 = 6√2."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sr2-q1",
+              "type": "input",
+              "prompt": "What is √49?",
+              "answers": [
+                "7"
+              ],
+              "hint": "What number times itself is 49?",
+              "solution": "7 · 7 = 49, so √49 = 7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q2",
+              "type": "choice",
+              "prompt": "Simplify √50.",
+              "choices": [
+                "5√2",
+                "25√2",
+                "10√5",
+                "2√25"
+              ],
+              "answer": 0,
+              "hint": "50 = 25 · 2.",
+              "solution": "√50 = √25 · √2 = 5√2.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q3",
+              "type": "input",
+              "prompt": "√48 = k√3. What is k?",
+              "answers": [
+                "4"
+              ],
+              "hint": "48 = 16 · 3.",
+              "solution": "√48 = √16 · √3 = 4√3. So k = 4.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q4",
+              "type": "choice",
+              "prompt": "Simplify √75.",
+              "choices": [
+                "3√5",
+                "25√3",
+                "15√5",
+                "5√3"
+              ],
+              "answer": 3,
+              "hint": "75 = 25 · 3.",
+              "solution": "√75 = √25 · √3 = 5√3.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q5",
+              "type": "choice",
+              "prompt": "Simplify √200.",
+              "choices": [
+                "100√2",
+                "20√5",
+                "10√2",
+                "2√10"
+              ],
+              "answer": 2,
+              "hint": "200 = 100 · 2. Use the biggest perfect square.",
+              "solution": "√200 = √100 · √2 = 10√2.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q6",
+              "type": "input",
+              "prompt": "√72 = k√2. What is k?",
+              "answers": [
+                "6"
+              ],
+              "hint": "72 = 36 · 2.",
+              "solution": "√72 = √36 · √2 = 6√2. So k = 6.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q7",
+              "type": "choice",
+              "prompt": "Simplify 3√28.",
+              "choices": [
+                "9√7",
+                "6√7",
+                "2√21",
+                "12√7"
+              ],
+              "answer": 1,
+              "hint": "Simplify √28 first, then multiply by 3.",
+              "solution": "√28 = √4 · √7 = 2√7. Then 3 · 2√7 = 6√7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr2-q8",
+              "type": "input",
+              "prompt": "√45 = k√5. What is k?",
+              "answers": [
+                "3"
+              ],
+              "hint": "45 = 9 · 5.",
+              "solution": "√45 = √9 · √5 = 3√5. So k = 3.",
+              "calculator": false
+            }
+          ]
+        },
+        {
+          "id": "square-roots-3",
+          "teach": [
+            {
+              "title": "Solving (x − h)² = k",
+              "text": [
+                "When a squared expression equals a number, take the square root of both sides: x − h = ±√k.",
+                "Then solve for x. If k is not a perfect square, leave the answer as h ± √k."
+              ],
+              "example": {
+                "problem": "Solve (x − 2)² = 9",
+                "steps": [
+                  "Take square roots: x − 2 = ±3.",
+                  "x = 2 + 3 = 5 or x = 2 − 3 = −1."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sr3-q1",
+              "type": "input",
+              "prompt": "Solve (x − 3)² = 16. Give both solutions.",
+              "answers": [
+                "7, -1"
+              ],
+              "hint": "x − 3 = ±4.",
+              "solution": "x − 3 = 4 gives x = 7. x − 3 = −4 gives x = −1.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q2",
+              "type": "input",
+              "prompt": "Solve (x + 5)² = 4. Give both solutions.",
+              "answers": [
+                "-3, -7"
+              ],
+              "hint": "x + 5 = ±2. Subtract 5.",
+              "solution": "x + 5 = 2 gives x = −3. x + 5 = −2 gives x = −7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q3",
+              "type": "input",
+              "prompt": "Solve (x + 1)² = 25. Give both solutions.",
+              "answers": [
+                "4, -6"
+              ],
+              "hint": "x + 1 = ±5.",
+              "solution": "x + 1 = 5 gives x = 4. x + 1 = −5 gives x = −6.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q4",
+              "type": "choice",
+              "prompt": "Solve (x − 4)² = −1.",
+              "choices": [
+                "No real solution",
+                "x = 5 or x = 3",
+                "x = 4",
+                "x = −3 or x = −5"
+              ],
+              "answer": 0,
+              "hint": "Can a square be negative?",
+              "solution": "A real square is never −1. No real solution."
+            },
+            {
+              "id": "u4-sr3-q5",
+              "type": "choice",
+              "prompt": "Solve (x − 2)² = 7.",
+              "choices": [
+                "x = −2 ± √7",
+                "x = 2 ± 7",
+                "x = ±√5",
+                "x = 2 ± √7"
+              ],
+              "answer": 3,
+              "hint": "7 is not a perfect square. Leave the root.",
+              "solution": "x − 2 = ±√7, so x = 2 ± √7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q6",
+              "type": "input",
+              "prompt": "Solve (2x − 1)² = 9. Give both solutions.",
+              "answers": [
+                "2, -1"
+              ],
+              "hint": "2x − 1 = ±3. Then solve each.",
+              "solution": "2x − 1 = 3 gives x = 2. 2x − 1 = −3 gives x = −1.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q7",
+              "type": "choice",
+              "prompt": "Solve (x + 6)² = 12.",
+              "choices": [
+                "x = 6 ± 2√3",
+                "x = −6 ± √6",
+                "x = −6 ± 2√3",
+                "x = −6 ± 4√3"
+              ],
+              "answer": 2,
+              "hint": "Simplify √12 = √4 · √3.",
+              "solution": "x + 6 = ±√12 = ±2√3. So x = −6 ± 2√3.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr3-q8",
+              "type": "input",
+              "prompt": "Solve 3(x − 1)² = 48. Give both solutions.",
+              "answers": [
+                "5, -3"
+              ],
+              "hint": "Divide by 3 first.",
+              "solution": "(x − 1)² = 16, so x − 1 = ±4. x = 5 or x = −3.",
+              "calculator": false
+            }
+          ]
+        },
+        {
+          "id": "square-roots-4",
+          "teach": [
+            {
+              "title": "Mixed and applied",
+              "text": [
+                "Isolate the squared part first, then take ±√. Check the sign of what is left: negative means no real solution.",
+                "In a word problem, a length or time must be positive, so throw out a negative answer."
+              ],
+              "example": {
+                "problem": "An object is dropped. Its height drop is d = 16t². How long to fall 144 feet?",
+                "steps": [
+                  "16t² = 144, so t² = 9.",
+                  "t = ±3.",
+                  "Time cannot be negative, so t = 3 seconds."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-sr4-q1",
+              "type": "input",
+              "prompt": "Solve 4x² = 100. Give both solutions.",
+              "answers": [
+                "5, -5"
+              ],
+              "hint": "Divide by 4 first.",
+              "solution": "x² = 25, so x = ±5.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q2",
+              "type": "choice",
+              "prompt": "Solve 2x² + 18 = 0.",
+              "choices": [
+                "x = ±3",
+                "No real solution",
+                "x = ±9",
+                "x = 3"
+              ],
+              "answer": 1,
+              "hint": "Isolate x². What sign does it have?",
+              "solution": "2x² = −18, so x² = −36. No real number squared is −36."
+            },
+            {
+              "id": "u4-sr4-q3",
+              "type": "input",
+              "prompt": "Solve (x − 7)² = 0.",
+              "answers": [
+                "7"
+              ],
+              "hint": "The only number whose square is 0 is 0.",
+              "solution": "x − 7 = 0, so x = 7.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q4",
+              "type": "choice",
+              "prompt": "Solve 2(x + 3)² = 50.",
+              "choices": [
+                "x = 2 or x = −8",
+                "x = 8 or x = −2",
+                "x = 22 or x = −28",
+                "x = 2 only"
+              ],
+              "answer": 0,
+              "hint": "Divide by 2, then take ±.",
+              "solution": "(x + 3)² = 25, so x + 3 = ±5. x = 2 or x = −8.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q5",
+              "type": "input",
+              "prompt": "A square has area 81 cm². What is its side length in cm?",
+              "answers": [
+                "9"
+              ],
+              "hint": "Area = side². A side cannot be negative.",
+              "solution": "s² = 81, so s = ±9. A length is positive, so s = 9.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q6",
+              "type": "input",
+              "prompt": "A dropped object falls d = 16t² feet in t seconds. How many seconds to fall 144 feet?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Set 16t² = 144.",
+              "solution": "t² = 9, so t = ±3. Time cannot be negative, so t = 3.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q7",
+              "type": "choice",
+              "prompt": "Solve 3(x − 1)² = 24.",
+              "choices": [
+                "x = 1 ± 8",
+                "x = 1 ± 4√2",
+                "x = −1 ± 2√2",
+                "x = 1 ± 2√2"
+              ],
+              "answer": 3,
+              "hint": "Divide by 3. Then simplify √8.",
+              "solution": "(x − 1)² = 8, so x − 1 = ±√8 = ±2√2. x = 1 ± 2√2.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q8",
+              "type": "input",
+              "prompt": "Solve (x + 4)² − 49 = 0. Give both solutions.",
+              "answers": [
+                "3, -11"
+              ],
+              "hint": "Add 49 to both sides.",
+              "solution": "(x + 4)² = 49, so x + 4 = ±7. x = 3 or x = −11.",
+              "calculator": false
+            },
+            {
+              "id": "u4-sr4-q9",
+              "type": "choice",
+              "prompt": "For which value of k does (x − 2)² = k have no real solution?",
+              "choices": [
+                "k = 0",
+                "k = 4",
+                "k = −4",
+                "k = 16"
+              ],
+              "answer": 2,
+              "hint": "A real square is never negative.",
+              "solution": "If k < 0 there is no real solution. Only −4 is negative."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "imaginary",
+      "title": "Imaginary numbers",
+      "lessons": [
+        {
+          "id": "imaginary-1",
+          "teach": [
+            {
+              "title": "The number i",
+              "text": [
+                "No real number squares to a negative. So we define i = √(−1). That gives i² = −1.",
+                "For a negative radicand, pull out the −1: √(−n) = i√n."
+              ],
+              "example": {
+                "problem": "Simplify √(−16)",
+                "steps": [
+                  "Split off the negative: √(−16) = √16 · √(−1).",
+                  "√16 = 4 and √(−1) = i.",
+                  "√(−16) = 4i"
+                ]
+              }
+            },
+            {
+              "title": "Simplifying √(−n) when n is not a perfect square",
+              "text": [
+                "Pull out i first. Then simplify the radical the usual way, by taking out perfect squares.",
+                "Write the i in front of the radical so it is not mistaken for part of the root: 2i√3."
+              ],
+              "example": {
+                "problem": "Simplify √(−12)",
+                "steps": [
+                  "√(−12) = i√12.",
+                  "√12 = √4 · √3 = 2√3.",
+                  "√(−12) = 2i√3"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-im1-q1",
+              "type": "choice",
+              "prompt": "What is the value of i²?",
+              "choices": [
+                "1",
+                "i",
+                "−1",
+                "−i"
+              ],
+              "answer": 2,
+              "hint": "i is defined as √(−1). Square both sides of that.",
+              "solution": "i = √(−1), so i² = (√(−1))² = −1."
+            },
+            {
+              "id": "u4-im1-q2",
+              "type": "input",
+              "prompt": "√(−49) = bi. What is b?",
+              "answers": [
+                "7"
+              ],
+              "hint": "√(−49) = √49 · √(−1).",
+              "solution": "√49 = 7 and √(−1) = i, so √(−49) = 7i. b = 7."
+            },
+            {
+              "id": "u4-im1-q3",
+              "type": "choice",
+              "prompt": "Simplify √(−25).",
+              "choices": [
+                "5i",
+                "−5i",
+                "5",
+                "25i"
+              ],
+              "answer": 0,
+              "hint": "Take out the −1 as i, then take the square root of 25.",
+              "solution": "√(−25) = √25 · √(−1) = 5i."
+            },
+            {
+              "id": "u4-im1-q4",
+              "type": "input",
+              "prompt": "√(−81) = bi. What is b?",
+              "answers": [
+                "9"
+              ],
+              "hint": "Think of what number times itself is 81.",
+              "solution": "√(−81) = √81 · i = 9i, so b = 9."
+            },
+            {
+              "id": "u4-im1-q5",
+              "type": "choice",
+              "prompt": "Simplify √(−20).",
+              "choices": [
+                "4i√5",
+                "−2i√5",
+                "5i√2",
+                "2i√5"
+              ],
+              "answer": 3,
+              "hint": "Pull out i. Then √20 = √4 · √5.",
+              "solution": "√(−20) = i√20 = i · √4 · √5 = 2i√5."
+            },
+            {
+              "id": "u4-im1-q6",
+              "type": "input",
+              "prompt": "√(−36) + √(−4) = bi. What is b?",
+              "answers": [
+                "8"
+              ],
+              "hint": "Write each term as a multiple of i, then add.",
+              "solution": "√(−36) = 6i and √(−4) = 2i. 6i + 2i = 8i, so b = 8."
+            },
+            {
+              "id": "u4-im1-q7",
+              "type": "choice",
+              "prompt": "Which of these is NOT a real number?",
+              "choices": [
+                "−√16",
+                "√(−16)",
+                "∛(−8)",
+                "√0"
+              ],
+              "answer": 1,
+              "hint": "A real number can be placed on the number line. Check each one.",
+              "solution": "−√16 = −4, ∛(−8) = −2 and √0 = 0 are all real. √(−16) = 4i is imaginary."
+            },
+            {
+              "id": "u4-im1-q8",
+              "type": "input",
+              "prompt": "√(−18) = 3i√b. What is b?",
+              "answers": [
+                "2"
+              ],
+              "hint": "18 = 9 · 2.",
+              "solution": "√(−18) = i√18 = i · √9 · √2 = 3i√2, so b = 2."
+            }
+          ]
+        },
+        {
+          "id": "imaginary-2",
+          "teach": [
+            {
+              "title": "The powers of i repeat",
+              "text": [
+                "i¹ = i, i² = −1, i³ = −i, i⁴ = 1. Then the pattern starts over.",
+                "To simplify iⁿ, divide n by 4 and keep the remainder. Remainder 1 gives i, 2 gives −1, 3 gives −i, and 0 gives 1."
+              ],
+              "example": {
+                "problem": "Simplify i²³",
+                "steps": [
+                  "23 ÷ 4 = 5 remainder 3.",
+                  "Remainder 3 means i³ = −i.",
+                  "i²³ = −i"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-im2-q1",
+              "type": "choice",
+              "prompt": "What is i³?",
+              "choices": [
+                "i",
+                "−i",
+                "−1",
+                "1"
+              ],
+              "answer": 1,
+              "hint": "i³ = i² · i.",
+              "solution": "i³ = i² · i = (−1) · i = −i."
+            },
+            {
+              "id": "u4-im2-q2",
+              "type": "choice",
+              "prompt": "What is i⁴?",
+              "choices": [
+                "−1",
+                "i",
+                "−i",
+                "1"
+              ],
+              "answer": 3,
+              "hint": "i⁴ = i² · i².",
+              "solution": "i⁴ = (−1)(−1) = 1."
+            },
+            {
+              "id": "u4-im2-q3",
+              "type": "input",
+              "prompt": "Simplify i⁸. Give a number.",
+              "answers": [
+                "1"
+              ],
+              "hint": "i⁸ = (i⁴)².",
+              "solution": "i⁴ = 1, so i⁸ = 1² = 1."
+            },
+            {
+              "id": "u4-im2-q4",
+              "type": "choice",
+              "prompt": "Simplify i¹³.",
+              "choices": [
+                "i",
+                "−i",
+                "1",
+                "−1"
+              ],
+              "answer": 0,
+              "hint": "Divide 13 by 4 and use the remainder.",
+              "solution": "13 ÷ 4 = 3 remainder 1, so i¹³ = i¹ = i."
+            },
+            {
+              "id": "u4-im2-q5",
+              "type": "choice",
+              "prompt": "Simplify i²².",
+              "choices": [
+                "1",
+                "i",
+                "−1",
+                "−i"
+              ],
+              "answer": 2,
+              "hint": "Divide 22 by 4 and use the remainder.",
+              "solution": "22 ÷ 4 = 5 remainder 2, so i²² = i² = −1."
+            },
+            {
+              "id": "u4-im2-q6",
+              "type": "input",
+              "prompt": "To simplify i⁴⁷, divide 47 by 4. What is the remainder?",
+              "answers": [
+                "3"
+              ],
+              "hint": "4 · 11 = 44.",
+              "solution": "47 = 4 · 11 + 3. The remainder is 3."
+            },
+            {
+              "id": "u4-im2-q7",
+              "type": "choice",
+              "prompt": "Simplify i⁴⁷.",
+              "choices": [
+                "i",
+                "1",
+                "−i",
+                "−1"
+              ],
+              "answer": 2,
+              "hint": "Use the remainder from dividing 47 by 4.",
+              "solution": "47 ÷ 4 leaves remainder 3. i³ = −i, so i⁴⁷ = −i."
+            },
+            {
+              "id": "u4-im2-q8",
+              "type": "choice",
+              "prompt": "Simplify i³⁸ + i⁴¹.",
+              "choices": [
+                "−1 + i",
+                "1 + i",
+                "−1 − i",
+                "1 − i"
+              ],
+              "answer": 0,
+              "hint": "Simplify each power on its own first.",
+              "solution": "38 ÷ 4 leaves remainder 2, so i³⁸ = −1. 41 ÷ 4 leaves remainder 1, so i⁴¹ = i. The sum is −1 + i."
+            }
+          ]
+        },
+        {
+          "id": "imaginary-3",
+          "teach": [
+            {
+              "title": "Solving x² = −k",
+              "text": [
+                "Take the square root of both sides, as always. When the number is negative, the answers are imaginary.",
+                "x² = −k gives x = ±i√k. There are two solutions, and neither is a real number."
+              ],
+              "example": {
+                "problem": "Solve x² = −16",
+                "steps": [
+                  "Square root of both sides: x = ±√(−16).",
+                  "√(−16) = 4i.",
+                  "x = ±4i"
+                ]
+              }
+            },
+            {
+              "title": "Get x² alone first",
+              "text": [
+                "If there is a number added to or multiplying x², undo it before you take the square root."
+              ],
+              "example": {
+                "problem": "Solve x² + 20 = 0",
+                "steps": [
+                  "Subtract 20: x² = −20.",
+                  "x = ±√(−20) = ±i√20.",
+                  "√20 = 2√5, so x = ±2i√5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-im3-q1",
+              "type": "choice",
+              "prompt": "Solve x² = −9.",
+              "choices": [
+                "x = ±3",
+                "x = 3i",
+                "x = ±9i",
+                "x = ±3i"
+              ],
+              "answer": 3,
+              "hint": "A negative number under the root gives i. There are two solutions.",
+              "solution": "x = ±√(−9) = ±3i."
+            },
+            {
+              "id": "u4-im3-q2",
+              "type": "choice",
+              "prompt": "Solve x² = −64.",
+              "choices": [
+                "x = ±8",
+                "x = ±8i",
+                "x = ±32i",
+                "x = −8i"
+              ],
+              "answer": 1,
+              "hint": "Take the square root of both sides.",
+              "solution": "x = ±√(−64) = ±8i."
+            },
+            {
+              "id": "u4-im3-q3",
+              "type": "input",
+              "prompt": "The solutions of x² = −49 are ±bi. What is b?",
+              "answers": [
+                "7"
+              ],
+              "hint": "√49 = 7.",
+              "solution": "x = ±√(−49) = ±7i, so b = 7."
+            },
+            {
+              "id": "u4-im3-q4",
+              "type": "choice",
+              "prompt": "Solve x² + 25 = 0.",
+              "choices": [
+                "x = ±5",
+                "x = ±5i",
+                "x = ±25i",
+                "x = 5i"
+              ],
+              "answer": 1,
+              "hint": "Subtract 25 from both sides first.",
+              "solution": "x² = −25, so x = ±5i."
+            },
+            {
+              "id": "u4-im3-q5",
+              "type": "choice",
+              "prompt": "Solve x² + 12 = 0.",
+              "choices": [
+                "x = ±4i√3",
+                "x = ±2√3",
+                "x = ±6i",
+                "x = ±2i√3"
+              ],
+              "answer": 3,
+              "hint": "x² = −12. Then simplify √12.",
+              "solution": "x² = −12, so x = ±i√12 = ±i · 2√3 = ±2i√3."
+            },
+            {
+              "id": "u4-im3-q6",
+              "type": "choice",
+              "prompt": "Solve 3x² = −75.",
+              "choices": [
+                "x = ±5i",
+                "x = ±25i",
+                "x = ±5",
+                "x = ±15i"
+              ],
+              "answer": 0,
+              "hint": "Divide both sides by 3 first.",
+              "solution": "x² = −25, so x = ±5i."
+            },
+            {
+              "id": "u4-im3-q7",
+              "type": "input",
+              "prompt": "How many real solutions does x² = −10 have?",
+              "answers": [
+                "0"
+              ],
+              "hint": "The square of a real number is never negative.",
+              "solution": "x = ±i√10 are not real numbers. There are 0 real solutions."
+            },
+            {
+              "id": "u4-im3-q8",
+              "type": "choice",
+              "prompt": "Solve 2x² + 32 = 0.",
+              "choices": [
+                "x = ±16i",
+                "x = ±4",
+                "x = ±4i",
+                "x = ±2i√2"
+              ],
+              "answer": 2,
+              "hint": "Subtract 32, then divide by 2.",
+              "solution": "2x² = −32, x² = −16, x = ±4i."
+            }
+          ]
+        },
+        {
+          "id": "imaginary-4",
+          "teach": [
+            {
+              "title": "Convert to i before you multiply",
+              "text": [
+                "The rule √a · √b = √(ab) only works when a and b are not both negative. So write each root with i first, then multiply.",
+                "Remember i · i = i² = −1."
+              ],
+              "example": {
+                "problem": "Simplify √(−4) · √(−9)",
+                "steps": [
+                  "Write each with i: √(−4) = 2i and √(−9) = 3i.",
+                  "Multiply: 2i · 3i = 6i².",
+                  "6i² = −6. (Not 6.)"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-im4-q1",
+              "type": "choice",
+              "prompt": "Simplify √(−4) · √(−9).",
+              "choices": [
+                "6",
+                "6i",
+                "−6",
+                "−6i"
+              ],
+              "answer": 2,
+              "hint": "Convert each root to a multiple of i first.",
+              "solution": "2i · 3i = 6i² = −6."
+            },
+            {
+              "id": "u4-im4-q2",
+              "type": "input",
+              "prompt": "Simplify √(−4) · √(−25). Give a number.",
+              "answers": [
+                "-10"
+              ],
+              "hint": "√(−4) = 2i and √(−25) = 5i.",
+              "solution": "2i · 5i = 10i² = −10."
+            },
+            {
+              "id": "u4-im4-q3",
+              "type": "choice",
+              "prompt": "Simplify (√(−3))².",
+              "choices": [
+                "−3",
+                "3",
+                "3i",
+                "−3i"
+              ],
+              "answer": 0,
+              "hint": "√(−3) = i√3. Square it.",
+              "solution": "(i√3)² = i² · 3 = −3."
+            },
+            {
+              "id": "u4-im4-q4",
+              "type": "choice",
+              "prompt": "Write 5 + √(−32) in the form a + bi.",
+              "choices": [
+                "5 + 16i√2",
+                "5 − 4i√2",
+                "5 + 8i√2",
+                "5 + 4i√2"
+              ],
+              "answer": 3,
+              "hint": "√32 = √16 · √2.",
+              "solution": "√(−32) = i√32 = 4i√2. So 5 + √(−32) = 5 + 4i√2."
+            },
+            {
+              "id": "u4-im4-q5",
+              "type": "input",
+              "prompt": "In 7 − 3i, what number multiplies i? Give the number, including its sign.",
+              "answers": [
+                "-3"
+              ],
+              "hint": "Write 7 − 3i as 7 + (−3)i.",
+              "solution": "7 − 3i = 7 + (−3)i, so the number is −3."
+            },
+            {
+              "id": "u4-im4-q6",
+              "type": "choice",
+              "prompt": "Simplify i⁶ · √(−16).",
+              "choices": [
+                "4i",
+                "−4i",
+                "4",
+                "−4"
+              ],
+              "answer": 1,
+              "hint": "i⁶ is i² after dividing 6 by 4. And √(−16) = 4i.",
+              "solution": "i⁶ = −1 and √(−16) = 4i. The product is −4i."
+            },
+            {
+              "id": "u4-im4-q7",
+              "type": "input",
+              "prompt": "Solve x² + 3 = −6. The solutions are ±bi. What is b?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Subtract 3 from both sides first.",
+              "solution": "x² = −9, so x = ±3i and b = 3."
+            },
+            {
+              "id": "u4-im4-q8",
+              "type": "choice",
+              "prompt": "Which expression is a real number?",
+              "choices": [
+                "i⁷",
+                "i⁶",
+                "i⁹",
+                "√(−7)"
+              ],
+              "answer": 1,
+              "hint": "Check what each one simplifies to.",
+              "solution": "i⁶ = −1 is real. i⁷ = −i, i⁹ = i and √(−7) = i√7 are imaginary."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "complex-operations",
+      "title": "Operations with complex numbers",
+      "lessons": [
+        {
+          "id": "complex-operations-1",
+          "teach": [
+            {
+              "title": "Adding and subtracting",
+              "text": [
+                "A complex number is a + bi. Add or subtract the real parts together and the i parts together, like combining like terms.",
+                "When you subtract, distribute the minus sign to both parts of the second number."
+              ],
+              "example": {
+                "problem": "Simplify (3 + 2i) − (1 + 5i)",
+                "steps": [
+                  "Distribute the minus: 3 + 2i − 1 − 5i.",
+                  "Real parts: 3 − 1 = 2. Imaginary parts: 2i − 5i = −3i.",
+                  "Answer: 2 − 3i"
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-co1-q1",
+              "type": "choice",
+              "prompt": "Add: (3 + 2i) + (4 + i)",
+              "choices": [
+                "7 + 2i",
+                "12 + 2i",
+                "7 + 3i",
+                "10i"
+              ],
+              "answer": 2,
+              "hint": "Add the real parts. Add the i parts.",
+              "solution": "3 + 4 = 7 and 2i + i = 3i. Answer: 7 + 3i."
+            },
+            {
+              "id": "u4-co1-q2",
+              "type": "choice",
+              "prompt": "Add: (5 − 2i) + (−3 + 6i)",
+              "choices": [
+                "2 + 4i",
+                "2 − 4i",
+                "8 + 4i",
+                "2 + 8i"
+              ],
+              "answer": 0,
+              "hint": "Real with real, imaginary with imaginary. Watch the signs.",
+              "solution": "5 + (−3) = 2 and −2i + 6i = 4i. Answer: 2 + 4i."
+            },
+            {
+              "id": "u4-co1-q3",
+              "type": "choice",
+              "prompt": "Subtract: (6 + 4i) − (2 + i)",
+              "choices": [
+                "4 + 5i",
+                "8 + 5i",
+                "4 + 4i",
+                "4 + 3i"
+              ],
+              "answer": 3,
+              "hint": "Subtract the real parts and subtract the i parts.",
+              "solution": "6 − 2 = 4 and 4i − i = 3i. Answer: 4 + 3i."
+            },
+            {
+              "id": "u4-co1-q4",
+              "type": "choice",
+              "prompt": "Subtract: (3 − 5i) − (−2 + 4i)",
+              "choices": [
+                "1 − i",
+                "5 − 9i",
+                "5 − i",
+                "1 − 9i"
+              ],
+              "answer": 1,
+              "hint": "Distribute the minus sign to both parts of −2 + 4i.",
+              "solution": "3 − (−2) = 5 and −5i − 4i = −9i. Answer: 5 − 9i."
+            },
+            {
+              "id": "u4-co1-q5",
+              "type": "input",
+              "prompt": "What is the real part of (9 + 2i) − (4 + 7i)?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Only subtract the real numbers: 9 and 4.",
+              "solution": "9 − 4 = 5. The result is 5 − 5i, so the real part is 5."
+            },
+            {
+              "id": "u4-co1-q6",
+              "type": "input",
+              "prompt": "(2 + 5i) + (−2 − 3i) = bi. What is b?",
+              "answers": [
+                "2"
+              ],
+              "hint": "The real parts cancel. Add the i parts.",
+              "solution": "2 + (−2) = 0 and 5i − 3i = 2i. So the sum is 2i and b = 2."
+            },
+            {
+              "id": "u4-co1-q7",
+              "type": "choice",
+              "prompt": "Add 4i to (−3 + 2i).",
+              "choices": [
+                "−3 + 2i",
+                "−3 + 6i",
+                "1 + 2i",
+                "−3 + 8i"
+              ],
+              "answer": 1,
+              "hint": "4i is an imaginary term, so it joins the 2i.",
+              "solution": "2i + 4i = 6i. The real part stays −3. Answer: −3 + 6i."
+            },
+            {
+              "id": "u4-co1-q8",
+              "type": "input",
+              "prompt": "(4 + 3i) + (x + yi) = 10 − i. What is x?",
+              "answers": [
+                "6"
+              ],
+              "hint": "Match the real parts on both sides.",
+              "solution": "Real parts: 4 + x = 10, so x = 6. (The i parts give 3 + y = −1, so y = −4.)"
+            }
+          ]
+        },
+        {
+          "id": "complex-operations-2",
+          "teach": [
+            {
+              "title": "Multiplying complex numbers",
+              "text": [
+                "Multiply like binomials (FOIL). Then replace i² with −1 and combine.",
+                "A number times a + bi is distributed to both parts."
+              ],
+              "example": {
+                "problem": "Multiply (2 + 3i)(1 + 4i)",
+                "steps": [
+                  "First: 2 · 1 = 2. Outer: 2 · 4i = 8i. Inner: 3i · 1 = 3i. Last: 3i · 4i = 12i².",
+                  "12i² = −12.",
+                  "Combine: 2 − 12 + 8i + 3i = −10 + 11i."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-co2-q1",
+              "type": "choice",
+              "prompt": "Multiply: 2(3 + 4i)",
+              "choices": [
+                "6 + 4i",
+                "5 + 6i",
+                "6 + 8",
+                "6 + 8i"
+              ],
+              "answer": 3,
+              "hint": "Distribute the 2 to both parts.",
+              "solution": "2 · 3 = 6 and 2 · 4i = 8i. Answer: 6 + 8i."
+            },
+            {
+              "id": "u4-co2-q2",
+              "type": "choice",
+              "prompt": "Multiply: i(3 + 2i)",
+              "choices": [
+                "−2 + 3i",
+                "2 + 3i",
+                "3 + 2i",
+                "−2 − 3i"
+              ],
+              "answer": 0,
+              "hint": "Distribute i. Remember i² = −1.",
+              "solution": "i · 3 = 3i and i · 2i = 2i² = −2. Answer: −2 + 3i."
+            },
+            {
+              "id": "u4-co2-q3",
+              "type": "choice",
+              "prompt": "Multiply: (4i)(5i)",
+              "choices": [
+                "20",
+                "20i",
+                "−20",
+                "−20i"
+              ],
+              "answer": 2,
+              "hint": "4 · 5 = 20 and i · i = i².",
+              "solution": "20i² = 20(−1) = −20."
+            },
+            {
+              "id": "u4-co2-q4",
+              "type": "choice",
+              "prompt": "Multiply: (1 + 2i)(3 + i)",
+              "choices": [
+                "5 + 7i",
+                "1 + 5i",
+                "1 + 7i",
+                "3 + 2i"
+              ],
+              "answer": 2,
+              "hint": "FOIL, then use i² = −1.",
+              "solution": "3 + i + 6i + 2i² = 3 + 7i − 2 = 1 + 7i."
+            },
+            {
+              "id": "u4-co2-q5",
+              "type": "choice",
+              "prompt": "Multiply: (2 − i)(4 + 3i)",
+              "choices": [
+                "11 + 2i",
+                "5 + 2i",
+                "11 − 2i",
+                "11 + 10i"
+              ],
+              "answer": 0,
+              "hint": "The last term is (−i)(3i) = −3i², which is +3.",
+              "solution": "8 + 6i − 4i − 3i² = 8 + 2i + 3 = 11 + 2i."
+            },
+            {
+              "id": "u4-co2-q6",
+              "type": "input",
+              "prompt": "(3 + 2i)(3 − 2i) is a real number. What is it?",
+              "answers": [
+                "13"
+              ],
+              "hint": "The i terms cancel. The last term is −4i² = +4.",
+              "solution": "9 − 6i + 6i − 4i² = 9 + 4 = 13."
+            },
+            {
+              "id": "u4-co2-q7",
+              "type": "choice",
+              "prompt": "Multiply: (4 − 3i)²",
+              "choices": [
+                "25 − 24i",
+                "7 + 24i",
+                "16 − 9i",
+                "7 − 24i"
+              ],
+              "answer": 3,
+              "hint": "Write (4 − 3i)(4 − 3i) and FOIL. Do not just square each term.",
+              "solution": "16 − 12i − 12i + 9i² = 16 − 24i − 9 = 7 − 24i."
+            },
+            {
+              "id": "u4-co2-q8",
+              "type": "input",
+              "prompt": "(2 + 3i)(1 − i) = a + bi. What is a?",
+              "answers": [
+                "5"
+              ],
+              "hint": "FOIL. The last term is −3i².",
+              "solution": "2 − 2i + 3i − 3i² = 2 + i + 3 = 5 + i. So a = 5."
+            }
+          ]
+        },
+        {
+          "id": "complex-operations-3",
+          "teach": [
+            {
+              "title": "Conjugates",
+              "text": [
+                "The conjugate of a + bi is a − bi. Only the sign of the i part changes.",
+                "A number times its conjugate is always real: (a + bi)(a − bi) = a² + b²."
+              ],
+              "example": {
+                "problem": "Multiply (5 + 2i)(5 − 2i)",
+                "steps": [
+                  "This is a number times its conjugate.",
+                  "a² + b² = 25 + 4 = 29.",
+                  "Answer: 29"
+                ]
+              }
+            },
+            {
+              "title": "Dividing complex numbers",
+              "text": [
+                "You cannot leave i in the denominator. Multiply the top and bottom by the conjugate of the denominator.",
+                "The denominator becomes a real number, then split into a + bi form."
+              ],
+              "example": {
+                "problem": "Simplify 6 / (1 + i)",
+                "steps": [
+                  "Multiply top and bottom by 1 − i.",
+                  "Top: 6(1 − i) = 6 − 6i. Bottom: (1 + i)(1 − i) = 1 + 1 = 2.",
+                  "6 − 6i over 2 = 3 − 3i."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-co3-q1",
+              "type": "choice",
+              "prompt": "What is the conjugate of 3 + 7i?",
+              "choices": [
+                "−3 + 7i",
+                "3 − 7i",
+                "−3 − 7i",
+                "7 + 3i"
+              ],
+              "answer": 1,
+              "hint": "Change only the sign of the i part.",
+              "solution": "The conjugate of 3 + 7i is 3 − 7i."
+            },
+            {
+              "id": "u4-co3-q2",
+              "type": "choice",
+              "prompt": "What is the conjugate of −2 − 5i?",
+              "choices": [
+                "2 + 5i",
+                "−2 + 5i",
+                "2 − 5i",
+                "−5 − 2i"
+              ],
+              "answer": 1,
+              "hint": "Keep the real part. Flip the sign of the i part.",
+              "solution": "The conjugate of −2 − 5i is −2 + 5i."
+            },
+            {
+              "id": "u4-co3-q3",
+              "type": "input",
+              "prompt": "(4 + 3i)(4 − 3i) = ?",
+              "answers": [
+                "25"
+              ],
+              "hint": "A number times its conjugate is a² + b².",
+              "solution": "4² + 3² = 16 + 9 = 25."
+            },
+            {
+              "id": "u4-co3-q4",
+              "type": "choice",
+              "prompt": "Simplify 4 / (1 + i).",
+              "choices": [
+                "2 + 2i",
+                "4 − 4i",
+                "4 − i",
+                "2 − 2i"
+              ],
+              "answer": 3,
+              "hint": "Multiply top and bottom by 1 − i.",
+              "solution": "4(1 − i) = 4 − 4i. Bottom: 1² + 1² = 2. (4 − 4i) / 2 = 2 − 2i."
+            },
+            {
+              "id": "u4-co3-q5",
+              "type": "choice",
+              "prompt": "Simplify 10 / (3 − i).",
+              "choices": [
+                "3 + i",
+                "3 − i",
+                "30 + 10i",
+                "1 + 3i"
+              ],
+              "answer": 0,
+              "hint": "The conjugate of 3 − i is 3 + i.",
+              "solution": "10(3 + i) = 30 + 10i. Bottom: 9 + 1 = 10. (30 + 10i) / 10 = 3 + i."
+            },
+            {
+              "id": "u4-co3-q6",
+              "type": "choice",
+              "prompt": "Simplify (2 + i) / (1 − i).",
+              "choices": [
+                "3/2 + (1/2)i",
+                "1/2 − (3/2)i",
+                "1/2 + (3/2)i",
+                "1 + 3i"
+              ],
+              "answer": 2,
+              "hint": "Multiply top and bottom by 1 + i. Then divide both parts by the denominator.",
+              "solution": "Top: (2 + i)(1 + i) = 2 + 2i + i + i² = 1 + 3i. Bottom: 1 + 1 = 2. So the answer is 1/2 + (3/2)i."
+            },
+            {
+              "id": "u4-co3-q7",
+              "type": "input",
+              "prompt": "You multiply (3 + i)/(2 + i) top and bottom by 2 − i. What is the new denominator?",
+              "answers": [
+                "5"
+              ],
+              "hint": "(2 + i)(2 − i) = 2² + 1².",
+              "solution": "4 + 1 = 5."
+            },
+            {
+              "id": "u4-co3-q8",
+              "type": "choice",
+              "prompt": "Simplify (3 + i) / (2 + i).",
+              "choices": [
+                "7/5 + (1/5)i",
+                "5 − i",
+                "7/5 − (1/5)i",
+                "1/5 − (7/5)i"
+              ],
+              "answer": 2,
+              "hint": "Multiply top and bottom by 2 − i.",
+              "solution": "Top: (3 + i)(2 − i) = 6 − 3i + 2i − i² = 7 − i. Bottom: 5. So the answer is 7/5 − (1/5)i."
+            }
+          ]
+        },
+        {
+          "id": "complex-operations-4",
+          "teach": [
+            {
+              "title": "Putting it together",
+              "text": [
+                "Work in steps: do powers and products first, then add and subtract, and divide last. Always finish in a + bi form.",
+                "Check: i² = −1 and 1/i = −i."
+              ],
+              "example": {
+                "problem": "Simplify (2 + i)² + 3i",
+                "steps": [
+                  "(2 + i)² = 4 + 4i + i² = 3 + 4i.",
+                  "Add 3i: 3 + 4i + 3i = 3 + 7i."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-co4-q1",
+              "type": "choice",
+              "prompt": "Simplify (1 + i)².",
+              "choices": [
+                "2i",
+                "2",
+                "2 + 2i",
+                "0"
+              ],
+              "answer": 0,
+              "hint": "(1 + i)(1 + i) = 1 + 2i + i².",
+              "solution": "1 + 2i + i² = 1 + 2i − 1 = 2i."
+            },
+            {
+              "id": "u4-co4-q2",
+              "type": "choice",
+              "prompt": "Simplify (2 + 3i) + (1 − i)(2 + i).",
+              "choices": [
+                "5 + 4i",
+                "3 + 2i",
+                "5 − 2i",
+                "5 + 2i"
+              ],
+              "answer": 3,
+              "hint": "Do the multiplication first.",
+              "solution": "(1 − i)(2 + i) = 2 + i − 2i − i² = 3 − i. Then (2 + 3i) + (3 − i) = 5 + 2i."
+            },
+            {
+              "id": "u4-co4-q3",
+              "type": "input",
+              "prompt": "Evaluate (2 + 3i)(2 − 3i) + i². Give a number.",
+              "answers": [
+                "12"
+              ],
+              "hint": "The first product is a number times its conjugate.",
+              "solution": "(2 + 3i)(2 − 3i) = 4 + 9 = 13. i² = −1. 13 + (−1) = 12."
+            },
+            {
+              "id": "u4-co4-q4",
+              "type": "input",
+              "prompt": "Evaluate x² − 2x + 2 when x = 1 + i. Give a number.",
+              "answers": [
+                "0"
+              ],
+              "hint": "Find (1 + i)² first.",
+              "solution": "(1 + i)² = 2i. Then 2i − 2(1 + i) + 2 = 2i − 2 − 2i + 2 = 0."
+            },
+            {
+              "id": "u4-co4-q5",
+              "type": "choice",
+              "prompt": "Simplify (3 + 2i) / i.",
+              "choices": [
+                "2 + 3i",
+                "2 − 3i",
+                "−2 − 3i",
+                "3 + 2i"
+              ],
+              "answer": 1,
+              "hint": "Multiply top and bottom by −i (the conjugate of i).",
+              "solution": "(3 + 2i)(−i) = −3i − 2i² = 2 − 3i. Bottom: i · (−i) = −i² = 1. Answer: 2 − 3i."
+            },
+            {
+              "id": "u4-co4-q6",
+              "type": "input",
+              "prompt": "If z = 2 + 5i, what is z times its conjugate?",
+              "answers": [
+                "29"
+              ],
+              "hint": "Use a² + b².",
+              "solution": "2² + 5² = 4 + 25 = 29."
+            },
+            {
+              "id": "u4-co4-q7",
+              "type": "choice",
+              "prompt": "Simplify (5 + 5i) / (1 + 2i).",
+              "choices": [
+                "3 + i",
+                "3 − i",
+                "15 − 5i",
+                "−1 − i"
+              ],
+              "answer": 1,
+              "hint": "Multiply top and bottom by 1 − 2i.",
+              "solution": "Top: 5 − 10i + 5i − 10i² = 15 − 5i. Bottom: 1 + 4 = 5. (15 − 5i) / 5 = 3 − i."
+            },
+            {
+              "id": "u4-co4-q8",
+              "type": "input",
+              "prompt": "(1 + 2i)(3 − i) = a + bi. What is b?",
+              "answers": [
+                "5"
+              ],
+              "hint": "FOIL carefully, then use i² = −1.",
+              "solution": "3 − i + 6i − 2i² = 3 + 5i + 2 = 5 + 5i. So b = 5."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "completing-square",
+      "title": "Completing the square",
+      "lessons": [
+        {
+          "id": "completing-square-1",
+          "teach": [
+            {
+              "title": "The number that completes the square",
+              "text": [
+                "x² + bx + c is a perfect square when c = (b/2)². Half of b, squared.",
+                "Then x² + bx + (b/2)² = (x + b/2)²."
+              ],
+              "example": {
+                "problem": "Find c so that x² + 6x + c is a perfect square",
+                "steps": [
+                  "Half of 6 is 3.",
+                  "3² = 9, so c = 9.",
+                  "x² + 6x + 9 = (x + 3)²."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-cs1-q1",
+              "type": "input",
+              "prompt": "x² + 8x + c is a perfect square. What is c?",
+              "answers": [
+                "16"
+              ],
+              "hint": "Half of 8, then square it.",
+              "solution": "8/2 = 4 and 4² = 16."
+            },
+            {
+              "id": "u4-cs1-q2",
+              "type": "input",
+              "prompt": "x² + 10x + c is a perfect square. What is c?",
+              "answers": [
+                "25"
+              ],
+              "hint": "Half of 10, then square it.",
+              "solution": "10/2 = 5 and 5² = 25."
+            },
+            {
+              "id": "u4-cs1-q3",
+              "type": "input",
+              "prompt": "x² − 12x + c is a perfect square. What is c?",
+              "answers": [
+                "36"
+              ],
+              "hint": "Half of −12 is −6. Squaring removes the sign.",
+              "solution": "(−12/2)² = (−6)² = 36."
+            },
+            {
+              "id": "u4-cs1-q4",
+              "type": "choice",
+              "prompt": "Which is the factored form of x² + 6x + 9?",
+              "choices": [
+                "(x − 3)²",
+                "(x + 9)²",
+                "(x + 3)²",
+                "(x + 3)(x − 3)"
+              ],
+              "answer": 2,
+              "hint": "The middle term is 2 · 3 · x.",
+              "solution": "x² + 6x + 9 = (x + 3)(x + 3) = (x + 3)²."
+            },
+            {
+              "id": "u4-cs1-q5",
+              "type": "choice",
+              "prompt": "Which is the factored form of x² − 14x + 49?",
+              "choices": [
+                "(x − 7)²",
+                "(x + 7)²",
+                "(x − 14)²",
+                "(x − 7)(x + 7)"
+              ],
+              "answer": 0,
+              "hint": "The middle term is negative, so the sign inside is negative.",
+              "solution": "49 = 7² and 2 · 7 = 14. So x² − 14x + 49 = (x − 7)²."
+            },
+            {
+              "id": "u4-cs1-q6",
+              "type": "input",
+              "prompt": "x² + 3x + c is a perfect square. What is c? Give a fraction or decimal.",
+              "answers": [
+                "9/4"
+              ],
+              "hint": "Half of 3 is 3/2.",
+              "solution": "(3/2)² = 9/4."
+            },
+            {
+              "id": "u4-cs1-q7",
+              "type": "input",
+              "prompt": "x² − 5x + c is a perfect square. What is c? Give a fraction or decimal.",
+              "answers": [
+                "25/4"
+              ],
+              "hint": "Half of −5 is −5/2.",
+              "solution": "(−5/2)² = 25/4."
+            },
+            {
+              "id": "u4-cs1-q8",
+              "type": "choice",
+              "prompt": "Which is a perfect square trinomial?",
+              "choices": [
+                "x² + 10x + 10",
+                "x² + 10x + 20",
+                "x² + 10x + 100",
+                "x² + 10x + 25"
+              ],
+              "answer": 3,
+              "hint": "Check whether the last term is (half of 10) squared.",
+              "solution": "Half of 10 is 5 and 5² = 25. Only x² + 10x + 25 = (x + 5)² works."
+            }
+          ]
+        },
+        {
+          "id": "completing-square-2",
+          "teach": [
+            {
+              "title": "Solving by completing the square (a = 1)",
+              "text": [
+                "1) Move the constant to the right side. 2) Add (b/2)² to both sides. 3) Factor the left side as a square. 4) Take square roots, remembering ±. 5) Solve for x."
+              ],
+              "example": {
+                "problem": "Solve x² + 6x = 7",
+                "steps": [
+                  "Half of 6 is 3. 3² = 9. Add 9 to both sides: x² + 6x + 9 = 16.",
+                  "Factor: (x + 3)² = 16.",
+                  "Square root: x + 3 = ±4.",
+                  "x = −3 + 4 = 1 or x = −3 − 4 = −7."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-cs2-q1",
+              "type": "input",
+              "prompt": "Solve by completing the square: x² + 4x = 5",
+              "answers": [
+                "1, -5"
+              ],
+              "hint": "Add (4/2)² = 4 to both sides.",
+              "solution": "x² + 4x + 4 = 9, so (x + 2)² = 9. x + 2 = ±3, so x = 1 or x = −5."
+            },
+            {
+              "id": "u4-cs2-q2",
+              "type": "input",
+              "prompt": "Solve by completing the square: x² − 6x = 16",
+              "answers": [
+                "8, -2"
+              ],
+              "hint": "Add 9 to both sides.",
+              "solution": "x² − 6x + 9 = 25, so (x − 3)² = 25. x − 3 = ±5, so x = 8 or x = −2."
+            },
+            {
+              "id": "u4-cs2-q3",
+              "type": "input",
+              "prompt": "Solve: x² + 10x + 21 = 0",
+              "answers": [
+                "-3, -7"
+              ],
+              "hint": "Move 21 to the right side first.",
+              "solution": "x² + 10x = −21. Add 25: (x + 5)² = 4. x + 5 = ±2, so x = −3 or x = −7."
+            },
+            {
+              "id": "u4-cs2-q4",
+              "type": "input",
+              "prompt": "Solve: x² − 2x − 15 = 0",
+              "answers": [
+                "5, -3"
+              ],
+              "hint": "Move 15 to the right. Then add (−2/2)² = 1.",
+              "solution": "x² − 2x = 15, so (x − 1)² = 16. x − 1 = ±4, so x = 5 or x = −3."
+            },
+            {
+              "id": "u4-cs2-q5",
+              "type": "input",
+              "prompt": "To complete the square for x² + 12x = 5, what number do you add to both sides?",
+              "answers": [
+                "36"
+              ],
+              "hint": "(b/2)² with b = 12.",
+              "solution": "12/2 = 6 and 6² = 36."
+            },
+            {
+              "id": "u4-cs2-q6",
+              "type": "input",
+              "prompt": "Solve: x² − 8x + 7 = 0",
+              "answers": [
+                "7, 1"
+              ],
+              "hint": "x² − 8x = −7. Add 16.",
+              "solution": "(x − 4)² = 9, so x − 4 = ±3. x = 7 or x = 1."
+            },
+            {
+              "id": "u4-cs2-q7",
+              "type": "choice",
+              "prompt": "Solve x² + 4x − 1 = 0 by completing the square.",
+              "choices": [
+                "x = 2 ± √5",
+                "x = −2 ± √5",
+                "x = −2 ± √3",
+                "x = −4 ± √5"
+              ],
+              "answer": 1,
+              "hint": "x² + 4x = 1. Add 4 to both sides.",
+              "solution": "(x + 2)² = 5. x + 2 = ±√5, so x = −2 ± √5."
+            },
+            {
+              "id": "u4-cs2-q8",
+              "type": "choice",
+              "prompt": "Solve x² + 2x + 5 = 0 by completing the square.",
+              "choices": [
+                "x = 1 ± 2i",
+                "x = −1 ± 2i",
+                "x = −1 ± 2",
+                "x = −1 ± 4i"
+              ],
+              "answer": 1,
+              "hint": "x² + 2x = −5. Add 1 to both sides.",
+              "solution": "(x + 1)² = −4. x + 1 = ±2i, so x = −1 ± 2i."
+            }
+          ]
+        },
+        {
+          "id": "completing-square-3",
+          "teach": [
+            {
+              "title": "When a is not 1",
+              "text": [
+                "Divide every term by a first so the x² coefficient is 1. Then complete the square as before.",
+                "You can also solve a fractional b, such as x² + 5x: half of 5 is 5/2."
+              ],
+              "example": {
+                "problem": "Solve 2x² + 8x = 10",
+                "steps": [
+                  "Divide by 2: x² + 4x = 5.",
+                  "Add 4: (x + 2)² = 9.",
+                  "x + 2 = ±3, so x = 1 or x = −5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-cs3-q1",
+              "type": "input",
+              "prompt": "Solve: 2x² + 12x = 14",
+              "answers": [
+                "1, -7"
+              ],
+              "hint": "Divide every term by 2.",
+              "solution": "x² + 6x = 7. Add 9: (x + 3)² = 16. x = 1 or x = −7."
+            },
+            {
+              "id": "u4-cs3-q2",
+              "type": "input",
+              "prompt": "Solve: 3x² − 12x = 15",
+              "answers": [
+                "5, -1"
+              ],
+              "hint": "Divide every term by 3.",
+              "solution": "x² − 4x = 5. Add 4: (x − 2)² = 9. x − 2 = ±3, so x = 5 or x = −1."
+            },
+            {
+              "id": "u4-cs3-q3",
+              "type": "input",
+              "prompt": "Solve: x² + 3x − 10 = 0",
+              "answers": [
+                "2, -5"
+              ],
+              "hint": "Add (3/2)² = 9/4 to both sides.",
+              "solution": "x² + 3x = 10. Add 9/4: (x + 3/2)² = 49/4. x + 3/2 = ±7/2, so x = 2 or x = −5."
+            },
+            {
+              "id": "u4-cs3-q4",
+              "type": "input",
+              "prompt": "Solve: 2x² + 12x − 14 = 0",
+              "answers": [
+                "1, -7"
+              ],
+              "hint": "Move the 14 first, then divide by 2.",
+              "solution": "2x² + 12x = 14, so x² + 6x = 7. This gives (x + 3)² = 16, x = 1 or x = −7."
+            },
+            {
+              "id": "u4-cs3-q5",
+              "type": "choice",
+              "prompt": "What is the first step in solving 4x² − 8x = 12 by completing the square?",
+              "choices": [
+                "Add 4 to both sides",
+                "Add 16 to both sides",
+                "Take the square root of both sides",
+                "Divide every term by 4"
+              ],
+              "answer": 3,
+              "hint": "Get the coefficient of x² to be 1.",
+              "solution": "Divide by 4: x² − 2x = 3. Then add (−2/2)² = 1."
+            },
+            {
+              "id": "u4-cs3-q6",
+              "type": "input",
+              "prompt": "Solve: 5x² + 20x = −15",
+              "answers": [
+                "-1, -3"
+              ],
+              "hint": "Divide by 5 first.",
+              "solution": "x² + 4x = −3. Add 4: (x + 2)² = 1. x + 2 = ±1, so x = −1 or x = −3."
+            },
+            {
+              "id": "u4-cs3-q7",
+              "type": "input",
+              "prompt": "Solve: 2x² − 12x + 10 = 0",
+              "answers": [
+                "5, 1"
+              ],
+              "hint": "Move 10, then divide by 2.",
+              "solution": "2x² − 12x = −10, so x² − 6x = −5. Add 9: (x − 3)² = 4. x = 5 or x = 1."
+            },
+            {
+              "id": "u4-cs3-q8",
+              "type": "input",
+              "prompt": "Solve: x² + 5x + 4 = 0",
+              "answers": [
+                "-1, -4"
+              ],
+              "hint": "x² + 5x = −4. Half of 5 is 5/2.",
+              "solution": "Add 25/4: (x + 5/2)² = 9/4. x + 5/2 = ±3/2, so x = −1 or x = −4."
+            }
+          ]
+        },
+        {
+          "id": "completing-square-4",
+          "teach": [
+            {
+              "title": "Rewriting in vertex form",
+              "text": [
+                "Vertex form is y = a(x − h)² + k. To get it, complete the square on the x terms. Whatever you add inside, subtract right away so nothing changes.",
+                "The vertex is (h, k)."
+              ],
+              "example": {
+                "problem": "Write y = x² + 6x + 5 in vertex form",
+                "steps": [
+                  "Group x terms: y = (x² + 6x) + 5.",
+                  "Add and subtract 9: y = (x² + 6x + 9) − 9 + 5.",
+                  "y = (x + 3)² − 4. The vertex is (−3, −4)."
+                ]
+              }
+            },
+            {
+              "title": "Vertex form when a is not 1",
+              "text": [
+                "Factor a out of the x terms first. Then complete the square inside. Remember what you add inside is multiplied by a."
+              ],
+              "example": {
+                "problem": "Write y = 2x² + 8x + 3 in vertex form",
+                "steps": [
+                  "Factor 2 from the x terms: y = 2(x² + 4x) + 3.",
+                  "Add 4 inside. That is really adding 2 · 4 = 8, so subtract 8: y = 2(x² + 4x + 4) − 8 + 3.",
+                  "y = 2(x + 2)² − 5."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-cs4-q1",
+              "type": "choice",
+              "prompt": "Write y = x² + 4x + 1 in vertex form.",
+              "choices": [
+                "y = (x + 2)² − 3",
+                "y = (x + 2)² + 1",
+                "y = (x − 2)² − 3",
+                "y = (x + 4)² − 15"
+              ],
+              "answer": 0,
+              "hint": "Add and subtract 4.",
+              "solution": "y = (x² + 4x + 4) − 4 + 1 = (x + 2)² − 3."
+            },
+            {
+              "id": "u4-cs4-q2",
+              "type": "choice",
+              "prompt": "Write y = x² − 10x + 30 in vertex form.",
+              "choices": [
+                "y = (x + 5)² + 5",
+                "y = (x − 5)² + 30",
+                "y = (x − 5)² + 5",
+                "y = (x − 5)² − 5"
+              ],
+              "answer": 2,
+              "hint": "Add and subtract 25.",
+              "solution": "y = (x² − 10x + 25) − 25 + 30 = (x − 5)² + 5."
+            },
+            {
+              "id": "u4-cs4-q3",
+              "type": "input",
+              "prompt": "y = x² + 8x + 20 in vertex form is y = (x + 4)² + k. What is k?",
+              "answers": [
+                "4"
+              ],
+              "hint": "Add and subtract 16.",
+              "solution": "y = (x² + 8x + 16) − 16 + 20 = (x + 4)² + 4. So k = 4."
+            },
+            {
+              "id": "u4-cs4-q4",
+              "type": "choice",
+              "prompt": "What is the vertex of y = x² − 6x + 2?",
+              "choices": [
+                "(−3, −7)",
+                "(3, 7)",
+                "(3, −7)",
+                "(6, 2)"
+              ],
+              "answer": 2,
+              "hint": "Complete the square, then read (h, k) from y = (x − h)² + k.",
+              "solution": "y = (x² − 6x + 9) − 9 + 2 = (x − 3)² − 7. The vertex is (3, −7)."
+            },
+            {
+              "id": "u4-cs4-q5",
+              "type": "choice",
+              "prompt": "Write y = 2x² + 12x + 7 in vertex form.",
+              "choices": [
+                "y = 2(x + 3)² − 11",
+                "y = 2(x + 3)² − 2",
+                "y = 2(x + 3)² + 7",
+                "y = (x + 3)² − 11"
+              ],
+              "answer": 0,
+              "hint": "Factor 2 from the x terms. The 9 you add inside counts 2 · 9 = 18.",
+              "solution": "y = 2(x² + 6x + 9) − 18 + 7 = 2(x + 3)² − 11."
+            },
+            {
+              "id": "u4-cs4-q6",
+              "type": "choice",
+              "prompt": "Write y = −x² + 4x − 3 in vertex form.",
+              "choices": [
+                "y = −(x − 2)² − 7",
+                "y = −(x + 2)² + 1",
+                "y = (x − 2)² + 1",
+                "y = −(x − 2)² + 1"
+              ],
+              "answer": 3,
+              "hint": "Factor −1 from the x terms: −(x² − 4x). Then add 4 inside.",
+              "solution": "y = −(x² − 4x + 4) + 4 − 3 = −(x − 2)² + 1."
+            },
+            {
+              "id": "u4-cs4-q7",
+              "type": "input",
+              "prompt": "y = x² − 4x + 9 in vertex form is y = (x − 2)² + k. What is k?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Add and subtract 4.",
+              "solution": "y = (x² − 4x + 4) − 4 + 9 = (x − 2)² + 5. So k = 5."
+            },
+            {
+              "id": "u4-cs4-q8",
+              "type": "choice",
+              "prompt": "What is the vertex of y = 3x² − 12x + 5?",
+              "choices": [
+                "(−2, −7)",
+                "(2, −7)",
+                "(2, 5)",
+                "(2, −12)"
+              ],
+              "answer": 1,
+              "hint": "Factor 3 from the x terms, complete the square, and remember the 3.",
+              "solution": "y = 3(x² − 4x + 4) − 12 + 5 = 3(x − 2)² − 7. The vertex is (2, −7)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quadratic-formula",
+      "title": "Quadratic formula and discriminant",
+      "lessons": [
+        {
+          "id": "quadratic-formula-1",
+          "teach": [
+            {
+              "title": "The discriminant",
+              "text": [
+                "For ax² + bx + c = 0, the discriminant is D = b² − 4ac. It tells you what kind of solutions to expect.",
+                "D > 0: two real solutions. D = 0: one real solution (repeated). D < 0: no real solutions, two complex solutions."
+              ],
+              "example": {
+                "problem": "Find the discriminant of x² + 2x + 5",
+                "steps": [
+                  "a = 1, b = 2, c = 5.",
+                  "D = b² − 4ac = 2² − 4(1)(5) = 4 − 20 = −16.",
+                  "D < 0, so there are two complex solutions."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-qf1-q1",
+              "type": "input",
+              "prompt": "Find the discriminant of x² − 6x + 5.",
+              "answers": [
+                "16"
+              ],
+              "hint": "a = 1, b = −6, c = 5. Square b first: (−6)² = 36.",
+              "solution": "D = 36 − 4(1)(5) = 36 − 20 = 16."
+            },
+            {
+              "id": "u4-qf1-q2",
+              "type": "input",
+              "prompt": "Find the discriminant of 2x² + 3x − 2.",
+              "answers": [
+                "25"
+              ],
+              "hint": "c is negative, so −4ac adds.",
+              "solution": "D = 9 − 4(2)(−2) = 9 + 16 = 25."
+            },
+            {
+              "id": "u4-qf1-q3",
+              "type": "input",
+              "prompt": "Find the discriminant of x² + 4x + 4.",
+              "answers": [
+                "0"
+              ],
+              "hint": "b² = 16 and 4ac = 16.",
+              "solution": "D = 16 − 16 = 0."
+            },
+            {
+              "id": "u4-qf1-q4",
+              "type": "input",
+              "prompt": "Find the discriminant of 3x² − 2x + 1.",
+              "answers": [
+                "-8"
+              ],
+              "hint": "4ac = 4 · 3 · 1 = 12.",
+              "solution": "D = (−2)² − 12 = 4 − 12 = −8."
+            },
+            {
+              "id": "u4-qf1-q5",
+              "type": "choice",
+              "prompt": "Find the discriminant of x² + 3x − 10. What does it tell you?",
+              "choices": [
+                "D = 49: two complex solutions",
+                "D = −31: two complex solutions",
+                "D = 49: two real solutions",
+                "D = 0: one real solution"
+              ],
+              "answer": 2,
+              "hint": "D = 9 − 4(1)(−10). Is it positive, zero or negative?",
+              "solution": "D = 9 + 40 = 49 > 0, so there are two real solutions."
+            },
+            {
+              "id": "u4-qf1-q6",
+              "type": "choice",
+              "prompt": "The discriminant of a quadratic is 0. How many real solutions does it have?",
+              "choices": [
+                "One real solution",
+                "Two real solutions",
+                "Two complex solutions",
+                "No solutions of any kind"
+              ],
+              "answer": 0,
+              "hint": "The ± √D part disappears when D = 0.",
+              "solution": "If D = 0, then x = −b / 2a only. One real (repeated) solution."
+            },
+            {
+              "id": "u4-qf1-q7",
+              "type": "choice",
+              "prompt": "What type of solutions does x² + 2x + 7 = 0 have?",
+              "choices": [
+                "Two real solutions",
+                "One real solution",
+                "Two real irrational solutions",
+                "Two complex solutions"
+              ],
+              "answer": 3,
+              "hint": "Find D = b² − 4ac first.",
+              "solution": "D = 4 − 28 = −24 < 0, so there are two complex (non-real) solutions."
+            },
+            {
+              "id": "u4-qf1-q8",
+              "type": "input",
+              "prompt": "x² + kx + 9 = 0 has exactly one real solution, and k > 0. What is k?",
+              "answers": [
+                "6"
+              ],
+              "hint": "One solution means D = 0. Write D = k² − 36.",
+              "solution": "k² − 36 = 0, so k² = 36 and k = 6 (since k > 0)."
+            }
+          ]
+        },
+        {
+          "id": "quadratic-formula-2",
+          "teach": [
+            {
+              "title": "Number and type of solutions",
+              "text": [
+                "If D > 0 and D is a perfect square (1, 4, 9, 16, 25, ...), the two real solutions are rational. If D > 0 and not a perfect square, they are irrational.",
+                "For a parabola, D < 0 means it never crosses the x-axis. D = 0 means it touches the x-axis once."
+              ],
+              "example": {
+                "problem": "What type of solutions does x² − x − 1 = 0 have?",
+                "steps": [
+                  "D = (−1)² − 4(1)(−1) = 1 + 4 = 5.",
+                  "5 > 0, so two real solutions.",
+                  "5 is not a perfect square, so they are irrational."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-qf2-q1",
+              "type": "choice",
+              "prompt": "What type of solutions does 5x² − x + 2 = 0 have?",
+              "choices": [
+                "Two real solutions",
+                "Two complex solutions",
+                "One real solution",
+                "Two real rational solutions"
+              ],
+              "answer": 1,
+              "hint": "D = (−1)² − 4(5)(2).",
+              "solution": "D = 1 − 40 = −39 < 0, so two complex solutions."
+            },
+            {
+              "id": "u4-qf2-q2",
+              "type": "choice",
+              "prompt": "What type of solutions does 4x² − 12x + 9 = 0 have?",
+              "choices": [
+                "Two real solutions",
+                "One real solution",
+                "Two complex solutions",
+                "Two irrational solutions"
+              ],
+              "answer": 1,
+              "hint": "D = 144 − 4(4)(9).",
+              "solution": "D = 144 − 144 = 0, so one real (repeated) solution."
+            },
+            {
+              "id": "u4-qf2-q3",
+              "type": "choice",
+              "prompt": "What type of solutions does x² − x − 1 = 0 have?",
+              "choices": [
+                "Two real rational solutions",
+                "One real solution",
+                "Two complex solutions",
+                "Two real irrational solutions"
+              ],
+              "answer": 3,
+              "hint": "D = 1 + 4. Is it a perfect square?",
+              "solution": "D = 5 > 0 but 5 is not a perfect square. So two real irrational solutions."
+            },
+            {
+              "id": "u4-qf2-q4",
+              "type": "choice",
+              "prompt": "What type of solutions does 6x² + x − 2 = 0 have?",
+              "choices": [
+                "Two real rational solutions",
+                "Two real irrational solutions",
+                "One real solution",
+                "Two complex solutions"
+              ],
+              "answer": 0,
+              "hint": "D = 1 − 4(6)(−2).",
+              "solution": "D = 1 + 48 = 49 = 7². A positive perfect square, so two real rational solutions."
+            },
+            {
+              "id": "u4-qf2-q5",
+              "type": "input",
+              "prompt": "x² + 5x + c = 0 has discriminant 9. What is c?",
+              "answers": [
+                "4"
+              ],
+              "hint": "D = 25 − 4c.",
+              "solution": "25 − 4c = 9, so 4c = 16 and c = 4."
+            },
+            {
+              "id": "u4-qf2-q6",
+              "type": "choice",
+              "prompt": "For which values of c does x² + 4x + c = 0 have two complex solutions?",
+              "choices": [
+                "c < 4",
+                "c > 16",
+                "c > 4",
+                "c = 4"
+              ],
+              "answer": 2,
+              "hint": "You need D < 0. D = 16 − 4c.",
+              "solution": "16 − 4c < 0, so 4c > 16 and c > 4. Dividing by a positive number does not flip the sign."
+            },
+            {
+              "id": "u4-qf2-q7",
+              "type": "input",
+              "prompt": "How many real solutions does −2x² + 3x − 5 = 0 have?",
+              "answers": [
+                "0"
+              ],
+              "hint": "D = 9 − 4(−2)(−5). Careful with signs.",
+              "solution": "D = 9 − 40 = −31 < 0. There are 0 real solutions."
+            },
+            {
+              "id": "u4-qf2-q8",
+              "type": "choice",
+              "prompt": "Does the parabola y = x² − 4x + 7 cross the x-axis?",
+              "choices": [
+                "Yes, twice, because D = 44",
+                "Yes, once, because D = 0",
+                "No, because D = −12",
+                "No, because D = 12"
+              ],
+              "answer": 2,
+              "hint": "The x-intercepts are the solutions of x² − 4x + 7 = 0.",
+              "solution": "D = 16 − 28 = −12 < 0. No real solutions, so no x-intercepts."
+            }
+          ]
+        },
+        {
+          "id": "quadratic-formula-3",
+          "teach": [
+            {
+              "title": "The quadratic formula",
+              "text": [
+                "For ax² + bx + c = 0: x = (−b ± √(b² − 4ac)) / (2a).",
+                "Put the equation in standard form first so you read a, b, c correctly. The ± gives two answers."
+              ],
+              "example": {
+                "problem": "Solve 2x² + 5x − 3 = 0",
+                "steps": [
+                  "a = 2, b = 5, c = −3. D = 25 + 24 = 49.",
+                  "x = (−5 ± 7) / 4.",
+                  "x = 2/4 = 1/2 or x = −12/4 = −3."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-qf3-q1",
+              "type": "input",
+              "prompt": "Solve with the quadratic formula: x² + 5x + 6 = 0",
+              "answers": [
+                "-2, -3"
+              ],
+              "hint": "D = 25 − 24 = 1.",
+              "solution": "x = (−5 ± 1) / 2, so x = −2 or x = −3."
+            },
+            {
+              "id": "u4-qf3-q2",
+              "type": "input",
+              "prompt": "Solve with the quadratic formula: x² − 7x + 10 = 0",
+              "answers": [
+                "5, 2"
+              ],
+              "hint": "a = 1, b = −7, so −b = 7.",
+              "solution": "D = 49 − 40 = 9. x = (7 ± 3) / 2 = 5 or 2."
+            },
+            {
+              "id": "u4-qf3-q3",
+              "type": "input",
+              "prompt": "Solve: 2x² − 7x + 3 = 0",
+              "answers": [
+                "3, 1/2"
+              ],
+              "hint": "D = 49 − 24 = 25.",
+              "solution": "x = (7 ± 5) / 4. x = 12/4 = 3 or x = 2/4 = 1/2."
+            },
+            {
+              "id": "u4-qf3-q4",
+              "type": "input",
+              "prompt": "Solve: 3x² + 10x + 8 = 0",
+              "answers": [
+                "-4/3, -2"
+              ],
+              "hint": "D = 100 − 96 = 4.",
+              "solution": "x = (−10 ± 2) / 6. x = −8/6 = −4/3 or x = −12/6 = −2."
+            },
+            {
+              "id": "u4-qf3-q5",
+              "type": "input",
+              "prompt": "Solve: 4x² − 4x − 3 = 0",
+              "answers": [
+                "3/2, -1/2"
+              ],
+              "hint": "D = 16 + 48 = 64.",
+              "solution": "x = (4 ± 8) / 8. x = 12/8 = 3/2 or x = −4/8 = −1/2."
+            },
+            {
+              "id": "u4-qf3-q6",
+              "type": "choice",
+              "prompt": "Solve x² − 2x − 1 = 0.",
+              "choices": [
+                "x = 1 ± √2",
+                "x = 2 ± √2",
+                "x = −1 ± √2",
+                "x = 1 ± 2√2"
+              ],
+              "answer": 0,
+              "hint": "D = 4 + 4 = 8. √8 = 2√2.",
+              "solution": "x = (2 ± 2√2) / 2 = 1 ± √2."
+            },
+            {
+              "id": "u4-qf3-q7",
+              "type": "choice",
+              "prompt": "Solve x² + 6x + 4 = 0.",
+              "choices": [
+                "x = −3 ± 2√5",
+                "x = 3 ± √5",
+                "x = −6 ± 2√5",
+                "x = −3 ± √5"
+              ],
+              "answer": 3,
+              "hint": "D = 36 − 16 = 20. √20 = 2√5.",
+              "solution": "x = (−6 ± 2√5) / 2 = −3 ± √5. Divide both parts by 2."
+            },
+            {
+              "id": "u4-qf3-q8",
+              "type": "input",
+              "prompt": "Solve: x² − 4x − 12 = 0",
+              "answers": [
+                "6, -2"
+              ],
+              "hint": "D = 16 + 48 = 64.",
+              "solution": "x = (4 ± 8) / 2 = 6 or −2."
+            }
+          ]
+        },
+        {
+          "id": "quadratic-formula-4",
+          "teach": [
+            {
+              "title": "When the discriminant is negative",
+              "text": [
+                "A negative D gives √(−D) = i√D. The solutions are complex, in the form a ± bi.",
+                "Simplify by dividing every part of the numerator by 2a."
+              ],
+              "example": {
+                "problem": "Solve x² − 2x + 5 = 0",
+                "steps": [
+                  "D = 4 − 20 = −16.",
+                  "x = (2 ± √(−16)) / 2 = (2 ± 4i) / 2.",
+                  "x = 1 ± 2i."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-qf4-q1",
+              "type": "choice",
+              "prompt": "Solve x² + 2x + 5 = 0.",
+              "choices": [
+                "x = 1 ± 2i",
+                "x = −1 ± 2i",
+                "x = −2 ± 4i",
+                "x = −1 ± 2"
+              ],
+              "answer": 1,
+              "hint": "D = 4 − 20 = −16, so √D = 4i.",
+              "solution": "x = (−2 ± 4i) / 2 = −1 ± 2i."
+            },
+            {
+              "id": "u4-qf4-q2",
+              "type": "choice",
+              "prompt": "Solve x² − 4x + 13 = 0.",
+              "choices": [
+                "x = 2 ± 6i",
+                "x = 2 ± 3i",
+                "x = −2 ± 3i",
+                "x = 4 ± 3i"
+              ],
+              "answer": 1,
+              "hint": "D = 16 − 52 = −36.",
+              "solution": "x = (4 ± 6i) / 2 = 2 ± 3i."
+            },
+            {
+              "id": "u4-qf4-q3",
+              "type": "choice",
+              "prompt": "Solve x² + 6x + 10 = 0.",
+              "choices": [
+                "x = −3 ± 2i",
+                "x = 3 ± i",
+                "x = −6 ± i",
+                "x = −3 ± i"
+              ],
+              "answer": 3,
+              "hint": "D = 36 − 40 = −4.",
+              "solution": "x = (−6 ± 2i) / 2 = −3 ± i."
+            },
+            {
+              "id": "u4-qf4-q4",
+              "type": "choice",
+              "prompt": "Solve 2x² − 4x + 5 = 0.",
+              "choices": [
+                "x = 1 ± (√6/2)i",
+                "x = 1 ± i√6",
+                "x = 2 ± (√6/2)i",
+                "x = −1 ± (√6/2)i"
+              ],
+              "answer": 0,
+              "hint": "D = 16 − 40 = −24. √(−24) = 2i√6.",
+              "solution": "x = (4 ± 2i√6) / 4 = 1 ± (√6/2)i."
+            },
+            {
+              "id": "u4-qf4-q5",
+              "type": "input",
+              "prompt": "Solve: x² − 6x + 9 = 0",
+              "answers": [
+                "3"
+              ],
+              "hint": "Find D first. It is 0.",
+              "solution": "D = 36 − 36 = 0, so x = 6/2 = 3."
+            },
+            {
+              "id": "u4-qf4-q6",
+              "type": "input",
+              "prompt": "The solutions of x² − 10x + 34 = 0 are 5 ± 3i. What is the real part of each solution?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Read the part with no i.",
+              "solution": "D = 100 − 136 = −36, x = (10 ± 6i) / 2 = 5 ± 3i. The real part is 5."
+            },
+            {
+              "id": "u4-qf4-q7",
+              "type": "input",
+              "prompt": "Solve: x² − 3x − 4 = 0",
+              "answers": [
+                "4, -1"
+              ],
+              "hint": "D = 9 + 16 = 25.",
+              "solution": "x = (3 ± 5) / 2 = 4 or −1."
+            },
+            {
+              "id": "u4-qf4-q8",
+              "type": "choice",
+              "prompt": "Which equation has a discriminant of −7?",
+              "choices": [
+                "x² − x − 2 = 0",
+                "x² + 3x + 2 = 0",
+                "x² + x + 2 = 0",
+                "x² + 4x + 4 = 0"
+              ],
+              "answer": 2,
+              "hint": "Work out b² − 4ac for each.",
+              "solution": "x² + x + 2: 1 − 8 = −7. The others give 9, 1 and 0."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "applications",
+      "title": "Quadratic applications",
+      "lessons": [
+        {
+          "id": "applications-1",
+          "teach": [
+            {
+              "title": "The projectile model",
+              "text": [
+                "An object thrown or dropped, with height in feet and time in seconds: h(t) = −16t² + vt + s.",
+                "v is the starting upward speed in ft/s (0 if dropped). s is the starting height in feet. At t = 0, h = s."
+              ],
+              "example": {
+                "problem": "Describe h(t) = −16t² + 48t + 5",
+                "steps": [
+                  "s = 5, so it starts 5 ft above the ground.",
+                  "v = 48, so it is thrown upward at 48 ft/s.",
+                  "At t = 1: h(1) = −16 + 48 + 5 = 37 ft."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-ap1-q1",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 32t + 6. How many feet above the ground does it start?",
+              "answers": [
+                "6"
+              ],
+              "hint": "Set t = 0.",
+              "solution": "h(0) = 6, so it starts 6 ft up."
+            },
+            {
+              "id": "u4-ap1-q2",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 60t + 2. What is the initial upward velocity in ft/s?",
+              "answers": [
+                "60"
+              ],
+              "hint": "Look at the coefficient of t.",
+              "solution": "v is the coefficient of t, so v = 60 ft/s."
+            },
+            {
+              "id": "u4-ap1-q3",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 40t + 3. Find h(1), the height in feet after 1 second.",
+              "answers": [
+                "27"
+              ],
+              "hint": "Substitute t = 1.",
+              "solution": "h(1) = −16 + 40 + 3 = 27 ft."
+            },
+            {
+              "id": "u4-ap1-q4",
+              "type": "choice",
+              "prompt": "A ball is thrown upward at 50 ft/s from a height of 8 ft. Which model fits?",
+              "choices": [
+                "h(t) = −16t² + 8t + 50",
+                "h(t) = 16t² + 50t + 8",
+                "h(t) = −16t² + 50t + 8",
+                "h(t) = −16t² − 50t + 8"
+              ],
+              "answer": 2,
+              "hint": "v goes with t. The starting height is the constant. Gravity makes the t² term negative.",
+              "solution": "h(t) = −16t² + vt + s with v = 50 and s = 8."
+            },
+            {
+              "id": "u4-ap1-q5",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 64t + 4. Find h(2).",
+              "answers": [
+                "68"
+              ],
+              "hint": "t² = 4.",
+              "solution": "h(2) = −16(4) + 64(2) + 4 = −64 + 128 + 4 = 68 ft."
+            },
+            {
+              "id": "u4-ap1-q6",
+              "type": "input",
+              "prompt": "A rock is dropped from 100 ft, so h(t) = −16t² + 100. Find h(2).",
+              "answers": [
+                "36"
+              ],
+              "hint": "Dropped means no upward velocity.",
+              "solution": "h(2) = −16(4) + 100 = −64 + 100 = 36 ft."
+            },
+            {
+              "id": "u4-ap1-q7",
+              "type": "choice",
+              "prompt": "A ball is dropped from the top of a 144-ft building. Which model fits?",
+              "choices": [
+                "h(t) = −16t² + 144",
+                "h(t) = −16t² + 144t",
+                "h(t) = −16t² + 144t + 144",
+                "h(t) = 16t² + 144"
+              ],
+              "answer": 0,
+              "hint": "Dropped means v = 0, so there is no t term.",
+              "solution": "v = 0 and s = 144, so h(t) = −16t² + 144."
+            },
+            {
+              "id": "u4-ap1-q8",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 48t + 10. Find h(3).",
+              "answers": [
+                "10"
+              ],
+              "hint": "Compute −16(9) + 48(3).",
+              "solution": "h(3) = −144 + 144 + 10 = 10 ft. It is back at its starting height."
+            }
+          ]
+        },
+        {
+          "id": "applications-2",
+          "teach": [
+            {
+              "title": "Maximum height and time to the top",
+              "text": [
+                "The graph is a parabola that opens down, so the vertex is the highest point.",
+                "Time to the top: t = −b/(2a). Max height: plug that t into h(t)."
+              ],
+              "example": {
+                "problem": "Find the max height of h(t) = −16t² + 64t + 5",
+                "steps": [
+                  "t = −64 / (2 · −16) = 2 seconds.",
+                  "h(2) = −16(4) + 64(2) + 5 = −64 + 128 + 5.",
+                  "Max height: 69 ft."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-ap2-q1",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 32t + 4. At what time (in seconds) is the ball highest?",
+              "answers": [
+                "1"
+              ],
+              "hint": "t = −b / (2a).",
+              "solution": "t = −32 / (2 · −16) = 1 second."
+            },
+            {
+              "id": "u4-ap2-q2",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 32t + 4. What is the maximum height in feet?",
+              "answers": [
+                "20"
+              ],
+              "hint": "Plug the time from the last question into h(t).",
+              "solution": "h(1) = −16 + 32 + 4 = 20 ft."
+            },
+            {
+              "id": "u4-ap2-q3",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 80t. At what time (in seconds) is the object highest?",
+              "answers": [
+                "5/2"
+              ],
+              "hint": "a = −16 and b = 80.",
+              "solution": "t = −80 / (−32) = 2.5 seconds."
+            },
+            {
+              "id": "u4-ap2-q4",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 80t. What is the maximum height in feet?",
+              "answers": [
+                "100"
+              ],
+              "hint": "Use t = 2.5.",
+              "solution": "h(2.5) = −16(6.25) + 80(2.5) = −100 + 200 = 100 ft."
+            },
+            {
+              "id": "u4-ap2-q5",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 96t + 10. At what time (in seconds) is it highest?",
+              "answers": [
+                "3"
+              ],
+              "hint": "t = −b / (2a).",
+              "solution": "t = −96 / (−32) = 3 seconds."
+            },
+            {
+              "id": "u4-ap2-q6",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 96t + 10. What is the maximum height in feet?",
+              "answers": [
+                "154"
+              ],
+              "hint": "Plug t = 3 into h(t).",
+              "solution": "h(3) = −16(9) + 96(3) + 10 = −144 + 288 + 10 = 154 ft."
+            },
+            {
+              "id": "u4-ap2-q7",
+              "type": "choice",
+              "prompt": "Which formula gives the time when h(t) = at² + bt + c is at its maximum?",
+              "choices": [
+                "t = b / (2a)",
+                "t = −b / a",
+                "t = −2a / b",
+                "t = −b / (2a)"
+              ],
+              "answer": 3,
+              "hint": "This is the x-coordinate of the vertex.",
+              "solution": "The vertex of a parabola is at t = −b / (2a)."
+            },
+            {
+              "id": "u4-ap2-q8",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 16t + 3. What is the maximum height in feet?",
+              "answers": [
+                "7"
+              ],
+              "hint": "The top is at t = 16/32 = 1/2.",
+              "solution": "h(0.5) = −16(0.25) + 16(0.5) + 3 = −4 + 8 + 3 = 7 ft."
+            }
+          ]
+        },
+        {
+          "id": "applications-3",
+          "teach": [
+            {
+              "title": "When does it hit the ground?",
+              "text": [
+                "The ground is height 0. Set h(t) = 0 and solve. Factor or use the quadratic formula.",
+                "Time cannot be negative, so throw away any negative solution."
+              ],
+              "example": {
+                "problem": "When does h(t) = −16t² + 32t + 48 hit the ground?",
+                "steps": [
+                  "Set −16t² + 32t + 48 = 0 and divide by −16: t² − 2t − 3 = 0.",
+                  "Factor: (t − 3)(t + 1) = 0, so t = 3 or t = −1.",
+                  "Negative time is not possible. It lands after 3 seconds."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-ap3-q1",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 64t. At what time (in seconds, other than t = 0) is h = 0?",
+              "answers": [
+                "4"
+              ],
+              "hint": "Factor out −16t.",
+              "solution": "−16t(t − 4) = 0, so t = 0 or t = 4. It lands at t = 4 seconds."
+            },
+            {
+              "id": "u4-ap3-q2",
+              "type": "input",
+              "prompt": "A rock is dropped from 144 ft: h(t) = −16t² + 144. How many seconds until it lands?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Set h = 0 and solve for t².",
+              "solution": "16t² = 144, t² = 9, t = 3 (not −3)."
+            },
+            {
+              "id": "u4-ap3-q3",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 16t + 32. How many seconds until it lands?",
+              "answers": [
+                "2"
+              ],
+              "hint": "Divide by −16: t² − t − 2 = 0.",
+              "solution": "(t − 2)(t + 1) = 0, so t = 2 or t = −1. Only t = 2 makes sense."
+            },
+            {
+              "id": "u4-ap3-q4",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 48t + 160. How many seconds until it lands?",
+              "answers": [
+                "5"
+              ],
+              "hint": "Divide by −16: t² − 3t − 10 = 0.",
+              "solution": "(t − 5)(t + 2) = 0, so t = 5 or t = −2. It lands at 5 seconds."
+            },
+            {
+              "id": "u4-ap3-q5",
+              "type": "choice",
+              "prompt": "When solving h(t) = 0 you get t = 4 and t = −1. Which do you keep, and why?",
+              "choices": [
+                "t = −1, because it is smaller",
+                "t = 4, because time cannot be negative",
+                "Both, because a quadratic has two answers",
+                "t = 4, because it is the larger zero"
+              ],
+              "answer": 1,
+              "hint": "Think about what t stands for.",
+              "solution": "t is time after launch, so it has to be 0 or more. Keep t = 4."
+            },
+            {
+              "id": "u4-ap3-q6",
+              "type": "input",
+              "prompt": "h(t) = −16t² + 20t + 6. Use the formula to find the landing time in seconds.",
+              "answers": [
+                "3/2"
+              ],
+              "hint": "D = 400 + 384 = 784 = 28².",
+              "solution": "a = −16, b = 20, c = 6. t = (−20 ± 28) / (−32). That gives (−48) / (−32) = 3/2 or 8 / (−32) = −1/4. Keep 3/2 seconds."
+            },
+            {
+              "id": "u4-ap3-q7",
+              "type": "input",
+              "prompt": "A rock is dropped from 400 ft. How many seconds until it lands?",
+              "answers": [
+                "5"
+              ],
+              "hint": "h(t) = −16t² + 400. Set it to 0.",
+              "solution": "16t² = 400, t² = 25, t = 5 seconds."
+            },
+            {
+              "id": "u4-ap3-q8",
+              "type": "choice",
+              "prompt": "h(t) = −16t² + 8t + 3. When does it hit the ground?",
+              "choices": [
+                "−1/4 second",
+                "3/4 second",
+                "1/4 second",
+                "3/2 seconds"
+              ],
+              "answer": 1,
+              "hint": "D = 64 + 192 = 256 = 16².",
+              "solution": "a = −16, b = 8, c = 3. t = (−8 ± 16) / (−32). That gives (−24) / (−32) = 3/4 or 8 / (−32) = −1/4. Keep 3/4."
+            }
+          ]
+        },
+        {
+          "id": "applications-4",
+          "teach": [
+            {
+              "title": "Area problems",
+              "text": [
+                "Name the unknown side x. Write the other side in terms of x. Write area = length × width, set up the equation, and solve. Reject answers that are negative or make no sense.",
+                "For a fence problem, the perimeter or fence length gives a relationship between the sides."
+              ],
+              "example": {
+                "problem": "A rectangle is 3 ft longer than it is wide and has area 40 ft². Find the width.",
+                "steps": [
+                  "Let width = w, so length = w + 3. Then w(w + 3) = 40.",
+                  "w² + 3w − 40 = 0, so (w + 8)(w − 5) = 0.",
+                  "w = 5 (not −8). The width is 5 ft."
+                ]
+              }
+            },
+            {
+              "title": "Maximum area",
+              "text": [
+                "If the area is a quadratic with a negative leading coefficient, its vertex gives the maximum area."
+              ],
+              "example": {
+                "problem": "60 ft of fence makes 3 sides of a rectangle against a barn. What width x gives the most area?",
+                "steps": [
+                  "The two widths use 2x. The length is 60 − 2x.",
+                  "Area A = x(60 − 2x) = −2x² + 60x.",
+                  "Vertex: x = −60 / (2 · −2) = 15 ft."
+                ]
+              }
+            }
+          ],
+          "questions": [
+            {
+              "id": "u4-ap4-q1",
+              "type": "input",
+              "prompt": "A rectangle is 4 ft longer than it is wide, and its area is 60 ft². What is the width in feet?",
+              "answers": [
+                "6"
+              ],
+              "hint": "w(w + 4) = 60 gives w² + 4w − 60 = 0.",
+              "solution": "(w + 10)(w − 6) = 0. The width is 6 ft."
+            },
+            {
+              "id": "u4-ap4-q2",
+              "type": "input",
+              "prompt": "The length of a garden is twice its width, and the area is 72 ft². What is the width in feet?",
+              "answers": [
+                "6"
+              ],
+              "hint": "w · 2w = 72.",
+              "solution": "2w² = 72, so w² = 36 and w = 6."
+            },
+            {
+              "id": "u4-ap4-q3",
+              "type": "input",
+              "prompt": "A rectangle has perimeter 36 ft and area 80 ft². How long is its shorter side in feet?",
+              "answers": [
+                "8"
+              ],
+              "hint": "The sides add to 18. If one side is w, the other is 18 − w.",
+              "solution": "w(18 − w) = 80, so w² − 18w + 80 = 0. (w − 8)(w − 10) = 0. The sides are 8 and 10. The shorter is 8."
+            },
+            {
+              "id": "u4-ap4-q4",
+              "type": "input",
+              "prompt": "60 ft of fence makes 3 sides of a rectangle against a barn. The width is x, so A = x(60 − 2x). What x gives the most area?",
+              "answers": [
+                "15"
+              ],
+              "hint": "A = −2x² + 60x. Use x = −b / (2a).",
+              "solution": "x = −60 / (−4) = 15 ft."
+            },
+            {
+              "id": "u4-ap4-q5",
+              "type": "input",
+              "prompt": "For the fence above, what is the maximum area in ft²?",
+              "answers": [
+                "450"
+              ],
+              "hint": "Use x = 15 in A = x(60 − 2x).",
+              "solution": "A = 15 · (60 − 30) = 15 · 30 = 450 ft²."
+            },
+            {
+              "id": "u4-ap4-q6",
+              "type": "input",
+              "prompt": "A ball is thrown from 24 ft at 40 ft/s: h(t) = −16t² + 40t + 24. What is its height after 2 seconds?",
+              "answers": [
+                "40"
+              ],
+              "hint": "Substitute t = 2.",
+              "solution": "h(2) = −64 + 80 + 24 = 40 ft."
+            },
+            {
+              "id": "u4-ap4-q7",
+              "type": "input",
+              "prompt": "For h(t) = −16t² + 40t + 24, how many seconds until it hits the ground?",
+              "answers": [
+                "3"
+              ],
+              "hint": "Divide by −8: 2t² − 5t − 3 = 0.",
+              "solution": "(2t + 1)(t − 3) = 0, so t = −1/2 or t = 3. Keep t = 3 seconds."
+            },
+            {
+              "id": "u4-ap4-q8",
+              "type": "choice",
+              "prompt": "For h(t) = −16t² + 40t + 24, what is the maximum height?",
+              "choices": [
+                "74 ft",
+                "40 ft",
+                "25 ft",
+                "49 ft"
+              ],
+              "answer": 3,
+              "hint": "The top is at t = −40 / (−32) = 1.25 seconds.",
+              "solution": "h(1.25) = −16(1.5625) + 40(1.25) + 24 = −25 + 50 + 24 = 49 ft."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "test": {
+    "questions": [
+      {
+        "id": "u4-t-q1",
+        "type": "choice",
+        "prompt": "What is the vertex of y = −2(x + 4)² + 9, and does it open up or down?",
+        "choices": [
+          "(4, 9), opens down",
+          "(−4, 9), opens up",
+          "(−4, 9), opens down",
+          "(−4, −9), opens down"
+        ],
+        "answer": 2,
+        "hint": "In y = a(x − h)² + k the vertex is (h, k). The sign of a decides the direction.",
+        "solution": "x + 4 = x − (−4), so h = −4. k = 9. a = −2 is negative, so it opens down."
+      },
+      {
+        "id": "u4-t-q2",
+        "type": "input",
+        "prompt": "What is the minimum value of y = (x − 7)² − 11?",
+        "answers": [
+          "-11"
+        ],
+        "hint": "The minimum of a parabola that opens up is the k value of the vertex.",
+        "solution": "Vertex is (7, −11). a = 1 > 0, so the minimum value is −11."
+      },
+      {
+        "id": "u4-t-q3",
+        "type": "input",
+        "prompt": "Find the axis of symmetry of y = 3x² − 18x + 4. Give the value of x.",
+        "answers": [
+          "3"
+        ],
+        "hint": "x = −b / (2a).",
+        "solution": "x = 18 / 6 = 3."
+      },
+      {
+        "id": "u4-t-q4",
+        "type": "choice",
+        "prompt": "What is the range of y = −x² + 6x − 5?",
+        "choices": [
+          "y ≤ 4",
+          "y ≥ 4",
+          "y ≤ 3",
+          "y ≥ 3"
+        ],
+        "answer": 0,
+        "hint": "Find the vertex. The parabola opens down.",
+        "solution": "x = −6 / (−2) = 3. y = −9 + 18 − 5 = 4. It opens down, so the range is y ≤ 4."
+      },
+      {
+        "id": "u4-t-q5",
+        "type": "choice",
+        "prompt": "Factor 10x² − 9x − 9.",
+        "choices": [
+          "(2x + 3)(5x − 3)",
+          "(10x + 3)(x − 3)",
+          "(2x − 3)(5x − 3)",
+          "(2x − 3)(5x + 3)"
+        ],
+        "answer": 3,
+        "hint": "Try pairs for 6x² and for −3. Check the middle term by FOIL.",
+        "solution": "(2x − 3)(5x + 3) = 10x² + 6x − 15x − 9 = 10x² − 9x − 9."
+      },
+      {
+        "id": "u4-t-q6",
+        "type": "choice",
+        "prompt": "Factor 49x² − 64.",
+        "choices": [
+          "(7x − 8)²",
+          "(7x − 8)(7x + 8)",
+          "(7x + 8)²",
+          "(49x − 8)(x + 8)"
+        ],
+        "answer": 1,
+        "hint": "This is a difference of squares: a² − b².",
+        "solution": "49x² = (7x)² and 64 = 8². So it is (7x − 8)(7x + 8)."
+      },
+      {
+        "id": "u4-t-q7",
+        "type": "input",
+        "prompt": "Solve: x² − x = 42",
+        "answers": [
+          "7, -6"
+        ],
+        "hint": "Subtract 42 from both sides first.",
+        "solution": "x² − x − 42 = 0. (x − 7)(x + 6) = 0, so x = 7 or x = −6."
+      },
+      {
+        "id": "u4-t-q8",
+        "type": "input",
+        "prompt": "Solve: 3x² = 12x",
+        "answers": [
+          "0, 4"
+        ],
+        "hint": "Do not divide by x. Move everything to one side and factor.",
+        "solution": "3x² − 12x = 0. 3x(x − 4) = 0. x = 0 or x = 4."
+      },
+      {
+        "id": "u4-t-q9",
+        "type": "input",
+        "prompt": "Solve: 2(x − 1)² = 50",
+        "answers": [
+          "6, -4"
+        ],
+        "hint": "Divide by 2 first.",
+        "solution": "(x − 1)² = 25. x − 1 = ±5. x = 6 or x = −4."
+      },
+      {
+        "id": "u4-t-q10",
+        "type": "choice",
+        "prompt": "Solve x² = 45.",
+        "choices": [
+          "x = ±9√5",
+          "x = ±3√5",
+          "x = ±5√3",
+          "x = ±15"
+        ],
+        "answer": 1,
+        "hint": "√45 = √9 · √5.",
+        "solution": "x = ±√45 = ±√9 · √5 = ±3√5."
+      },
+      {
+        "id": "u4-t-q11",
+        "type": "choice",
+        "prompt": "What are the solutions of (x + 5)² = −4?",
+        "choices": [
+          "x = −5 ± 2, two real solutions",
+          "x = 5 ± 2i, no real solutions",
+          "x = −5 ± 4i, no real solutions",
+          "x = −5 ± 2i, no real solutions"
+        ],
+        "answer": 3,
+        "hint": "The square root of a negative number is not real.",
+        "solution": "x + 5 = ±√(−4) = ±2i. So x = −5 ± 2i. There are no real solutions."
+      },
+      {
+        "id": "u4-t-q12",
+        "type": "choice",
+        "prompt": "Simplify √(−72).",
+        "choices": [
+          "6i√2",
+          "2i√6",
+          "36i√2",
+          "6√2"
+        ],
+        "answer": 0,
+        "hint": "72 = 36 · 2.",
+        "solution": "√(−72) = i√72 = i · 6√2 = 6i√2."
+      },
+      {
+        "id": "u4-t-q13",
+        "type": "choice",
+        "prompt": "Simplify i³¹.",
+        "choices": [
+          "i",
+          "1",
+          "−i",
+          "−1"
+        ],
+        "answer": 2,
+        "hint": "Divide 31 by 4. Use the remainder.",
+        "solution": "31 = 4 · 7 + 3. i³ = −i."
+      },
+      {
+        "id": "u4-t-q14",
+        "type": "input",
+        "prompt": "x² = −121. The solutions are ±bi. What is b?",
+        "answers": [
+          "11"
+        ],
+        "hint": "11 · 11 = 121.",
+        "solution": "x = ±√(−121) = ±11i. So b = 11."
+      },
+      {
+        "id": "u4-t-q15",
+        "type": "choice",
+        "prompt": "Simplify (7 − 2i) − (3 − 9i).",
+        "choices": [
+          "4 − 11i",
+          "10 + 7i",
+          "4 + 7i",
+          "4 − 7i"
+        ],
+        "answer": 2,
+        "hint": "Distribute the minus sign to both parts.",
+        "solution": "7 − 3 = 4 and −2i + 9i = 7i. Answer: 4 + 7i."
+      },
+      {
+        "id": "u4-t-q16",
+        "type": "choice",
+        "prompt": "Multiply: (3 + 4i)(2 − 5i)",
+        "choices": [
+          "26 − 7i",
+          "−14 − 7i",
+          "26 + 7i",
+          "6 − 20i"
+        ],
+        "answer": 0,
+        "hint": "FOIL. The last term is (4i)(−5i) = −20i² = +20.",
+        "solution": "6 − 15i + 8i − 20i² = 6 − 7i + 20 = 26 − 7i."
+      },
+      {
+        "id": "u4-t-q17",
+        "type": "choice",
+        "prompt": "Simplify 12 / (3 − 3i).",
+        "choices": [
+          "2 − 2i",
+          "4 + 4i",
+          "36 + 36i",
+          "2 + 2i"
+        ],
+        "answer": 3,
+        "hint": "Multiply top and bottom by 3 + 3i.",
+        "solution": "Top: 12(3 + 3i) = 36 + 36i. Bottom: 9 + 9 = 18. (36 + 36i) / 18 = 2 + 2i."
+      },
+      {
+        "id": "u4-t-q18",
+        "type": "input",
+        "prompt": "x² + 14x + c is a perfect square. What is c?",
+        "answers": [
+          "49"
+        ],
+        "hint": "(b/2)².",
+        "solution": "(14/2)² = 49."
+      },
+      {
+        "id": "u4-t-q19",
+        "type": "choice",
+        "prompt": "Solve x² − 8x + 3 = 0 by completing the square.",
+        "choices": [
+          "x = 4 ± √3",
+          "x = 4 ± √13",
+          "x = −4 ± √13",
+          "x = 4 ± √19"
+        ],
+        "answer": 1,
+        "hint": "x² − 8x = −3. Add 16 to both sides.",
+        "solution": "(x − 4)² = 13. x = 4 ± √13."
+      },
+      {
+        "id": "u4-t-q20",
+        "type": "input",
+        "prompt": "Find the discriminant of 5x² − 4x − 2.",
+        "answers": [
+          "56"
+        ],
+        "hint": "D = b² − 4ac, and c is negative.",
+        "solution": "D = 16 − 4(5)(−2) = 16 + 40 = 56."
+      },
+      {
+        "id": "u4-t-q21",
+        "type": "choice",
+        "prompt": "Solve x² − 4x + 6 = 0.",
+        "choices": [
+          "x = 4 ± i√2",
+          "x = 2 ± i√2",
+          "x = 2 ± 2i√2",
+          "x = 2 ± √2"
+        ],
+        "answer": 1,
+        "hint": "D = 16 − 24 = −8.",
+        "solution": "x = (4 ± √(−8)) / 2 = (4 ± 2i√2) / 2 = 2 ± i√2."
+      },
+      {
+        "id": "u4-t-q22",
+        "type": "input",
+        "prompt": "Solve with the quadratic formula: 6x² + x − 2 = 0",
+        "answers": [
+          "1/2, -2/3"
+        ],
+        "hint": "D = 1 + 48 = 49.",
+        "solution": "x = (−1 ± 7) / 12. x = 6/12 = 1/2 or x = −8/12 = −2/3."
+      },
+      {
+        "id": "u4-t-q23",
+        "type": "input",
+        "prompt": "h(t) = −16t² + 72t + 8. What is the maximum height in feet?",
+        "answers": [
+          "89"
+        ],
+        "hint": "The top is at t = 72 / 32 = 2.25.",
+        "solution": "h(2.25) = −16(5.0625) + 72(2.25) + 8 = −81 + 162 + 8 = 89 ft."
+      },
+      {
+        "id": "u4-t-q24",
+        "type": "input",
+        "prompt": "A rock is dropped from 256 ft. How many seconds until it lands?",
+        "answers": [
+          "4"
+        ],
+        "hint": "h(t) = −16t² + 256. Set h = 0.",
+        "solution": "16t² = 256, t² = 16, t = 4 seconds."
+      }
+    ]
+  }
+}
