@@ -221,3 +221,14 @@ test('the Home tab shows the pet, and every screen draws the chosen pet', () => 
   assert.match(env.html(), /Change pet/);
   assert.match(env.html(), /penguin-rockhopper-happy\.png/);
 });
+
+test('a hat on the sliding penguin sits on its head, not its back', () => {
+  const html = views.mascotHtml({ color: 'penguin-emperor', name: 'Waddles', mood: 'cheer', hat: 'crown' });
+  // HEAD_FIXES: x 0.63, w 0.36, so the hat's left edge is (0.63 - 0.36 * 0.9 / 2) = 46.8%.
+  assert.match(html, /class="axl-hat" style="left:46\.8%/);
+  require('../js/pet-heads.js');
+  const measured = globalThis.AQ.PET_HEADS['duck-pekin-happy'];
+  const duck = views.mascotHtml({ color: 'duck-pekin', name: 'Ducky', mood: 'happy', hat: 'crown' });
+  const left = ((measured.x - measured.w * 0.9 / 2) * 100).toFixed(1);
+  assert.ok(duck.includes('left:' + left + '%'), left);
+});

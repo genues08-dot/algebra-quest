@@ -111,3 +111,28 @@ test('every look has its pictures and a head for hats', () => {
     assert.ok(fs.existsSync(path.join(__dirname, '..', mascot.thumbPath(look.id))), look.id + ' thumb');
   }
 });
+
+test('choose: every look keeps an axolotl color for older apps, and unknown fields stay', () => {
+  for (const id of mascot.LOOK_IDS) {
+    const next = mascot.choose({ color: 'blue', name: 'Axl', extra: 1 }, id);
+    assert.ok(mascot.COLORS.includes(next.color), id);
+    assert.equal(mascot.lookOf(next), id);
+    assert.equal(next.extra, 1);
+  }
+  const fox = mascot.choose({ color: 'purple', name: 'Axl' }, 'fox-red');
+  assert.deepEqual(fox, { color: 'purple', name: 'Foxy', look: 'fox-red' });
+  assert.deepEqual(mascot.choose(fox, 'cat-gray'), { color: 'purple', name: 'Whiskers', look: 'cat-gray' });
+  assert.deepEqual(mascot.choose(fox, 'blue'), { color: 'blue', name: 'Axl' });
+  assert.equal(mascot.choose(fox, 'dragon'), fox);
+  assert.deepEqual(mascot.lookPictures('duck-black'), ['img/pets/duck-black-happy.png', 'img/pets/duck-black-cheer.png',
+    'img/pets/duck-black-encourage.png', 'img/pets/duck-black-think.png', 'img/pets/duck-black-thumb.png']);
+  assert.equal(mascot.lookPictures('pink').length, 4);
+});
+
+test('the save checks the look field', () => {
+  const save = makeSave(makeUnit());
+  const withLook = look => { const copy = JSON.parse(JSON.stringify(save)); copy.settings.mascot.look = look; return copy; };
+  assert.equal(storage.isValidSave(withLook('duck-pekin')), true);
+  assert.equal(storage.isValidSave(withLook('x'.repeat(40))), true);
+  for (const bad of ['', 'x'.repeat(41), 5, null]) assert.equal(storage.isValidSave(withLook(bad)), false, String(bad));
+});

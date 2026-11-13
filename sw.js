@@ -53,7 +53,9 @@ var FILES = [
 ];
 
 self.addEventListener('install', function (event) {
-  event.waitUntil(caches.open(CACHE).then(function (cache) { return cache.addAll(FILES); }).then(function () {
+  // 'reload' skips the browser's own cache, so the new set never holds a file from before the update.
+  var fresh = FILES.map(function (file) { return new Request(file, { cache: 'reload' }); });
+  event.waitUntil(caches.open(CACHE).then(function (cache) { return cache.addAll(fresh); }).then(function () {
     return self.skipWaiting();
   }));
 });

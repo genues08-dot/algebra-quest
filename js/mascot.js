@@ -65,9 +65,23 @@
     if (!info) return mascot;
     var oldPet = petById(lookInfo(lookOf(mascot)).pet);
     var newPet = petById(info.pet);
-    var name = mascot.name === oldPet.name ? newPet.name : mascot.name;
-    if (info.pet === 'axolotl') return { color: info.color, name: name };
-    return { color: COLORS.indexOf(mascot.color) !== -1 ? mascot.color : DEFAULT.color, look: look, name: name };
+    // Fields this app does not know (from a newer app) are kept.
+    var next = Object.assign({}, mascot, { name: mascot.name === oldPet.name ? newPet.name : mascot.name });
+    if (info.pet === 'axolotl') {
+      next.color = info.color;
+      delete next.look;
+    } else {
+      next.color = COLORS.indexOf(mascot.color) !== -1 ? mascot.color : DEFAULT.color;
+      next.look = look;
+    }
+    return next;
+  }
+
+  // Every picture of a look: its 4 moods and its small picture.
+  function lookPictures(look) {
+    var list = MOODS.map(function (mood) { return imagePath(look, mood); });
+    var thumb = thumbPath(look);
+    return list.indexOf(thumb) === -1 ? list.concat(thumb) : list;
   }
 
   var LINES = {
@@ -159,6 +173,7 @@
     lookOf: lookOf,
     choose: choose,
     thumbPath: thumbPath,
+    lookPictures: lookPictures,
     MOODS: MOODS,
     DEFAULT: DEFAULT,
     NAME_MAX: NAME_MAX,

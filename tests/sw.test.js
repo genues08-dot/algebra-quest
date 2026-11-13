@@ -48,3 +48,12 @@ test('the Firebase scripts in index.html are the version the service worker keep
   assert.equal(remote.length, 3);
   remote.forEach(src => assert.ok(src.startsWith(firebase), src));
 });
+
+test('the phone page loads every app script index.html loads before the online ones', () => {
+  const scripts = rel => attrs(read(rel), 'src').filter(src => src.startsWith('js/'));
+  const index = scripts('index.html');
+  const core = index.slice(0, index.indexOf('js/online.js'));
+  assert.ok(core.includes('js/pet-heads.js'));
+  const phone = scripts('phone.html');
+  core.forEach(src => assert.ok(phone.includes(src), src + ' is not in phone.html'));
+});

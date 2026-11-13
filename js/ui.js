@@ -87,6 +87,7 @@
   var rootEl = null;
   var ls = null;
   var builtInUnits = []; // the units built into the app, from options.units
+  var warmedLook = null;  // the look whose pictures were last fetched ahead
   // The stored text this window last read or wrote. A different value in storage means
   // another window has saved since then.
   var lastRaw = null;
@@ -196,6 +197,15 @@
       calculatorAllowed: calculatorAllowed,
       calculatorPanel: panel.open && calculatorAllowed ? calculatorModel(true) : null
     };
+  }
+
+  // Fetches every picture of the pet now, so the online app's service worker keeps them all and
+  // the pet shows in every mood offline, not only in the moods seen so far.
+  function warmPictures() {
+    var look = AQ.mascot.lookOf(state.save.settings.mascot);
+    if (look === warmedLook || typeof root.Image !== 'function') return;
+    warmedLook = look;
+    AQ.mascot.lookPictures(look).forEach(function (src) { new root.Image().src = src; });
   }
 
   // The mascot as drawn everywhere: its look (as color), its name, and the hat it wears.
@@ -977,6 +987,7 @@
       // An untouched name box shows the new pet's starting name; a name being typed stays.
       if (state.mascotDraft === oldName) state.mascotDraft = null;
       render();
+      warmPictures();
     },
     'mascot-name': saveMascotName,
     'cycle-goal': function () {
@@ -1243,6 +1254,7 @@
     storage.syncUnits(state.save, builtInUnits);
     if (commit(state.save)) {
       showHome();
+      warmPictures();
       if (state.freezeNotice) {
         showMessage('\u2744 Streak freeze used!', [
           'You missed ' + (state.freezeNotice.used === 1 ? 'a day' : state.freezeNotice.used + ' days') + ', so ' +
