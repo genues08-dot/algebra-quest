@@ -21,22 +21,10 @@
 
   // ----- Mascot -----
 
-  // Where each axolotl pose's head is, as fractions of its picture: x is the head's centre, y its
-  // top, w its width. Measured by eye on the 12 pictures. The other pets' heads were measured by
-  // tools/cut-pets.js (AQ.PET_HEADS), with fixes by eye in HEAD_FIXES, keyed "<look>-<mood>".
-  var HEAD_FIXES = {
-    // The sliding penguin lies on its belly, with its head at the front.
-    'penguin-emperor-cheer': { x: 0.63, y: 0.5, w: 0.36 },
-    'penguin-rockhopper-cheer': { x: 0.63, y: 0.5, w: 0.36 },
-    'penguin-little-blue-cheer': { x: 0.64, y: 0.5, w: 0.36 }
-  };
-  var HEADS = {
-    happy: { x: 0.52, y: 0.13, w: 0.46 },
-    encourage: { x: 0.52, y: 0.13, w: 0.46 },
-    think: { x: 0.55, y: 0.13, w: 0.44 },
-    cheer: { x: 0.5, y: 0.15, w: 0.44 },
-    'pink-cheer': { x: 0.55, y: 0.14, w: 0.44 }
-  };
+  // Where each pet picture's head is, as fractions of the picture: x is the head's centre, y its
+  // top, w its width. tools/cut-pets.js measures them into AQ.PET_HEADS, keyed "<look>-<mood>", and
+  // keeps its fixes by eye. HEAD is for a picture with no measurement.
+  var HEAD = { x: 0.5, y: 0.15, w: 0.44 };
 
   // Each hat is drawn in a 100 × 70 box whose bottom edge sits on the head.
   var HAT_SVGS = {
@@ -67,13 +55,7 @@
 
   // Where the head is in a look's picture for a mood.
   function headOf(look, mood) {
-    var key = look + '-' + mood;
-    var info = AQ.mascot.lookInfo(look);
-    if (info && info.pet !== 'axolotl') {
-      var measured = HEAD_FIXES[key] || (AQ.PET_HEADS && AQ.PET_HEADS[key]);
-      if (measured) return measured;
-    }
-    return HEADS[key] || HEADS[mood] || HEADS.happy;
+    return (AQ.PET_HEADS && AQ.PET_HEADS[look + '-' + mood]) || HEAD;
   }
 
   // The pet's picture, with its hat when one is worn. color is the look; cls is the picture's

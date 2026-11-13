@@ -11,7 +11,7 @@ Duolingo-style algebra study app. Spec: docs/superpowers/specs/2026-11-11-algebr
 - When the online app gains or renames a file, add it to `FILES` in `sw.js` and raise `CACHE`. `tests/sw.test.js` checks the list.
 - Making a unit from packet photos: follow spec section 10 and write `units/<unit-id>.json`. Then run `node tools/validate-unit.js units/<unit-id>.json` and fix every error before adding it to `js/phone-units.js`.
 - The student is in Algebra 2. Their packets set the content and level.
-- Pets: 14, each in 3 colors, listed in `PETS` in `js/mascot.js`. A look (`pink`, `duck-pekin`) is kept in `settings.mascot.look`; `settings.mascot.color` stays an axolotl color so older apps can read the save. Pictures come from the user's sheets through `tools/cut-pets.js`. A new look must also go in the list in `firestore.rules` (a test checks it), and the rules must be published before the site.
+- Pets: 14, each in 3 colors, listed in `PETS` in `js/mascot.js`. A look (`pink`, `duck-pekin`) is kept in `settings.mascot.look`; `settings.mascot.color` stays an axolotl color so older apps can read the save. Pictures, the axolotl's included, come from the user's sprite folder (transparent 400 × 400 PNGs, not in the repo) through `tools/cut-pets.js`, which also measures each head for hats into `js/pet-heads.js`. A new look must also go in the list in `firestore.rules` (a test checks it), and the rules must be published before the site.
 
 ## Choosing typed or multiple choice
 

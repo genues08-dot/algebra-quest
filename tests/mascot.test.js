@@ -103,10 +103,8 @@ test('every look has its pictures and a head for hats', () => {
   for (const look of mascot.LOOKS) {
     for (const mood of mascot.MOODS) {
       assert.ok(fs.existsSync(path.join(__dirname, '..', mascot.imagePath(look.id, mood))), look.id + ' ' + mood);
-      if (look.pet !== 'axolotl') {
-        const head = globalThis.AQ.PET_HEADS[look.id + '-' + mood];
-        assert.ok(head && head.x > 0 && head.x < 1 && head.y >= 0 && head.y < 1 && head.w > 0 && head.w < 1, look.id + ' ' + mood);
-      }
+      const head = globalThis.AQ.PET_HEADS[look.id + '-' + mood];
+      assert.ok(head && head.x > 0 && head.x < 1 && head.y >= 0 && head.y < 1 && head.w > 0 && head.w < 1, look.id + ' ' + mood);
     }
     assert.ok(fs.existsSync(path.join(__dirname, '..', mascot.thumbPath(look.id))), look.id + ' thumb');
   }

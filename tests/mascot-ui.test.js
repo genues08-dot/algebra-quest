@@ -222,13 +222,15 @@ test('the Home tab shows the pet, and every screen draws the chosen pet', () => 
   assert.match(env.html(), /penguin-rockhopper-happy\.png/);
 });
 
-test('a hat on the sliding penguin sits on its head, not its back', () => {
-  const html = views.mascotHtml({ color: 'penguin-emperor', name: 'Waddles', mood: 'cheer', hat: 'crown' });
-  // HEAD_FIXES: x 0.63, w 0.36, so the hat's left edge is (0.63 - 0.36 * 0.9 / 2) = 46.8%.
-  assert.match(html, /class="axl-hat" style="left:46\.8%/);
+test('a hat goes where tools/cut-pets.js put the head, on every pet', () => {
   require('../js/pet-heads.js');
-  const measured = globalThis.AQ.PET_HEADS['duck-pekin-happy'];
-  const duck = views.mascotHtml({ color: 'duck-pekin', name: 'Ducky', mood: 'happy', hat: 'crown' });
-  const left = ((measured.x - measured.w * 0.9 / 2) * 100).toFixed(1);
-  assert.ok(duck.includes('left:' + left + '%'), left);
+  for (const [look, mood] of [['duck-pekin', 'happy'], ['pink', 'cheer'], ['penguin-emperor', 'cheer']]) {
+    const head = globalThis.AQ.PET_HEADS[look + '-' + mood];
+    const html = views.mascotHtml({ color: look, name: 'Pet', mood, hat: 'crown' });
+    const left = ((head.x - head.w * 0.9 / 2) * 100).toFixed(1);
+    assert.ok(html.includes('class="axl-hat" style="left:' + left + '%'), look + ' ' + mood);
+  }
+  // The sliding penguin lies on its belly with its head at the front (the right), low down.
+  const sliding = globalThis.AQ.PET_HEADS['penguin-emperor-cheer'];
+  assert.ok(sliding.x > 0.55 && sliding.y > 0.2, JSON.stringify(sliding));
 });
