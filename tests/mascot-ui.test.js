@@ -65,7 +65,9 @@ test('feedback, teaching cards, and result screens show the mascot when given on
 
 test('the Mascot screen marks the chosen color and holds the name', () => {
   const html = views.mascotScreenHtml({ color: 'blue', name: 'Gil "G"' });
-  assert.equal(count(html, 'data-action="mascot-color"'), 3);
+  // 14 pets, then the chosen pet's 3 colors.
+  assert.equal(count(html, 'data-action="mascot-color"'), 17);
+  assert.equal(count(html, 'mascot-pet'), 14 + 1);
   assert.match(html, /data-color="blue"[^>]*aria-pressed="true"/);
   assert.match(html, /data-color="pink"[^>]*aria-pressed="false"/);
   assert.match(html, /data-role="mascot-name"[^>]*maxlength="16"[^>]*value="Gil &quot;G&quot;"/);
@@ -109,7 +111,7 @@ test('the Mascot screen saves a color and a name', () => {
   env.nameBox.value = '   ';
   env.click('mascot-name');
   assert.equal(stored(env).settings.mascot.name, 'Squiggle');
-  assert.match(env.html(), /Type a name for your axolotl/);
+  assert.match(env.html(), /Type a name for your pet/);
 
   env.click('home');
   assert.match(env.html(), /img\/axl\/blue-happy\.png/);
@@ -173,4 +175,48 @@ test('the name box keeps what was typed when a color is picked or the name is re
   env.click('home');
   env.click('open-mascot');
   assert.match(env.html(), /data-role="mascot-name"[^>]*value="Bubbles"/);
+});
+
+test('the Pet screen lists every pet, and a pet shows its own colors', () => {
+  const html = views.mascotScreenHtml({ color: 'duck-mallard', name: 'Ducky', hat: 'crown' });
+  for (const pet of mascot.PETS) assert.match(html, new RegExp('<span class="mascot-choice-name">' + pet.label + '</span>'));
+  assert.match(html, /data-color="duck-mallard"[^>]*aria-pressed="true"><img class="mascot-choice-img" src="img\/pets\/duck-mallard-thumb\.png"/);
+  assert.match(html, /data-color="fox-red"[^>]*aria-pressed="false"/);
+  const colors = html.slice(html.indexOf('mascot-colors'));
+  assert.deepEqual([...colors.matchAll(/data-color="([^"]+)"/g)].map(m => m[1]), ['duck-pekin', 'duck-mallard', 'duck-black']);
+  assert.match(colors, /Black Duck/);
+  assert.match(colors, /img\/pets\/duck-black-happy\.png/);
+  assert.match(colors, /class="axl-hat"/);
+});
+
+test('picking a pet saves its look, gives it its starting name, and keeps a chosen name', () => {
+  const env = envWith(makeUnit());
+  env.click('open-mascot');
+  env.click('mascot-color', { 'data-color': 'fox-red' });
+  assert.deepEqual(stored(env).settings.mascot, { color: 'pink', look: 'fox-red', name: 'Foxy' });
+  assert.match(env.html(), /data-color="fox-silver"/);
+  env.click('mascot-color', { 'data-color': 'fox-arctic' });
+  assert.equal(stored(env).settings.mascot.look, 'fox-arctic');
+  env.nameBox.value = 'Blaze';
+  env.click('mascot-name');
+  env.click('mascot-color', { 'data-color': 'cat-tuxedo' });
+  assert.deepEqual(stored(env).settings.mascot, { color: 'pink', look: 'cat-tuxedo', name: 'Blaze' });
+  env.click('mascot-color', { 'data-color': 'purple' });
+  assert.deepEqual(stored(env).settings.mascot, { color: 'purple', name: 'Blaze' });
+  env.click('mascot-color', { 'data-color': 'cat-plaid' });
+  assert.deepEqual(stored(env).settings.mascot, { color: 'purple', name: 'Blaze' });
+});
+
+test('the Home tab shows the pet, and every screen draws the chosen pet', () => {
+  const env = envWith(makeUnit());
+  env.click('open-mascot');
+  env.click('mascot-color', { 'data-color': 'penguin-rockhopper' });
+  env.click('home');
+  assert.match(env.html(), /data-action="home"[^>]*><span class="tab-icon" aria-hidden="true"><img class="tab-axl" src="img\/pets\/penguin-rockhopper-thumb\.png"/);
+  assert.match(env.html(), /data-action="open-profile"[^>]*><span class="tab-icon" aria-hidden="true">&#128100;/);
+  assert.match(env.html(), /img\/pets\/penguin-rockhopper-happy\.png/);
+  assert.doesNotMatch(env.html(), /img\/axl\//);
+  env.click('open-profile');
+  assert.match(env.html(), /Change pet/);
+  assert.match(env.html(), /penguin-rockhopper-happy\.png/);
 });

@@ -49,10 +49,13 @@
     return { color: AQ.mascot.DEFAULT.color, name: AQ.mascot.DEFAULT.name };
   }
 
-  // { color, name }: one of the mascot colors, and a name of 1 to 16 characters after trimming.
+  // { color, name, look }: one of the axolotl's colors, a name of 1 to 16 characters after trimming,
+  // and optionally the look of another pet. A look this app does not know (from a newer app) is
+  // allowed: it shows the axolotl in `color` until the app catches up.
   function isValidMascot(mascot) {
     return isPlainObject(mascot) && AQ.mascot.COLORS.indexOf(mascot.color) !== -1 &&
-      AQ.mascot.cleanName(mascot.name) !== null;
+      AQ.mascot.cleanName(mascot.name) !== null &&
+      (!has(mascot, 'look') || (typeof mascot.look === 'string' && mascot.look.length >= 1 && mascot.look.length <= 40));
   }
 
   // Stars per finished lesson: { lessonId: 1, 2, or 3 }.

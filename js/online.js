@@ -86,8 +86,9 @@
     return total;
   }
 
+  // A row's color is the pet's look, such as "pink" or "duck-pekin".
   function knownColor(color) {
-    return AQ.mascot.COLORS.indexOf(color) !== -1 ? color : AQ.mascot.DEFAULT.color;
+    return AQ.mascot.lookInfo(color) ? color : AQ.mascot.DEFAULT.color;
   }
 
   function knownHat(id) {
@@ -104,7 +105,7 @@
       weekXp: Math.min(wholeXp(weekXp(save, today)), total),
       week: AQ.rewards.weekStart(today),
       totalXp: total,
-      color: knownColor(mascot.color),
+      color: knownColor(AQ.mascot.lookOf(mascot)),
       hat: knownHat(save.outfits ? save.outfits.worn : null)
     };
   }

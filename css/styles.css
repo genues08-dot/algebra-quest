@@ -931,6 +931,9 @@ button:disabled { cursor: not-allowed; }
 .mascot-screen { display: flex; flex-direction: column; gap: 12px; }
 .mascot-heading { font-size: 16px; color: var(--muted); }
 .mascot-colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.mascot-pets { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 8px; }
+.mascot-pet { padding: 6px 4px; font-size: 13px; }
+.mascot-pet .mascot-choice-img { max-width: 64px; }
 .mascot-choice {
   display: flex;
   flex-direction: column;

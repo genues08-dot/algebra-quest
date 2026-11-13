@@ -38,7 +38,16 @@ service cloud.firestore {
         data.name is string && data.name.matches('[A-Za-z0-9_]{3,15}') && data.name.lower() == data.nameLower &&
         validXp(data.weekXp) && validXp(data.totalXp) && data.weekXp <= data.totalXp &&
         data.week is string && data.week.size() == 10 &&
-        data.color in ['pink', 'purple', 'blue'] &&
+        // The pet's look: every id in AQ.mascot.LOOK_IDS (js/mascot.js). tests/online.test.js checks it.
+        data.color in [
+          'pink', 'purple', 'blue', 'duck-pekin', 'duck-mallard', 'duck-black',
+          'horse-bay', 'horse-palomino', 'horse-gray', 'chicken-buff', 'chicken-white', 'chicken-black',
+          'giraffe-golden', 'giraffe-chestnut', 'giraffe-cream', 'bear-polar', 'bear-brown', 'bear-black',
+          'fox-red', 'fox-silver', 'fox-arctic', 'dog-golden', 'dog-chocolate', 'dog-black',
+          'cat-orange', 'cat-gray', 'cat-tuxedo', 'cow-black-white', 'cow-brown-white', 'cow-jersey',
+          'goat-white', 'goat-brown', 'goat-black-white', 'hamster-golden', 'hamster-cream', 'hamster-black-white',
+          'frog-green', 'frog-blue', 'frog-golden', 'penguin-emperor', 'penguin-rockhopper', 'penguin-little-blue'
+        ] &&
         (data.hat == null || data.hat in ['party', 'beanie', 'bow', 'grad', 'wizard', 'crown']) &&
         data.updated == request.time;
     }

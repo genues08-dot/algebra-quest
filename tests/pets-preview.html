@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pet hats check</title>
+  <base href="../">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* A page for checking by eye that every hat sits on every pet's head. Serve the folder and open
+       tests/pets-preview.html; add ?hat=crown (or party, beanie, bow, grad, wizard) to pick the hat. */
+    body { padding: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+    .cell { background: var(--card); border-radius: 8px; padding: 2px; text-align: center; font-size: 10px; }
+    .cell .mascot-img { width: 100%; }
+    .cell .axl-wrap { width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="grid" class="grid"></div>
+  <script src="js/mathexpr.js"></script>
+  <script src="js/units.js"></script>
+  <script src="js/plot.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/rewards.js"></script>
+  <script src="js/mascot.js"></script>
+  <script src="js/pet-heads.js"></script>
+  <script src="js/views.js"></script>
+  <script>
+    var hat = new URLSearchParams(location.search).get('hat') || 'party';
+    var only = new URLSearchParams(location.search).get('pet');
+    document.getElementById('grid').innerHTML = AQ.mascot.LOOKS.filter(function (look) {
+      return !only || look.pet === only;
+    }).map(function (look) {
+      return AQ.mascot.MOODS.map(function (mood) {
+        return '<div class="cell">' + AQ.views.mascotHtml({ color: look.id, name: look.id, mood: mood, hat: hat }) +
+          look.id + ' ' + mood + '</div>';
+      }).join('');
+    }).join('');
+  </script>
+</body>
+</html>

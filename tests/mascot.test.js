@@ -79,3 +79,35 @@ test('saves get a mascot setting, and bad ones are refused', () => {
     assert.equal(storage.isValidSave(save), false, JSON.stringify(value));
   }
 });
+
+test('pets: 14 pets with 3 colors each, and looks for pictures', () => {
+  assert.equal(mascot.PETS.length, 14);
+  assert.equal(mascot.LOOK_IDS.length, 42);
+  assert.equal(new Set(mascot.LOOK_IDS).size, 42);
+  assert.deepEqual(mascot.LOOK_IDS.slice(0, 4), ['pink', 'purple', 'blue', 'duck-pekin']);
+  assert.equal(mascot.imagePath('pink', 'cheer'), 'img/axl/pink-cheer.png');
+  assert.equal(mascot.imagePath('cow-black-white', 'think'), 'img/pets/cow-black-white-think.png');
+  assert.equal(mascot.imagePath('nope', 'nope'), 'img/axl/pink-happy.png');
+  assert.equal(mascot.thumbPath('frog-blue'), 'img/pets/frog-blue-thumb.png');
+  assert.equal(mascot.thumbPath('blue'), 'img/axl/blue-happy.png');
+  assert.equal(mascot.lookOf({ color: 'blue', name: 'x' }), 'blue');
+  assert.equal(mascot.lookOf({ color: 'blue', look: 'dog-black', name: 'x' }), 'dog-black');
+  assert.equal(mascot.lookOf({ color: 'blue', look: 'dragon-red', name: 'x' }), 'blue');
+  assert.equal(mascot.lookOf(null), 'pink');
+});
+
+test('every look has its pictures and a head for hats', () => {
+  const fs = require('fs');
+  const path = require('path');
+  require('../js/pet-heads.js');
+  for (const look of mascot.LOOKS) {
+    for (const mood of mascot.MOODS) {
+      assert.ok(fs.existsSync(path.join(__dirname, '..', mascot.imagePath(look.id, mood))), look.id + ' ' + mood);
+      if (look.pet !== 'axolotl') {
+        const head = globalThis.AQ.PET_HEADS[look.id + '-' + mood];
+        assert.ok(head && head.x > 0 && head.x < 1 && head.y >= 0 && head.y < 1 && head.w > 0 && head.w < 1, look.id + ' ' + mood);
+      }
+    }
+    assert.ok(fs.existsSync(path.join(__dirname, '..', mascot.thumbPath(look.id))), look.id + ' thumb');
+  }
+});

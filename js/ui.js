@@ -198,10 +198,10 @@
     };
   }
 
-  // The mascot as drawn everywhere: its color and name, and the hat it wears.
+  // The mascot as drawn everywhere: its look (as color), its name, and the hat it wears.
   function mascotSettings() {
     var mascot = state.save.settings.mascot;
-    return { color: mascot.color, name: mascot.name, hat: state.save.outfits ? state.save.outfits.worn : null };
+    return { color: AQ.mascot.lookOf(mascot), name: mascot.name, hat: state.save.outfits ? state.save.outfits.worn : null };
   }
 
   // The rank-up and new badges of the session that just ended, and the mascot, for its result screen.
@@ -966,11 +966,12 @@
       state.mascotDraft = null;
       show('mascot');
     },
+    // A pet or one of its colors. data-color is a look, such as "pink" or "duck-pekin".
     'mascot-color': function (target) {
-      var color = target.getAttribute('data-color');
-      if (state.screen !== 'mascot' || AQ.mascot.COLORS.indexOf(color) === -1) return;
+      var look = target.getAttribute('data-color');
+      if (state.screen !== 'mascot' || !AQ.mascot.lookInfo(look)) return;
       var next = copyOfSave();
-      next.settings.mascot.color = color;
+      next.settings.mascot = AQ.mascot.choose(next.settings.mascot, look);
       if (commit(next)) render();
     },
     'mascot-name': saveMascotName,
@@ -1149,7 +1150,7 @@
     if (state.screen !== 'mascot') return;
     var name = AQ.mascot.cleanName(state.mascotDraft !== null ? state.mascotDraft : mascotSettings().name);
     if (name === null) {
-      state.mascotError = 'Type a name for your axolotl (up to ' + AQ.mascot.NAME_MAX + ' letters).';
+      state.mascotError = 'Type a name for your pet (up to ' + AQ.mascot.NAME_MAX + ' letters).';
       render('[data-role="mascot-name"]');
       return;
     }

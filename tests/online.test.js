@@ -176,3 +176,26 @@ test('a page without a built-in unit drops it, keeps its progress, and moves off
   assert.deepEqual(old.progress.u1.completedLessons, ['a1']);
   assert.equal(old.currentUnitId, 'u5');
 });
+
+test('a leaderboard row shows the pet, and an unknown look shows the default axolotl', () => {
+  const storage = require('../js/storage.js');
+  const mascot = require('../js/mascot.js');
+  const save = makeSave(makeUnit());
+  save.settings.mascot = { color: 'blue', look: 'goat-brown', name: 'Billy' };
+  assert.equal(storage.isValidSave(save), true);
+  assert.equal(online.playerRow(save, 'Axl_Fan', TODAY).color, 'goat-brown');
+  save.settings.mascot.look = 'dragon-red';
+  assert.equal(storage.isValidSave(save), true);
+  assert.equal(online.playerRow(save, 'Axl_Fan', TODAY).color, 'blue');
+  save.settings.mascot.look = 7;
+  assert.equal(storage.isValidSave(save), false);
+  const ranked = online.rankRows([
+    { uid: 'a', name: 'Bee', weekXp: 0, week: '2026-11-09', totalXp: 5, color: 'frog-golden', hat: null },
+    { uid: 'b', name: 'Cat', weekXp: 0, week: '2026-11-09', totalXp: 3, color: 'unicorn', hat: null }
+  ], 'all', TODAY, 'a');
+  assert.deepEqual(ranked.map(row => row.color), ['frog-golden', 'pink']);
+  // The database rules accept exactly these looks.
+  const rules = require('fs').readFileSync(require('path').join(__dirname, '../firestore.rules'), 'utf8');
+  const listed = rules.match(/data\.color in \[([\s\S]*?)\]/)[1].match(/'[^']+'/g).map(id => id.slice(1, -1));
+  assert.deepEqual(listed, mascot.LOOK_IDS);
+});

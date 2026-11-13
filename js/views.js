@@ -7,6 +7,7 @@
     require('./game.js');
     require('./rewards.js');
     require('./mascot.js');
+    require('./pet-heads.js');
     require('./mathexpr.js');
     require('./plot.js');
     require('./calc.js');
@@ -20,8 +21,15 @@
 
   // ----- Mascot -----
 
-  // Where each pose's head is, as fractions of its picture: x is the head's centre, y its top,
-  // w its width. Measured by eye on the 12 pictures.
+  // Where each axolotl pose's head is, as fractions of its picture: x is the head's centre, y its
+  // top, w its width. Measured by eye on the 12 pictures. The other pets' heads were measured by
+  // tools/cut-pets.js (AQ.PET_HEADS), with fixes by eye in HEAD_FIXES, keyed "<look>-<mood>".
+  var HEAD_FIXES = {
+    // The sliding penguin lies on its belly, with its head at the front.
+    'penguin-emperor-cheer': { x: 0.63, y: 0.5, w: 0.36 },
+    'penguin-rockhopper-cheer': { x: 0.63, y: 0.5, w: 0.36 },
+    'penguin-little-blue-cheer': { x: 0.64, y: 0.5, w: 0.36 }
+  };
   var HEADS = {
     happy: { x: 0.52, y: 0.13, w: 0.46 },
     encourage: { x: 0.52, y: 0.13, w: 0.46 },
@@ -57,11 +65,24 @@
     return HAT_SVGS[id] ? '<svg viewBox="0 0 100 70" aria-hidden="true">' + HAT_SVGS[id] + '</svg>' : '';
   }
 
-  // The axolotl picture, with its hat when one is worn. cls is the picture's class.
-  function axlImgHtml(color, mood, hat, cls, alt) {
-    var img = '<img class="' + cls + '" src="' + AQ.mascot.imagePath(color, mood) + '" alt="' + escapeHtml(alt || '') + '">';
+  // Where the head is in a look's picture for a mood.
+  function headOf(look, mood) {
+    var key = look + '-' + mood;
+    var info = AQ.mascot.lookInfo(look);
+    if (info && info.pet !== 'axolotl') {
+      var measured = HEAD_FIXES[key] || (AQ.PET_HEADS && AQ.PET_HEADS[key]);
+      if (measured) return measured;
+    }
+    return HEADS[key] || HEADS[mood] || HEADS.happy;
+  }
+
+  // The pet's picture, with its hat when one is worn. color is the look; cls is the picture's
+  // class. small uses the small picture (the happy mood), for little spots like the leaderboard.
+  function axlImgHtml(color, mood, hat, cls, alt, small) {
+    var src = small ? AQ.mascot.thumbPath(color) : AQ.mascot.imagePath(color, mood);
+    var img = '<img class="' + cls + '" src="' + src + '" alt="' + escapeHtml(alt || '') + '">';
     if (!hat || !HAT_SVGS[hat]) return img;
-    var head = HEADS[color + '-' + mood] || HEADS[mood] || HEADS.happy;
+    var head = headOf(color, small ? 'happy' : mood);
     var width = head.w * HAT_SCALE;
     var top = head.y + HAT_SINK - width * 0.7;
     return '<span class="axl-wrap">' + img +
@@ -83,26 +104,42 @@
     '</div>';
   }
 
-  // The mascot settings on the save, or the default for a save made before there was one.
+  // The mascot on the save, or the default for a save made before there was one: { color, name },
+  // where color is the look it shows (see AQ.mascot.lookOf).
   function mascotOf(save) {
-    return save.settings && save.settings.mascot ? save.settings.mascot : AQ.mascot.DEFAULT;
+    var mascot = save.settings && save.settings.mascot ? save.settings.mascot : AQ.mascot.DEFAULT;
+    return { color: AQ.mascot.lookOf(mascot), name: mascot.name };
   }
 
-  // The Mascot screen: pick a color, change the name. model: { color, name, error }.
+  // The Pet screen: pick a pet, then its color, and change the name. model: { color (the look),
+  // name, hat, error }.
   function mascotScreenHtml(model) {
-    var colors = AQ.mascot.COLORS.map(function (color) {
-      var chosen = color === model.color;
+    var current = AQ.mascot.lookInfo(model.color) || AQ.mascot.lookInfo(AQ.mascot.DEFAULT.color);
+    var pets = AQ.mascot.PETS.map(function (pet) {
+      var chosen = pet.id === current.pet;
+      // Each pet shows in the color picked for it, or its first color.
+      var look = chosen ? current.id : AQ.mascot.LOOKS.filter(function (l) { return l.pet === pet.id; })[0].id;
+      return '<button type="button" class="mascot-choice mascot-pet' + (chosen ? ' mascot-chosen' : '') + '" data-action="mascot-color"' +
+        ' data-color="' + look + '" aria-pressed="' + chosen + '">' +
+        axlImgHtml(look, 'happy', null, 'mascot-choice-img', '', true) +
+        '<span class="mascot-choice-name">' + escapeHtml(pet.label) + '</span>' +
+      '</button>';
+    }).join('');
+    var colors = AQ.mascot.LOOKS.filter(function (look) { return look.pet === current.pet; }).map(function (look) {
+      var chosen = look.id === current.id;
       return '<button type="button" class="mascot-choice' + (chosen ? ' mascot-chosen' : '') + '" data-action="mascot-color"' +
-        ' data-color="' + color + '" aria-pressed="' + chosen + '">' +
-        axlImgHtml(color, 'happy', model.hat, 'mascot-choice-img', '') +
-        '<span class="mascot-choice-name">' + color.charAt(0).toUpperCase() + color.slice(1) + '</span>' +
+        ' data-color="' + look.id + '" aria-pressed="' + chosen + '">' +
+        axlImgHtml(look.id, 'happy', model.hat, 'mascot-choice-img', '') +
+        '<span class="mascot-choice-name">' + escapeHtml(look.label) + '</span>' +
       '</button>';
     }).join('');
     return '<section class="mascot-screen">' +
       '<header class="badges-bar">' +
         '<button type="button" class="btn" data-action="home">Home</button>' +
-        '<h1 class="badges-title">Your axolotl</h1>' +
+        '<h1 class="badges-title">Your pet</h1>' +
       '</header>' +
+      '<h2 class="mascot-heading">Pet</h2>' +
+      '<div class="mascot-pets">' + pets + '</div>' +
       '<h2 class="mascot-heading">Color</h2>' +
       '<div class="mascot-colors">' + colors + '</div>' +
       '<h2 class="mascot-heading"><label for="mascot-name">Name</label></h2>' +
@@ -459,11 +496,11 @@
   // ----- Tab bar and the tab screens -----
 
   var TABS = [
-    { id: 'home', action: 'home', label: 'Home', icon: '&#127968;' },
+    { id: 'home', action: 'home', label: 'Home', icon: null },
     { id: 'quests', action: 'open-quests', label: 'Quests', icon: '&#127919;' },
     { id: 'practice', action: 'open-practice', label: 'Practice', icon: '&#128170;' },
     { id: 'badges', action: 'open-badges', label: 'Badges', icon: '&#127941;' },
-    { id: 'profile', action: 'open-profile', label: 'Profile', icon: null },
+    { id: 'profile', action: 'open-profile', label: 'Profile', icon: '&#128100;' },
     { id: 'more', action: 'open-more', label: 'More', icon: '&#8943;' }
   ];
   // In the online app, the Leaders tab takes the Badges tab's place. Badges open from Profile.
@@ -474,7 +511,7 @@
     leadersTab = Boolean(on);
   }
 
-  // The bar pinned to the bottom of the main screens. The Profile tab shows the player's axolotl.
+  // The bar pinned to the bottom of the main screens. The Home tab shows the player's pet.
   // dot: how many rewards wait on the Quests tab (a red dot shows when it is more than 0).
   function tabBarHtml(active, mascotColor, dot) {
     var tabs = leadersTab ? TABS.map(function (tab) { return tab.id === 'badges' ? LEADERS_TAB : tab; }) : TABS;
@@ -482,7 +519,7 @@
       var on = tab.id === active;
       var waiting = tab.id === 'quests' && dot > 0;
       var icon = tab.icon ||
-        '<img class="tab-axl" src="' + AQ.mascot.imagePath(mascotColor, 'happy') + '" alt="">';
+        '<img class="tab-axl" src="' + AQ.mascot.thumbPath(mascotColor) + '" alt="">';
       return '<button type="button" class="tab' + (on ? ' tab-active' : '') + '" data-action="' + tab.action + '"' +
         (on ? ' aria-current="page"' : '') + '>' +
         '<span class="tab-icon" aria-hidden="true">' + icon + (waiting ? '<span class="tab-dot"></span>' : '') + '</span>' +
@@ -565,7 +602,7 @@
         axlImgHtml(model.mascot.color, 'happy', model.mascot.hat, 'profile-axl', '') +
         '<div class="profile-who">' +
           '<h1 class="screen-title">' + escapeHtml(model.mascot.name) + '</h1>' +
-          '<button type="button" class="btn btn-quiet" data-action="open-mascot">Change color or name</button>' +
+          '<button type="button" class="btn btn-quiet" data-action="open-mascot">Change pet</button>' +
           '<div class="profile-buttons">' +
             '<button type="button" class="btn btn-primary" data-action="open-shop">&#128142; Shop</button>' +
             '<button type="button" class="btn" data-action="open-badges">&#127941; Badges</button>' +
@@ -723,7 +760,7 @@
   function boardRowHtml(row) {
     return '<li class="board-row' + (row.me ? ' board-me' : '') + '">' +
       '<span class="board-rank">' + (row.medal || row.rank) + '</span>' +
-      axlImgHtml(row.color, 'happy', row.hat, 'board-axl', '') +
+      axlImgHtml(row.color, 'happy', row.hat, 'board-axl', '', true) +
       '<span class="board-name">' + escapeHtml(row.name) + (row.me ? ' <span class="board-you">(you)</span>' : '') + '</span>' +
       '<span class="board-xp">' + row.xp + ' XP</span>' +
     '</li>';
